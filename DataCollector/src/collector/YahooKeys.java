@@ -116,7 +116,7 @@ public final class YahooKeys {
 	public final static String holdingsGainRT = "g6";
 	public final static String moreInfo = "i";
 	public final static String orderBookRT = "i5";
-	public final static String marketCapitalization = "j1";
+	public final static String marketCap = "j1";
 	public final static String marketCapRT = "j3";
 	public final static String EBITDA = "j4";
 	public final static String changeFromYearlyLow = "j5";
@@ -144,7 +144,7 @@ public final class YahooKeys {
 	public final static String previousClose = "p";
 	public final static String pricePaid = "p1";
 	public final static String changeInPercent = "p2";
-	public final static String pricePerSales = "p5";
+	public final static String PSRatio = "p5";
 	public final static String pricePerBook = "p6";
 	public final static String exDividentRate = "q";
 	public final static String PERatio = "r";
