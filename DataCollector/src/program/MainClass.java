@@ -1,5 +1,7 @@
 package program;
 
+import frontEnd.GUI;
+
 public class MainClass {
 
 	/**
@@ -7,7 +9,7 @@ public class MainClass {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		GUI gui = new GUI();
 	}
 
 }
