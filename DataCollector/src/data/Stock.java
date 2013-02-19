@@ -13,6 +13,12 @@ public class Stock implements MarketItem {
 	private String symbol;
 	private String business;
 	
+	public Stock(String name, String symbol){
+		this.name = name;
+		this.symbol = symbol;
+		this.business = "default";
+	}
+	
 	public Stock(String name, String symbol, String business){
 		this.name = name;
 		this.symbol = symbol;
@@ -29,5 +35,11 @@ public class Stock implements MarketItem {
 	public String getSymbol() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return "Stock [name=" + name + ", symbol=" + symbol + ", business="
+				+ business + "]";
 	}
 }

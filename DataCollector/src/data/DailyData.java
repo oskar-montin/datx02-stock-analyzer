@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class DailyData implements MarketItem {
 
+
+
 	private Stock stock;
 	private Date  date;
 	
@@ -25,13 +27,29 @@ public class DailyData implements MarketItem {
 	private double closePrice;
 	private double high;
 	private double low;
-	private double volume;
+	private long volume;
 	
+	
+/**
+ * 
+ * @param stock
+ * @param date
+ * @param marketCap
+ * @param dividentYield
+ * @param PE
+ * @param PS
+ * @param PEG
+ * @param openPrice
+ * @param closePrice
+ * @param high
+ * @param low
+ * @param volume
+ */
 	public DailyData(Stock stock, Date date, double marketCap,
 			double dividentYield, double PE, 
-			double PS, double PEG, 
+			double PS, double PEG, double openPrice,
 			double closePrice, double high,
-			double low, double volume) {
+			double low, long volume) {
 		this.stock = stock;
 		this.date = date;
 		this.openPrice = openPrice;
@@ -59,4 +77,14 @@ public class DailyData implements MarketItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String toString() {
+		return "DailyData [stock=" + stock + ", date=" + date + ", marketCap="
+				+ marketCap + ", dividentYield=" + dividentYield + ", PE=" + PE
+				+ ", PS=" + PS + ", PEG=" + PEG + ", openPrice=" + openPrice
+				+ ", closePrice=" + closePrice + ", high=" + high + ", low="
+				+ low + ", volume=" + volume + "]";
+	}
+	
 }
