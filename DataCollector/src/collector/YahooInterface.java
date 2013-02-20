@@ -3,6 +3,7 @@ package collector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
@@ -31,7 +32,7 @@ public class YahooInterface {
 	 * 
 	 * @author oskarnylen
 	 */
-	public static RTData getRTData(String symbol) throws IOException{
+	public static RTData getRTData(String symbol) {
 
 		RTData RTDataPoint = null;
 
@@ -46,17 +47,18 @@ public class YahooInterface {
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
 		 * necessary tag + keys + necessary tag.
 		 */
-		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
-				YahooKeys.lastTradePrice +
-				YahooKeys.orderBookRT +								//RÄTT?
-
-				YahooKeys.name +
-				YahooKeys.stockExchange +
-
-				"&e=.csv");
-		URLConnection urlConnection = ulr.openConnection();
-		BufferedReader reader = null;
 		try {
+			URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
+					YahooKeys.lastTradePrice +
+					YahooKeys.orderBookRT +								//RÄTT?
+
+					YahooKeys.name +
+					YahooKeys.stockExchange +
+
+					"&e=.csv");
+			URLConnection urlConnection = ulr.openConnection();
+			BufferedReader reader = null;
+
 			reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			String inputLine;
 			while ((inputLine = reader.readLine()) != null) {
@@ -67,7 +69,7 @@ public class YahooInterface {
 
 				price = csvp.parseToDouble(yahooStockInfo[0]);
 				orderBook = csvp.parseToDouble(yahooStockInfo[1]);
-				
+
 				name = yahooStockInfo[2];
 				stockExchange = yahooStockInfo[3];
 
@@ -76,10 +78,20 @@ public class YahooInterface {
 				RTDataPoint = new RTData(stock, date.getTime(), price, orderBook);
 				break;  
 			}
-		}
-		finally {
+
+
 			if(reader != null) reader.close();
+			
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("MalformedURLException: " + e.getMessage());
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("IOException: " + e.getMessage());
+			return null;
 		}
+
 		System.out.println(RTDataPoint.toString());
 		return RTDataPoint;
 	}
@@ -95,7 +107,7 @@ public class YahooInterface {
 	 * 
 	 * @author oskarnylen
 	 */
-	public static DailyData getDailyData(String symbol) throws IOException{
+	public static DailyData getDailyData(String symbol) {
 
 		DailyData dailyDataPoint = null;
 
@@ -121,26 +133,27 @@ public class YahooInterface {
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
 		 * necessary tag + keys + necessary tag.
 		 */
-		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
-				YahooKeys.marketCap + 
-				YahooKeys.dividentYield + 
-				YahooKeys.PERatio +
-				YahooKeys.PSRatio +
-				YahooKeys.PEGRatio +
-
-				YahooKeys.open +
-				YahooKeys.previousClose +
-				YahooKeys.highLimit +
-				YahooKeys.lowLimit +
-				YahooKeys.volume +
-
-				YahooKeys.name +
-				YahooKeys.stockExchange +
-
-				"&e=.csv");
-		URLConnection urlConnection = ulr.openConnection();
-		BufferedReader reader = null;
 		try {
+			URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
+					YahooKeys.marketCap + 
+					YahooKeys.dividentYield + 
+					YahooKeys.PERatio +
+					YahooKeys.PSRatio +
+					YahooKeys.PEGRatio +
+
+					YahooKeys.open +
+					YahooKeys.previousClose +
+					YahooKeys.highLimit +
+					YahooKeys.lowLimit +
+					YahooKeys.volume +
+
+					YahooKeys.name +
+					YahooKeys.stockExchange +
+
+					"&e=.csv");
+			URLConnection urlConnection = ulr.openConnection();
+			BufferedReader reader = null;
+
 			reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			String inputLine;
 			while ((inputLine = reader.readLine()) != null) {
@@ -173,10 +186,20 @@ public class YahooInterface {
 						low, volume);
 				break;  
 			}
-		}
-		finally {
+
+
 			if(reader != null) reader.close();
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("MalformedURLException: " + e.getMessage());
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("IOException: " + e.getMessage());
+			return null;
 		}
+
 		return dailyDataPoint;
 	}
 	
@@ -190,7 +213,7 @@ public class YahooInterface {
 	 * 
 	 * @author oskarnylen
 	 */
-	public static QuarterlyData getQuarterlyData(String symbol) throws IOException{
+	public static QuarterlyData getQuarterlyData(String symbol) {
 
 		QuarterlyData quarterlyDataPoint = null;
 
@@ -207,34 +230,35 @@ public class YahooInterface {
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
 		 * necessary tag + keys + necessary tag.
 		 */
-		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
-				YahooKeys.dividentYield +							//"Div & Yield" in %
-																	
-				YahooKeys.dividentPerShare +						//Divident / total shares
-				
-				YahooKeys.name +
-				YahooKeys.stockExchange +
-
-				"&e=.csv");
-		URLConnection urlConnection = ulr.openConnection();
-		BufferedReader reader = null;
 		try {
+			URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
+					YahooKeys.dividentYield +							//"Div & Yield" in %
+																		
+					YahooKeys.dividentPerShare +						//Divident / total shares
+					
+					YahooKeys.name +
+					YahooKeys.stockExchange +
+
+					"&e=.csv");
+			URLConnection urlConnection = ulr.openConnection();
+			BufferedReader reader = null;
+
 			reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 			String inputLine;
 			while ((inputLine = reader.readLine()) != null) {
 
 				CSVParser csvp = new CSVParser();
-				
-				
-				
+
+
+
 				String[] yahooStockInfo = inputLine.split(",");
-				
+
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
 				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
 				solidity = YahooParser.balanceParser("BAC", "Total Stockholder Equity")/
 						YahooParser.balanceParser("BAC", "Total Assets");
-				
-				
+
+
 				name = yahooStockInfo[2];
 				stockExchange = yahooStockInfo[3];
 
@@ -244,10 +268,20 @@ public class YahooInterface {
 						solidity, NAV, dividentPerShare);
 				break;  
 			}
-		}
-		finally {
+
+
 			if(reader != null) reader.close();
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			System.err.println("MalformedURLException: " + e.getMessage());
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("IOException: " + e.getMessage());
+			return null;
 		}
+
 		System.out.println(quarterlyDataPoint.toString());
 		return quarterlyDataPoint;
 	}
