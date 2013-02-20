@@ -71,19 +71,23 @@ public class YahooParser {
                                     yc.getInputStream()));
         String inputLine;
         while ((inputLine = in.readLine()) != null){
-        	if(inputLine.contains(key)){
-        		
+        	if(inputLine.contains(">"+key)){
+
         		String line = inputLine;
         		
         		int index = line.indexOf(key);
         		
         		String[] temp = line.split(key);
         		
+        		System.out.println(temp[1]);
+        		
         		String[] temp2 = temp[1].split("yfnc_tabledata1\">");
         		
         		String[] temp3 = temp2[1].split("<");
         		
         		String nonparsedValue = temp3[0];
+        		
+        		System.out.println(nonparsedValue);
         	}
         }
         in.close();
