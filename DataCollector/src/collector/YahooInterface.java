@@ -27,8 +27,7 @@ public class YahooInterface {
 	 * correctly. Supposed to be used several times during the trading hours of the day.
 	 * 
 	 * @param symbol - the symbol of the company
-	 * @return returns a RTData
-	 * @throws IOException
+	 * @return returns a RTData object
 	 * 
 	 * @author oskarnylen
 	 */
@@ -102,8 +101,7 @@ public class YahooInterface {
 	 * correctly. Supposed to be used once a day after the markets are closed.
 	 * 
 	 * @param symbol - the symbol of the company
-	 * @return returns a DailyData
-	 * @throws IOException
+	 * @return returns a DailyData object
 	 * 
 	 * @author oskarnylen
 	 */
@@ -208,8 +206,7 @@ public class YahooInterface {
 	 * correctly. Supposed to be used four times a year.
 	 * 
 	 * @param symbol - the symbol of the company
-	 * @return returns a QuarterlyData
-	 * @throws IOException
+	 * @return returns a QuarterlyData object
 	 * 
 	 * @author oskarnylen
 	 */

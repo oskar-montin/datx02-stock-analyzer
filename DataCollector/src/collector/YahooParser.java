@@ -23,7 +23,6 @@ public class YahooParser {
 	 * @param symbol - the symbol of the company
 	 * @param key - the key of the value eg: "Total Assets" or "Total Stockholder Equity"
 	 * @return
-	 * @throws IOException
 	 */
 	public static double balanceParser(String symbol, String key) {
 		
@@ -73,12 +72,11 @@ public class YahooParser {
 	}
 	
 	/**
-	 * NON COMPLETE METHOD.
+	 * Parses data from the general information about a company on Yahoo.
 	 * 
-	 * @param symbol
-	 * @param key
+	 * @param symbol - the symbol of the company
+	 * @param key - the key of the value eg: "Return on Equity"
 	 * @return
-	 * @throws IOException
 	 */
 	public static double generalParser(String symbol, String key) {
 		
