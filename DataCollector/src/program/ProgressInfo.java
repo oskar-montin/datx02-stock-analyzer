@@ -15,23 +15,31 @@ public class ProgressInfo {
 	private String message;
 	private int value;
 	private Lock lock;
-	private Condition upToDate;
-	private boolean updated;
+	private Condition valueChange, messageChange;
+	private boolean valueUpdated,messageUpdated;
 	
 	public ProgressInfo() {
 		this.setMessage(new String(""));
 		this.setValue(0);
 		lock = new ReentrantLock();
-		upToDate = lock.newCondition();
+		valueUpdated = true;
+		messageUpdated = true;
+		valueChange = lock.newCondition();
+		messageChange = lock.newCondition();
 	}
 
 	public int getValue() {
+		lock.lock();
 		try {
-			this.await();
+			while(!valueUpdated) {
+				valueChange.await();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.valueUpdated = false;
+		lock.unlock();
 		return value;
 	}
 
@@ -39,38 +47,48 @@ public class ProgressInfo {
 		lock.lock();
 		try{
 			this.value = value;
-			upToDate.signal();
+			this.valueUpdated = true;
+			valueChange.signal();
 		}finally{
 			lock.unlock();
 		}
 	}
 
 	public String getMessage() {
+		lock.lock();
 		try {
-			this.await();
+			while(!messageUpdated) {
+				messageChange.await();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.messageUpdated = false;
+		lock.unlock();
 		return message;
-	}
-	
-	private void await() throws InterruptedException {
-		lock.lock();
-		try{
-			while(!updated) {
-				upToDate.await();
-			}
-		} finally {
-			lock.unlock();
-		}
 	}
 
 	public void setMessage(String message) {
 		lock.lock();
 		try{
 			this.message = message;
-			upToDate.signal();
+			this.messageUpdated = true;
+			messageChange.signal();
+		} finally {
+			lock.unlock();
+		}
+	}
+	
+	public void update(int value, String message) {
+		lock.lock();
+		try{
+			this.value = value;
+			this.message = message;
+			this.valueUpdated = true;
+			this.messageUpdated = true;
+			valueChange.signal();
+			messageChange.signal();
 		} finally {
 			lock.unlock();
 		}
