@@ -194,10 +194,10 @@ public class YahooInterface {
 
 		QuarterlyData quarterlyDataPoint = null;
 
-		double yield = 0;
-		double solidity = 0;
-		double NAV = 0;
-		double dividentPerShare = 0;
+		double yield;
+		double solidity;
+		double NAV = Double.NEGATIVE_INFINITY;
+		double dividentPerShare;
 
 		Calendar date = Calendar.getInstance();
 		String name;
@@ -209,8 +209,7 @@ public class YahooInterface {
 		 */
 		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
 				YahooKeys.dividentYield +							//"Div & Yield" in %
-				YahooKeys.orderBookRT +								//Solidity
-				YahooKeys.bookValue +								//Book Value Per Share
+																	
 				YahooKeys.dividentPerShare +						//Divident / total shares
 				
 				YahooKeys.name +
@@ -225,8 +224,16 @@ public class YahooInterface {
 			while ((inputLine = reader.readLine()) != null) {
 
 				CSVParser csvp = new CSVParser();
-
+				
+				
+				
 				String[] yahooStockInfo = inputLine.split(",");
+				
+				yield = csvp.parseToDouble(yahooStockInfo[0]);
+				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
+				solidity = YahooParser.balanceParser("BAC", "Total Stockholder Equity")/
+						YahooParser.balanceParser("BAC", "Total Assets");
+				
 				
 				name = yahooStockInfo[2];
 				stockExchange = yahooStockInfo[3];
@@ -241,6 +248,7 @@ public class YahooInterface {
 		finally {
 			if(reader != null) reader.close();
 		}
+		System.out.println(quarterlyDataPoint.toString());
 		return quarterlyDataPoint;
 	}
 }

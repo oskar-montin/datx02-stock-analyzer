@@ -74,4 +74,12 @@ public class QuarterlyData implements MarketItem {
 		return dividentPerShare;
 	}
 	
+	@Override
+	public String toString() {
+		return "QuarterlyData [stock=" + stock + ", dateCollected="
+				+ dateCollected + ", yield=" + yield + ", solidity=" + solidity
+				+ ", NAV=" + NAV + ", dividentPerShare=" + dividentPerShare
+				+ "]";
+	}
+	
 }
