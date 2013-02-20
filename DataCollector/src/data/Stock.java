@@ -12,17 +12,20 @@ public class Stock implements MarketItem {
 	private String name;
 	private String symbol;
 	private String business;
+	private String stockExchange;
 	
-	public Stock(String name, String symbol){
+	public Stock(String name, String symbol, String stockExchange){
 		this.name = name;
 		this.symbol = symbol;
 		this.business = "default";
+		this.stockExchange = stockExchange;
 	}
 	
-	public Stock(String name, String symbol, String business){
+	public Stock(String name, String symbol, String business, String stockExchange){
 		this.name = name;
 		this.symbol = symbol;
 		this.business = business;
+		this.stockExchange = stockExchange;
 	}
 
 	@Override

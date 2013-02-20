@@ -11,30 +11,12 @@ import java.util.Date;
 public class QuarterlyData implements MarketItem {
 
 	private Stock stock;
-	private Date releaseDate;
+	private Date dateCollected;
 	private double yield;
 	private double solidity;
 	private double NAV;
 	private double dividentPerShare;
 
-	
-	/**
-	 * 
-	 * @param stock
-	 * @param yield
-	 * @param solidity
-	 * @param NAV
-	 * @param dividentPerShare
-	 */
-	public QuarterlyData(Stock stock, double yield,
-			double solidity, double NAV, double dividentPerShare) {
-		this.stock = stock;
-		this.yield = yield;
-		this.solidity = solidity;
-		this.NAV = NAV;
-		this.dividentPerShare = dividentPerShare;
-	}
-	
 	/**
 	 * 
 	 * @param stock
@@ -47,7 +29,7 @@ public class QuarterlyData implements MarketItem {
 	public QuarterlyData(Stock stock, Date releaseDate, double yield,
 			double solidity, double NAV, double dividentPerShare) {
 		this.stock = stock;
-		this.releaseDate = releaseDate;
+		this.dateCollected = releaseDate;
 		this.yield = yield;
 		this.solidity = solidity;
 		this.NAV = NAV;
