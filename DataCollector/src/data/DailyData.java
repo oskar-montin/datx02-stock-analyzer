@@ -15,6 +15,54 @@ public class DailyData implements MarketItem {
 	private Stock stock;
 	private Date  date;
 	
+	public Stock getStock() {
+		return stock;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public double getMarketCap() {
+		return marketCap;
+	}
+
+	public double getDividentYield() {
+		return dividentYield;
+	}
+
+	public double getPE() {
+		return PE;
+	}
+
+	public double getPS() {
+		return PS;
+	}
+
+	public double getPEG() {
+		return PEG;
+	}
+
+	public double getOpenPrice() {
+		return openPrice;
+	}
+
+	public double getClosePrice() {
+		return closePrice;
+	}
+
+	public double getHigh() {
+		return high;
+	}
+
+	public double getLow() {
+		return low;
+	}
+
+	public long getVolume() {
+		return volume;
+	}
+
 	/* KEYS */
 	private double marketCap;
 	private double dividentYield;

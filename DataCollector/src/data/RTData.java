@@ -10,6 +10,7 @@ import java.util.Date;
 
 public class RTData implements MarketItem {
 
+
 	private Stock stock;
 	private Date date;
 	private double price;
@@ -47,4 +48,21 @@ public class RTData implements MarketItem {
 		return "RTData [stock=" + stock + ", date=" + date + ", price=" + price
 				+ ", orderBook=" + orderBook + "]";
 	}
+	
+	public Stock getStock() {
+		return stock;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public double getOrderBook() {
+		return orderBook;
+	}
+
 }

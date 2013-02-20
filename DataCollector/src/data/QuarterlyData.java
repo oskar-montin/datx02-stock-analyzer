@@ -17,6 +17,8 @@ public class QuarterlyData implements MarketItem {
 	private double NAV;
 	private double dividentPerShare;
 
+
+
 	/**
 	 * 
 	 * @param stock
@@ -46,6 +48,38 @@ public class QuarterlyData implements MarketItem {
 	public String getSymbol() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Stock getStock() {
+		return stock;
+	}
+
+	public Date getDateCollected() {
+		return dateCollected;
+	}
+
+	public double getYield() {
+		return yield;
+	}
+
+	public double getSolidity() {
+		return solidity;
+	}
+
+	public double getNAV() {
+		return NAV;
+	}
+
+	public double getDividentPerShare() {
+		return dividentPerShare;
+	}
+	
+	@Override
+	public String toString() {
+		return "QuarterlyData [stock=" + stock + ", dateCollected="
+				+ dateCollected + ", yield=" + yield + ", solidity=" + solidity
+				+ ", NAV=" + NAV + ", dividentPerShare=" + dividentPerShare
+				+ "]";
 	}
 	
 }
