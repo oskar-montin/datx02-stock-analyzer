@@ -1,4 +1,4 @@
-package frontEnd;
+package frontend;
 
 import java.awt.event.ActionEvent;
 /**A simple, not so functional(yet) GUI. A lot of dead functions
