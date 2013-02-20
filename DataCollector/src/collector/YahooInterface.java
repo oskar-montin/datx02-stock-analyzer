@@ -10,18 +10,81 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import data.DailyData;
+import data.QuarterlyData;
+import data.RTData;
 import data.Stock;
 
 /**
  * YahooInterface is a CLASS that communicates with YahooFinance in order to collect and compile the data into the right
- * data types.
+ * data types. 
  */
 
 public class YahooInterface {
 
 	/**
+	 * Method that collects data from Yahoo into a RTData-object. Also using CSVParser to be able to use the data
+	 * correctly. Supposed to be used several times during the trading hours of the day.
+	 * 
+	 * @param symbol - the symbol of the company
+	 * @return returns a RTData
+	 * @throws IOException
+	 * 
+	 * @author oskarnylen
+	 */
+	public static RTData getRTData(String symbol) throws IOException{
+
+		RTData RTDataPoint = null;
+
+		double price;
+		double orderBook;									//VÄRDE?
+
+		Calendar date = Calendar.getInstance();
+		String name;
+		
+		/*
+		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
+		 * necessary tag + keys + necessary tag.
+		 */
+		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
+				YahooKeys.lastTradePrice +
+				YahooKeys.orderBookRT +								//RÄTT?
+
+				YahooKeys.name +
+
+				"&e=.csv");
+		URLConnection urlConnection = ulr.openConnection();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			String inputLine;
+			while ((inputLine = reader.readLine()) != null) {
+
+				CSVParser csvp = new CSVParser();
+
+				String[] yahooStockInfo = inputLine.split(",");
+
+				price = csvp.parseToDouble(yahooStockInfo[0]);
+				orderBook = csvp.parseToDouble(yahooStockInfo[1]);
+				
+				name = yahooStockInfo[2];
+
+				Stock stock = new Stock(name, symbol);
+
+				RTDataPoint = new RTData(stock, date.getTime(), price, orderBook);
+				break;  
+			}
+		}
+		finally {
+			if(reader != null) reader.close();
+		}
+		System.out.println(RTDataPoint.toString());
+		return RTDataPoint;
+	}
+	
+	
+	/**
 	 * Method that collects data from Yahoo into a DailyData-object. Also using CSVParser to be able to use the data
-	 * correctly.
+	 * correctly. Supposed to be used once a day after the markets are closed.
 	 * 
 	 * @param symbol - the symbol of the company
 	 * @return returns a DailyData
@@ -79,11 +142,7 @@ public class YahooInterface {
 
 				CSVParser csvp = new CSVParser();
 
-
-
 				String[] yahooStockInfo = inputLine.split(",");
-
-
 
 				marketCap = csvp.parseToDoubleMarketCap(yahooStockInfo[0]);
 				dividentYield = csvp.parseToDouble(yahooStockInfo[1]);
@@ -115,4 +174,19 @@ public class YahooInterface {
 		return dailyDataPoint;
 	}
 	
+	/**
+	 * Method that collects data from Yahoo into a QuarterlyData-object. Also using CSVParser to be able to use the data
+	 * correctly. Supposed to be used four times a year.
+	 * 
+	 * @param symbol - the symbol of the company
+	 * @return returns a QuarterlyData
+	 * @throws IOException
+	 * 
+	 * @author oskarnylen
+	 */
+	public static QuarterlyData getQuarterlyData(String symbol) throws IOException{
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

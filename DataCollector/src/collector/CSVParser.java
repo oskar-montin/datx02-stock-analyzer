@@ -20,7 +20,7 @@ public class CSVParser {
 	public double parseToDouble(String str){
 		returnString = str;
 		
-		if(returnString.equals("-")){
+		if(returnString.equals("-") || returnString.equals("\"N/A\"")){
 			return Double.NEGATIVE_INFINITY;
 		}
 		
@@ -39,7 +39,7 @@ public class CSVParser {
 	public long parseToLong(String str){
 		returnString = str;
 		
-		if(returnString.equals("-")){
+		if(returnString.equals("-") || returnString.equals("N/A")){
 			return -1;
 		}
 		
