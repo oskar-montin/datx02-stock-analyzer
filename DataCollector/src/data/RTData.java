@@ -15,6 +15,13 @@ public class RTData implements MarketItem {
 	private double price;
 	private double orderBook; // <--- TYPE?!!=!?!?!
 	
+	/**
+	 * 
+	 * @param stock
+	 * @param date
+	 * @param price
+	 * @param orderBook
+	 */
 	public RTData(Stock stock, Date date, double price, double orderBook) {
 		super();
 		this.stock = stock;
@@ -28,9 +35,16 @@ public class RTData implements MarketItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	@Override
 	public String getSymbol() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return "RTData [stock=" + stock + ", date=" + date + ", price=" + price
+				+ ", orderBook=" + orderBook + "]";
 	}
 }
