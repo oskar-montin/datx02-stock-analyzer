@@ -1,5 +1,7 @@
 package program;
 
+import java.util.Calendar;
+
 import collector.DatabaseHandler;
 import data.Settings;
 import data.Stock;
@@ -87,10 +89,16 @@ public class Controller {
 		public void run() {
 			long startTime, endTime,timeDiff;
 			while(true) {
+				this.progress.setValue(0);
+				this.progress.setMessage("Updating realtime stock info");
 				startTime = System.currentTimeMillis();
 				
 				collectRealTimeData();
 				
+				this.progress.setValue(100);
+				this.progress.setMessage("All stocks updated for time: "+
+												Calendar.getInstance().get(Calendar.HOUR)+":"+
+												Calendar.getInstance().get(Calendar.MINUTE));
 				endTime = System.currentTimeMillis();
 				timeDiff = endTime-startTime;
 				if(timeDiff<settings.getWaitTime()) {
