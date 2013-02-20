@@ -1,13 +1,19 @@
 package program;
 
+import collector.DatabaseHandler;
 import data.Settings;
+import data.Stock;
 
 public class Controller {
 	private Settings settings;
 	private static Controller instance;
+	private final RealTimeThread realTimeThread;
+	private final ProgressInfo controllerProgress;
 	
 	private Controller() {
-		
+		this.settings = Settings.getSettings();
+		this.realTimeThread = new RealTimeThread();
+		this.controllerProgress = new ProgressInfo();
 	}
 	
 	public static Controller getInstance() {
@@ -15,6 +21,14 @@ public class Controller {
 			instance = new Controller();
 		}
 		return instance;
+	}
+	
+	public ProgressInfo getControllerProgress() {
+		return this.controllerProgress;
+	}
+	
+	public ProgressInfo getRealTimeProgress() {
+		return this.realTimeThread.getProgress();
 	}
 	
 	/**
@@ -26,8 +40,11 @@ public class Controller {
 	 * @return
 	 */
 	public boolean addStock(String symbol, String name, String business, String stockExchange) {
-		//Skicka saker till databasen
-		return settings.addSymbol(symbol);
+		Stock stock = new Stock(name, symbol, business, stockExchange);
+		if(!DatabaseHandler.addStock(stock)){
+			return false;
+		}
+		return settings.addSymbol(stock.getSymbol());
 	}
 	
 	public boolean removeSymbol(String symbol) {
@@ -46,7 +63,49 @@ public class Controller {
 		
 	}
 	
-	public void startRealTimeCollecting() {
+	public void collectQuarterlyData() {
 		
+	}
+	
+	public void collectRealTimeData() {
+		
+	}
+	
+	public void startRealTimeCollecting() {
+		this.realTimeThread.start();
+	}
+	
+	private class RealTimeThread extends Thread{
+		private final ProgressInfo progress;
+		
+		public RealTimeThread() {
+			super();
+			this.progress = new ProgressInfo();
+		}
+		
+		@Override
+		public void run() {
+			long startTime, endTime,timeDiff;
+			while(true) {
+				startTime = System.currentTimeMillis();
+				
+				collectRealTimeData();
+				
+				endTime = System.currentTimeMillis();
+				timeDiff = endTime-startTime;
+				if(timeDiff<settings.getWaitTime()) {
+					try {
+						Thread.sleep(settings.getWaitTime()-timeDiff);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		}
+
+		public ProgressInfo getProgress() {
+			return progress;
+		}
 	}
 }
