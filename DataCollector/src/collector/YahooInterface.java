@@ -40,6 +40,7 @@ public class YahooInterface {
 
 		Calendar date = Calendar.getInstance();
 		String name;
+		String stockExchange;
 		
 		/*
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
@@ -50,6 +51,7 @@ public class YahooInterface {
 				YahooKeys.orderBookRT +								//RÄTT?
 
 				YahooKeys.name +
+				YahooKeys.stockExchange +
 
 				"&e=.csv");
 		URLConnection urlConnection = ulr.openConnection();
@@ -67,8 +69,9 @@ public class YahooInterface {
 				orderBook = csvp.parseToDouble(yahooStockInfo[1]);
 				
 				name = yahooStockInfo[2];
+				stockExchange = yahooStockInfo[3];
 
-				Stock stock = new Stock(name, symbol);
+				Stock stock = new Stock(name, symbol, stockExchange);
 
 				RTDataPoint = new RTData(stock, date.getTime(), price, orderBook);
 				break;  
@@ -112,6 +115,7 @@ public class YahooInterface {
 
 		Calendar date = Calendar.getInstance();
 		String name;
+		String stockExchange;
 
 		/*
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
@@ -131,6 +135,7 @@ public class YahooInterface {
 				YahooKeys.volume +
 
 				YahooKeys.name +
+				YahooKeys.stockExchange +
 
 				"&e=.csv");
 		URLConnection urlConnection = ulr.openConnection();
@@ -157,8 +162,9 @@ public class YahooInterface {
 				volume = csvp.parseToLong(yahooStockInfo[9]);
 
 				name = yahooStockInfo[10];
+				stockExchange = yahooStockInfo[11];
 
-				Stock stock = new Stock(name, symbol);
+				Stock stock = new Stock(name, symbol, stockExchange);
 
 				dailyDataPoint = new DailyData(stock, date.getTime(), marketCap,
 						dividentYield, PE, 
@@ -185,8 +191,56 @@ public class YahooInterface {
 	 * @author oskarnylen
 	 */
 	public static QuarterlyData getQuarterlyData(String symbol) throws IOException{
+
+		QuarterlyData quarterlyDataPoint = null;
+
+		double yield = 0;
+		double solidity = 0;
+		double NAV = 0;
+		double dividentPerShare = 0;
+
+		Calendar date = Calendar.getInstance();
+		String name;
+		String stockExchange;
 		
-		// TODO Auto-generated method stub
-		return null;
+		/*
+		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
+		 * necessary tag + keys + necessary tag.
+		 */
+		URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
+				YahooKeys.dividentYield +							//"Div & Yield" in %
+				YahooKeys.orderBookRT +								//Solidity
+				YahooKeys.bookValue +								//Book Value Per Share
+				YahooKeys.dividentPerShare +						//Divident / total shares
+				
+				YahooKeys.name +
+				YahooKeys.stockExchange +
+
+				"&e=.csv");
+		URLConnection urlConnection = ulr.openConnection();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+			String inputLine;
+			while ((inputLine = reader.readLine()) != null) {
+
+				CSVParser csvp = new CSVParser();
+
+				String[] yahooStockInfo = inputLine.split(",");
+				
+				name = yahooStockInfo[2];
+				stockExchange = yahooStockInfo[3];
+
+				Stock stock = new Stock(name, symbol, stockExchange);
+
+				quarterlyDataPoint = new QuarterlyData(stock, date.getTime(), yield, 
+						solidity, NAV, dividentPerShare);
+				break;  
+			}
+		}
+		finally {
+			if(reader != null) reader.close();
+		}
+		return quarterlyDataPoint;
 	}
 }
