@@ -1,8 +1,11 @@
 package program;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import collector.DatabaseHandler;
+import collector.YahooInterface;
+import data.DailyData;
 import data.Settings;
 import data.Stock;
 
@@ -62,7 +65,15 @@ public class Controller {
 	}
 	
 	public void collectDailyData() {
-		
+		this.controllerProgress.update(0, "Starting to collect daily data");
+		DatabaseHandler dbh = DatabaseHandler.getInstance();
+		int size = this.settings.getSymbols().size();
+		int i = 0;
+		for(String symbol : this.settings.getSymbols()) {
+			//DailyData data = YahooInterface.getDailyData(symbol);
+			//dbh.addDailyData(data);
+			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
+		}
 	}
 	
 	public void collectQuarterlyData() {
