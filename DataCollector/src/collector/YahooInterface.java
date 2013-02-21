@@ -74,7 +74,7 @@ public class YahooInterface {
 
 				Stock stock = new Stock(name, symbol, stockExchange);
 
-				RTDataPoint = new RTData(stock, date.getTime(), price, orderBook);
+				RTDataPoint = new RTData(stock, date, price, orderBook);
 				break;  
 			}
 
@@ -177,7 +177,7 @@ public class YahooInterface {
 
 				Stock stock = new Stock(name, symbol, stockExchange);
 
-				dailyDataPoint = new DailyData(stock, date.getTime(), marketCap,
+				dailyDataPoint = new DailyData(stock, date, marketCap,
 						dividentYield, PE, 
 						PS, PEG, openPrice,
 						closePrice, high,
@@ -261,7 +261,7 @@ public class YahooInterface {
 
 				Stock stock = new Stock(name, symbol, stockExchange);
 
-				quarterlyDataPoint = new QuarterlyData(stock, date.getTime(), yield, 
+				quarterlyDataPoint = new QuarterlyData(stock, date, yield, 
 						solidity, NAV, dividentPerShare);
 				break;  
 			}

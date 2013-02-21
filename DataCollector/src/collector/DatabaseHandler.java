@@ -14,7 +14,7 @@ import data.Stock;
 
 /**
  * DatabaseHandler is a CLASS that adds and collects data from database.
- * IMPORTANT- always add date (and time) separatly before adding data connected whit that date (and time).
+ * IMPORTANT- always add date (and time) separately before adding data connected whit that date (and time).
  */
 
 public class DatabaseHandler {
@@ -32,8 +32,17 @@ public class DatabaseHandler {
 	private static int DATE;
 	
 	public static void main(String[] args){
+		try {
+			// The newInstance() call is a work around for some
+			// broken Java implementations
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			} catch (Exception ex) {
+			// handle the error
+			}
 		
-		addStock(new Stock("name","AKTSYM", "stockExchange"));
+		Calendar cal = Calendar.getInstance();
+		cal.set(2010, 04, 20);
+		addDate(cal);
 	}
 	
 	
