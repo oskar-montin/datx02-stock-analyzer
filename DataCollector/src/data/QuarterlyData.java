@@ -1,6 +1,6 @@
 package data;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Datatype that describes the data that is updated every quarter (quarterly earnings report)
@@ -11,7 +11,7 @@ import java.util.Date;
 public class QuarterlyData implements MarketItem {
 
 	private Stock stock;
-	private Date dateCollected;
+	private Calendar dateCollected;
 	private double yield;
 	private double solidity;
 	private double NAV;
@@ -28,7 +28,7 @@ public class QuarterlyData implements MarketItem {
 	 * @param NAV
 	 * @param dividentPerShare
 	 */
-	public QuarterlyData(Stock stock, Date releaseDate, double yield,
+	public QuarterlyData(Stock stock, Calendar releaseDate, double yield,
 			double solidity, double NAV, double dividentPerShare) {
 		this.stock = stock;
 		this.dateCollected = releaseDate;
@@ -54,7 +54,7 @@ public class QuarterlyData implements MarketItem {
 		return stock;
 	}
 
-	public Date getDateCollected() {
+	public Calendar getDateCollected() {
 		return dateCollected;
 	}
 

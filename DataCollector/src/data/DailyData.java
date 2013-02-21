@@ -1,6 +1,6 @@
 package data;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Datatype of the closing price (daily) keys and values.
@@ -13,13 +13,13 @@ public class DailyData implements MarketItem {
 
 
 	private Stock stock;
-	private Date  date;
+	private Calendar  date;
 	
 	public Stock getStock() {
 		return stock;
 	}
 
-	public Date getDate() {
+	public Calendar getDate() {
 		return date;
 	}
 
@@ -93,7 +93,7 @@ public class DailyData implements MarketItem {
  * @param low
  * @param volume
  */
-	public DailyData(Stock stock, Date date, double marketCap,
+	public DailyData(Stock stock, Calendar date, double marketCap,
 			double dividentYield, double PE, 
 			double PS, double PEG, double openPrice,
 			double closePrice, double high,

@@ -1,6 +1,6 @@
 package data;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Datatype of the realtime data.
@@ -12,7 +12,7 @@ public class RTData implements MarketItem {
 
 
 	private Stock stock;
-	private Date date;
+	private Calendar date;
 	private double price;
 	private double orderBook; // <--- TYPE?!!=!?!?!
 	
@@ -23,7 +23,7 @@ public class RTData implements MarketItem {
 	 * @param price
 	 * @param orderBook
 	 */
-	public RTData(Stock stock, Date date, double price, double orderBook) {
+	public RTData(Stock stock, Calendar date, double price, double orderBook) {
 		super();
 		this.stock = stock;
 		this.date = date;
@@ -53,7 +53,7 @@ public class RTData implements MarketItem {
 		return stock;
 	}
 
-	public Date getDate() {
+	public Calendar getDate() {
 		return date;
 	}
 
