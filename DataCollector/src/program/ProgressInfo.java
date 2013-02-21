@@ -8,6 +8,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * This is a class representing progress of a processess in our collector. This class 
  * is a monitor and can be used for progress bars in the gui. Whenever a thread tries to 
  * get info from the class it have to wait untill the monitor is updated.
+ * 
+ * This class can easily be changed to use an observer pattern instead of the lock pattern 
+ * if we want that behaviour in the gui.
  * @author oskar-montin
  *
  */
@@ -28,6 +31,10 @@ public class ProgressInfo {
 		messageChange = lock.newCondition();
 	}
 
+	/**
+	 * 
+	 * @return the current value of the progress.
+	 */
 	public int getValue() {
 		lock.lock();
 		try {
@@ -43,6 +50,10 @@ public class ProgressInfo {
 		return value;
 	}
 
+	/**
+	 * 
+	 * @param value the new value to be set
+	 */
 	public void setValue(int value) {
 		lock.lock();
 		try{
@@ -54,6 +65,11 @@ public class ProgressInfo {
 		}
 	}
 
+
+	/**
+	 * 
+	 * @return the current message of the progress
+	 */
 	public String getMessage() {
 		lock.lock();
 		try {
@@ -69,6 +85,10 @@ public class ProgressInfo {
 		return message;
 	}
 
+	/**
+	 * 
+	 * @param message the new message to be set
+	 */
 	public void setMessage(String message) {
 		lock.lock();
 		try{
@@ -79,7 +99,12 @@ public class ProgressInfo {
 			lock.unlock();
 		}
 	}
-	
+
+	/**
+	 * Updates the progress with the given value and message
+	 * @param value
+	 * @param message
+	 */
 	public void update(int value, String message) {
 		lock.lock();
 		try{
