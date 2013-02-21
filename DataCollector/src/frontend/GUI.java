@@ -15,7 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+import program.Controller;
+
 public class GUI extends JFrame implements ActionListener {
+	private Controller controller;
 	
 	private JFrame addStockFrame;
 	private JTextField nameField, symbolField, businessField;
@@ -30,6 +33,7 @@ public class GUI extends JFrame implements ActionListener {
 	public GUI() {
 		
 		super("Data Collector");
+		this.controller = Controller.getInstance();
 		setupMainFrame();
 	}
 
@@ -59,9 +63,22 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		else if(e.getSource() == collectDataButton) {
 			// Collect Data
+			//Denna knappen orde antingen heta "start collect real time data", "collect quarterly data" eller "collect daily data"
+			//Hur som helst måste tre knappar finnas. Använd en  metoderna i controller likt följande:
+			//this.controller.collectDailyData();
+			//this.controller.collectQuarterlyData();
+			//this.controller.startRealTimeCollecting();
+			
+			//För start collect real time data borde texten göras om till "stop" efter att amn startat och om man
+			//klickar igen skall this.controller.stopRealTimeCollecting(); anropas och knappen återgår till sitt
+			
 		}
 		else if(e.getSource() == addStockButton) {
-			// add to database
+			//Add to the settings file and database:
+			//Detta är det enda som skall skrivas för att lägga till en stock
+			//Du bör därför lägga till ett till field för stock exchange.
+			//this.controller.addStock(symbol, name, business, stockExchange);
+			//this.controller.saveSettings();
 			
 			nameField.setText("");
 			symbolField.setText("");
@@ -69,7 +86,14 @@ public class GUI extends JFrame implements ActionListener {
 			addStockFrame.setVisible(false);
 		}
 		else if(e.getSource() == addStockAddMoreButton) {
-			// add to database
+			//Add to the settings file and database:
+			//Detta är det enda som skall skrivas för att lägga till en stock
+			//Du bör därför lägga till ett till field för stock exchange.
+			//this.controller.addStock(symbol, name, business, stockExchange);
+			//this.controller.saveSettings();
+			//Angående save, det är tidskrävande att skriva saker till filer, därför borde kanske det sparas först när användaren
+			//är klar med att lägga til laktier istället.
+			
 			nameField.setText("");
 			symbolField.setText("");
 			businessField.setText("");
