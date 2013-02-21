@@ -22,9 +22,9 @@ public class DatabaseHandler {
 	private static Connection con = null;
 	private static Statement st = null;
 	private static ResultSet rs = null;
-	private static String user="runa", password="123456", server="MySQL", databaseName, url="jdbc:mysql://localhost/test?";
-	private static String port="3306", host ="127.0.0.1", userpass="user=runa&password=123456";
-	static private DatabaseHandler dataBase;
+	private static String user="runa", password="123456", server="MySQL", databaseName, url="jdbc:mysql://localhost:3306/test?";
+	private static String port="3306", host ="127.0.0.1", userpass="user=root&password=123456";
+	private static DatabaseHandler dataBase;
 	private static int HOUR_OF_DAY;
 	private static int MINUTE;
 	private static int YEAR;
@@ -32,17 +32,7 @@ public class DatabaseHandler {
 	private static int DATE;
 	
 	public static void main(String[] args){
-		try {
-			// The newInstance() call is a work around for some
-			// broken Java implementations
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			} catch (Exception ex) {
-			// handle the error
-			}
-		
-		Calendar cal = Calendar.getInstance();
-		cal.set(2010, 04, 20);
-		addDate(cal);
+
 	}
 	
 	
@@ -69,6 +59,7 @@ public class DatabaseHandler {
 		String query = "INSERT INTO Stock (symbol, name, stockexchange, business) VALUES('"+stock.getSymbol()+"', '"+stock.getName()+"', '"+stock.getStockExchange()+"', '"+stock.getBusiness()+"')";
 		
 		try {
+
 			con = DriverManager.getConnection(url + userpass);
 		     st = con.createStatement();
 	         st.executeUpdate(query);
@@ -110,7 +101,7 @@ public class DatabaseHandler {
 	 */
 	public static boolean addRTEntry(RTData entry){
 	
-		String queryData = "INSERT INTO Stock (symbol, date, time, price, orderBook) VALUES('"+entry.getSymbol()+"', '"+getDate(entry.getDate())+"', '"+getTime(entry.getDate())+"', '"+entry.getPrice()+"', '"+entry.getOrderBook()+"')";
+		String queryData = "INSERT INTO realTimeData (stock, date, time, price, orderBook) VALUES('"+entry.getSymbol()+"', '"+getDate(entry.getDate())+"', '"+getTime(entry.getDate())+"', '"+entry.getPrice()+"', '"+entry.getOrderBook()+"')";
 		
 		try {
 			con = DriverManager.getConnection(url + userpass);
@@ -153,8 +144,8 @@ public class DatabaseHandler {
 	 */
 	public static boolean addDailyData(DailyData data){
 
-		String queryValues = "INSERT INTO Stock (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
-		String queryKeys = "INSERT INTO Stock (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getMarketCap()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
+		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
+		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getMarketCap()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
 
 		
 		try {
@@ -199,7 +190,7 @@ public class DatabaseHandler {
 	 */
 	public static boolean addQuarterlyData(QuarterlyData data){
 
-		String query = "INSERT INTO Stock (stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDateCollected())+"', '"+data.getYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
+		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDateCollected())+"', '"+data.getYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
 		
 		try {
 			con = DriverManager.getConnection(url + userpass);
@@ -287,6 +278,7 @@ public class DatabaseHandler {
 		String query = "INSERT INTO Time (time) VALUES("+getTime(date)+")";
 		
 		try {
+			
 			con = DriverManager.getConnection(url + userpass);
 		     st = con.createStatement();
 	         st.executeUpdate(query);
@@ -329,11 +321,11 @@ public class DatabaseHandler {
 	private static String getDate(Calendar date){
 		
 		int year,month,day ;
-		year = date.get(YEAR);
-		month = date.get(MONTH);
-		day = date.get(DATE);
+		year = date.get(Calendar.YEAR);
+		month = date.get(Calendar.MONTH) +1;
+		day = date.get(Calendar.DATE);
 		
-		return"'DATE: Manual Date', '"+year+"-"+month+"-"+day+"'";
+		return" '"+year+"-"+month+"-"+day+"'";
 	}
 	
 	/**
@@ -348,11 +340,28 @@ public class DatabaseHandler {
 	private static String getTime(Calendar date){
 		
 		int hour, minit;
-		hour = date.get(HOUR_OF_DAY);
-		minit = date.get(MINUTE);
+		hour = date.get(Calendar.HOUR_OF_DAY);
+		minit = date.get(Calendar.MINUTE);
 		
-		return"'TIME: Manual Time', '"+hour+":"+minit+":00'";
+		return"'"+hour+":"+minit+":00'";
 	}
+	
+
+	/*
+	* // Setup the connection with the DB
+      connect = DriverManager
+          .getConnection("jdbc:mysql://localhost/feedback?"
+              + "user=sqluser&password=sqluserpw");
+
+      // Statements allow to issue SQL queries to the database
+      statement = connect.createStatement();
+      // Result set get the result of the SQL query
+      resultSet = statement
+          .executeQuery("select * from FEEDBACK.COMMENTS");
+      writeResultSet(resultSet);
+
+	*
+	**/
 	
 	
 }
