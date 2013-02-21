@@ -102,12 +102,11 @@ public class Controller {
 	 */
 	public void collectDailyData() {
 		this.controllerProgress.update(0, "Starting to collect daily data");
-		DatabaseHandler dbh = DatabaseHandler.getInstance();
 		int size = this.settings.getSymbols().size();
 		int i = 0;
 		for(String symbol : this.settings.getSymbols()) {
 			DailyData data = YahooInterface.getDailyData(symbol);
-			dbh.addDailyData(data);
+			DatabaseHandler.addDailyData(data);
 			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
 		}
 		this.controllerProgress.update(100, "Finished. All daily data collected");
@@ -118,12 +117,11 @@ public class Controller {
 	 */
 	public void collectQuarterlyData() {
 		this.controllerProgress.update(0, "Starting to collect quarterly data");
-		DatabaseHandler dbh = DatabaseHandler.getInstance();
 		int size = this.settings.getSymbols().size();
 		int i = 0;
 		for(String symbol : this.settings.getSymbols()) {
 			QuarterlyData data = YahooInterface.getQuarterlyData(symbol);
-			dbh.addQuarterlyData(data);
+			DatabaseHandler.addQuarterlyData(data);
 			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
 		}
 		this.controllerProgress.update(100, "Finished. All quarterly data collected");
@@ -134,12 +132,11 @@ public class Controller {
 	 */
 	public void collectRealTimeData() {
 		this.controllerProgress.update(0, "Starting to collect real time data");
-		DatabaseHandler dbh = DatabaseHandler.getInstance();
 		int size = this.settings.getSymbols().size();
 		int i = 0;
 		for(String symbol : this.settings.getSymbols()) {
 			RTData data = YahooInterface.getRTData(symbol);
-			dbh.addRTEntry(data);
+			DatabaseHandler.addRTEntry(data);
 			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
 		}
 		this.controllerProgress.update(100, "Finished. All real time data collected");

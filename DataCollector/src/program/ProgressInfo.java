@@ -22,13 +22,13 @@ public class ProgressInfo {
 	private boolean valueUpdated,messageUpdated;
 	
 	public ProgressInfo() {
-		this.setMessage(new String(""));
-		this.setValue(0);
 		lock = new ReentrantLock();
 		valueUpdated = true;
 		messageUpdated = true;
 		valueChange = lock.newCondition();
 		messageChange = lock.newCondition();
+		this.setMessage(new String(""));
+		this.setValue(0);
 	}
 
 	/**
