@@ -1,6 +1,7 @@
 package program;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 
 import collector.DatabaseHandler;
 import collector.YahooInterface;
@@ -20,13 +21,13 @@ public class Controller {
 	private static Controller instance;
 	private final RealTimeThread realTimeThread;
 	private final ProgressInfo controllerProgress;
-	
+
 	private Controller() {
 		this.settings = Settings.getSettings();
 		this.realTimeThread = new RealTimeThread();
 		this.controllerProgress = new ProgressInfo();
 	}
-	
+
 	/**
 	 * 
 	 * @return the only instance of the controller, if no controller exist create a new one.
@@ -37,7 +38,7 @@ public class Controller {
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * 
 	 * @return the progress info object representing the progress of the methods in this class
@@ -45,7 +46,7 @@ public class Controller {
 	public ProgressInfo getControllerProgress() {
 		return this.controllerProgress;
 	}
-	
+
 	/**
 	 * 
 	 * @return the progress info object representing the progress of the real time collector
@@ -53,7 +54,7 @@ public class Controller {
 	public ProgressInfo getRealTimeProgress() {
 		return this.realTimeThread.getProgress();
 	}
-	
+
 	/**
 	 * Adds a stock that the program should start collecting data from. This wil add it both to the database and to the settings file.
 	 * @param symbol the key value of the stock
@@ -69,7 +70,7 @@ public class Controller {
 		}
 		return settings.addSymbol(stock.getSymbol());
 	}
-	
+
 	/**
 	 * Removes the given symbol from the settings file. This will mean that the stock represented by the 
 	 * symbol will no longer be collected data from. However, no previous data collected from the stock will 
@@ -80,7 +81,19 @@ public class Controller {
 	public boolean removeSymbol(String symbol) {
 		return settings.removeSymbol(symbol);
 	}
-	
+
+	/**
+	 * 
+	 * @return a copy of the symbol list from the settings. 
+	 */
+	public LinkedList<String> getSymbols() {
+		LinkedList<String> symbols = new LinkedList<String>();
+		for(String s:this.settings.getSymbols()) {
+			symbols.add(s);
+		}
+		return symbols;
+	}
+
 	/**
 	 * Saves all settings to the file system
 	 * @return true if successful
@@ -88,7 +101,7 @@ public class Controller {
 	public boolean saveSettings() {
 		return settings.save();
 	}
-	
+
 	/**
 	 * Changed the wait time between real time collects.
 	 * @param waitTime the new wait time
@@ -96,7 +109,32 @@ public class Controller {
 	public void changeWaitTime(long waitTime) {
 		settings.changeWaitTime(waitTime);
 	}
+
+	/**
+	 * 
+	 * @return the current wait time for real time collector.
+	 */
+	public long getCurrentWaitTime() {
+		return settings.getWaitTime();
+	}
+
+	/**
+	 * Returns what time the daily data will be collected.
+	 * @return a calendar object with 0 as value for year, month, day and seconds and a given time for the hour and minutes.
+	 */
+	public Calendar getDailyUpdateTime() {
+		return this.settings.getDailyUpdateTime();
+	}
 	
+	/**
+	 * Sets wich time each day the database will be updated with new dail data. If day, month or year
+	 * is set this method will ignore these fields.
+	 * @param time the new time when the database will be updated.
+	 */
+	public void setDailyUpdateTime(Calendar time) {
+		this.settings.setDailyUpdateTime(time);
+	}
+
 	/**
 	 * Collects all daily data from all symbols in the settings file then adds the data to the database.
 	 */
@@ -111,7 +149,7 @@ public class Controller {
 		}
 		this.controllerProgress.update(100, "Finished. All daily data collected");
 	}
-	
+
 	/**
 	 * Collects all quarterly data from all symbols in the settings file then adds the data to the database.
 	 */
@@ -126,7 +164,7 @@ public class Controller {
 		}
 		this.controllerProgress.update(100, "Finished. All quarterly data collected");
 	}
-	
+
 	/**
 	 * Collects all real time data from all symbols in the settings file then adds the data to the database.
 	 */
@@ -141,35 +179,35 @@ public class Controller {
 		}
 		this.controllerProgress.update(100, "Finished. All real time data collected");
 	}
-	
+
 	/**
 	 * Starts the real time thread to collect data.
 	 */
 	public void startRealTimeCollecting() {
 		this.realTimeThread.start();
 	}
-	
+
 	/**
 	 * Stops the real time thread.
 	 */
 	public void stopRealTimeCollecting() {
 		this.realTimeThread.stopRT();
 	}
-	
+
 	private class RealTimeThread extends Thread{
 		private final ProgressInfo progress;
 		private boolean running;
-		
+
 		public RealTimeThread() {
 			super();
 			this.progress = new ProgressInfo();
 		}
-		
+
 		public void stopRT() {
 			this.running = false;
 			this.progress.update(-1, "Stopped");
 		}
-		
+
 		@Override
 		public void run() {
 			long startTime, endTime,timeDiff;
@@ -177,11 +215,11 @@ public class Controller {
 			while(this.running) {
 				this.progress.update(0, "Updating realtime stock info");
 				startTime = System.currentTimeMillis();
-				
+
 				collectRealTimeData();
 				this.progress.update(100, "All stocks updated for time: "+
-												Calendar.getInstance().get(Calendar.HOUR)+":"+
-												Calendar.getInstance().get(Calendar.MINUTE));
+						Calendar.getInstance().get(Calendar.HOUR)+":"+
+						Calendar.getInstance().get(Calendar.MINUTE));
 				endTime = System.currentTimeMillis();
 				timeDiff = endTime-startTime;
 				if(timeDiff<settings.getWaitTime()) {
@@ -191,7 +229,7 @@ public class Controller {
 						e.printStackTrace();
 					}
 				}
-				
+
 			}
 		}
 
