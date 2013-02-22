@@ -91,11 +91,7 @@ public class YahooParser {
 
 					String line = inputLine;
 					
-					int index = line.indexOf(key);
-					
 					String[] temp = line.split(key);
-					
-					System.out.println(temp[1]);
 					
 					String[] temp2 = temp[1].split("yfnc_tabledata1\">");
 					
@@ -103,7 +99,9 @@ public class YahooParser {
 					
 					String nonparsedValue = temp3[0];
 					
-					System.out.println(nonparsedValue);
+					Double parsedValue = trimmer(nonparsedValue);
+					
+					value = parsedValue;
 				}
 			}
 			in.close();
@@ -117,5 +115,52 @@ public class YahooParser {
 			return Double.NEGATIVE_INFINITY;
 		}
 		return value;
+	}
+	
+	public static Double trimmer(String s){
+		
+		double returnValue;
+		
+		if(s.contains("N/A")){
+			return Double.NEGATIVE_INFINITY;
+		}
+		if(s.contains(",")){
+			String temp = s.replace(",", "");
+			returnValue = Double.parseDouble(temp);
+			return returnValue;
+		}
+		if(s.contains("%")){
+			
+			String[] temp;
+			temp = s.split("%");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue/100;
+			return returnValue;
+		}
+		if(s.contains("T")){
+
+			String[] temp;
+			temp = s.split("T");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000;
+			return returnValue;
+		}
+		if(s.contains("M")){
+			String[] temp;
+			temp = s.split("M");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000000;
+			return returnValue;
+		}
+		if(s.contains("B")){
+			String[] temp;
+			temp = s.split("B");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000000000;
+			return returnValue;
+		}
+			returnValue = Double.parseDouble(s);
+			return returnValue;
+		
 	}
 }
