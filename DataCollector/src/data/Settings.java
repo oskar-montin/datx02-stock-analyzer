@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -32,7 +31,7 @@ public class Settings implements Serializable {
 	private static Settings instance;
 	private LinkedList<String> symbols = new LinkedList<String>();
 	private long waitTime;
-	private Date dailyUpdateTime;
+	private Calendar dailyUpdateTime;
 	
 	private Settings() {
 		try {
@@ -44,7 +43,7 @@ public class Settings implements Serializable {
 		} catch(Exception e) {
 			Calendar date = Calendar.getInstance();
 			date.set(0,0,0,12,0);
-			this.dailyUpdateTime = date.getTime();
+			this.dailyUpdateTime = date;
 			this.waitTime = 60*15*1000;
 		}
 	}
@@ -153,11 +152,11 @@ public class Settings implements Serializable {
 		return waitTime;
 	}
 
-	public Date getDailyUpdateTime() {
+	public Calendar getDailyUpdateTime() {
 		return dailyUpdateTime;
 	}
 
-	public void setDailyUpdateTime(Date dailyUpdateTime) {
+	public void setDailyUpdateTime(Calendar dailyUpdateTime) {
 		this.dailyUpdateTime = dailyUpdateTime;
 	}
 	
