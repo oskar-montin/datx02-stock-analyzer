@@ -39,7 +39,7 @@ public class Stock implements MarketItem {
 	@Override
 	public String getSymbol() {
 		// TODO Auto-generated method stub
-		return null;
+		return symbol;
 	}
 	
 	public String getName() {

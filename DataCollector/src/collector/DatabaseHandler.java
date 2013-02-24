@@ -1,11 +1,13 @@
 package collector;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import data.DailyData;
@@ -27,13 +29,16 @@ public class DatabaseHandler {
 
 	
 	public static void main(String[] args){
-		try {
+		//try {
 			// The newInstance() call is a work around for some
 			// broken Java implementations
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			} catch (Exception ex) {
+			//Class.forName("com.mysql.jdbc.Driver").newInstance();
+			//} catch (Exception ex) {
 			// handle the error
-			}
+			//}
+		getStock("symm");
+		
+		
 	}
 	
 	
@@ -343,6 +348,16 @@ public class DatabaseHandler {
 		return"'"+hour+":"+minit+":00'";
 	}
 	
+	
+	/**
+	 * Method collects all attributes connected with a stock from the database.
+	 * Returns an instance of stock with the collected data.
+	 * 
+	 * @param String - symbol for a stock
+	 * @return A Stock connected to the symbol
+	 * 
+	 * @author Runa Gulliksson
+	 */
 	public static Stock getStock(String symbol){
 		
 		Connection con = null;
@@ -354,12 +369,70 @@ public class DatabaseHandler {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT * FROM Stock WHERE symbol='"+symbol+"'");
+			rs = st.executeQuery("SELECT name, stockExchange, business FROM Stock WHERE symbol='"+symbol+"';");
 			
-			name=rs.getString(2);
-			stockExchange =rs.getString(3);
-			business=rs.getString(4);
-			System.out.println( );
+			if(rs.next()){
+				name=rs.getString("name");
+				stockExchange =rs.getString("stockExchange");
+				business=rs.getString("business");
+				System.out.println( );
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (con != null) {
+                    con.close();
+                }} catch (SQLException ex) {
+                    System.out.println("error- while closing connection");
+                }
+            }
+		System.out.println(symbol);
+		System.out.println(name);
+		System.out.println(stockExchange);
+		System.out.println(business);
+		return new Stock(symbol, name, stockExchange, business);
+		
+	}
+	
+	/**
+	 * Method collects all quarterlyData connected with a stock from the database.
+	 * Returns an instance of QuaterlyData with the collected data.
+	 * 
+	 * @param Stock 
+	 * @return QuaterlyData connected with the given Stock
+	 * 
+	 * @author Runa Gulliksson
+	 */
+	public static QuarterlyData getQuaterlyData(Stock stock){
+		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		Calendar releaseDate = null;
+		Double yield = null, solidity = null, NAV=null, dividentPerShare=null;
+		try {
+
+			con = DriverManager.getConnection(url + userpass);
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT * FROM QuaterlyData WHERE symbol='"+stock.getSymbol()+"'");
+			
+
+			if(rs.next()){
+				releaseDate.setTime(rs.getDate("date"));
+				yield=rs.getDouble("yield");
+				solidity =rs.getDouble("solidity");
+				NAV=rs.getDouble("NAV");
+				dividentPerShare=rs.getDouble("dividentPerShare");
+			}
 			
 			
 		} catch (SQLException e) {
@@ -379,11 +452,20 @@ public class DatabaseHandler {
                     System.out.println("error- while closing connection");
                 }
             }
-		return new Stock(symbol, name, stockExchange, business);
+		return new QuarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare);
 		
 	}
 	
-	public static LinkedList<DailyData> getDailyData(Stock stock){
+	/**
+	 * Method collects all DalyData connected with a stock from the database.
+	 * 
+	 * @param Stock 
+	 * @return All DailyData, connected with the given Stock, stored in a hashmap wih Calendar as key.
+	 * 						
+	 * 
+	 * @author Runa Gulliksson
+	 */
+	public static HashMap<Calendar,DailyData> getDailyData(Stock stock){
 
 		Calendar date = null;
 		double marketCap = 0;
@@ -396,7 +478,7 @@ public class DatabaseHandler {
 		double high=0;
 		double low=0;
 		long volume=0;
-		LinkedList<DailyData> dataList = new LinkedList<DailyData>();
+		HashMap<Calendar, DailyData> dataList = new HashMap<Calendar, DailyData>();
 		
 		Connection con = null;
 		Statement st = null;
@@ -410,11 +492,11 @@ public class DatabaseHandler {
 			
 			while (rs.next()) {
 				marketCap=rs.getDouble("marketCap");
-				 dividentYield=rs.getDouble("dividentYield");
+				dividentYield=rs.getDouble("dividentYield");
 				PE=rs.getDouble("PE");
 				PE=rs.getDouble("PEG");
 				System.out.println( );
-				dataList.add(new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
+				dataList.put(date, new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			}
 			
 			
@@ -438,19 +520,63 @@ public class DatabaseHandler {
 		return dataList;
 		
 	}
-	/*
-	* // Setup the connection with the DB
-      connect = DriverManager
-          .getConnection("jdbc:mysql://localhost/feedback?"
-              + "user=sqluser&password=sqluserpw");
-	*
-	*(Stock stock, Calendar date, double marketCap,
-			double dividentYield, double PE, 
-			double PS, double PEG, double openPrice,
-			double closePrice, double high,
-			double low, long volume)
-	*
-	**/
+	
+	/**
+	 * Method collects all realtimeData connected with a stock from the database.
+	 * 
+	 * @param Stock 
+	 * @return All RTData, connected with the given Stock, stored in a hashmap with Calendar as key.					
+	 * 
+	 * @author Runa Gulliksson
+	 */
+	public static HashMap<Calendar,RTData> getRTData(Stock stock){
+
+		Calendar date = Calendar.getInstance();
+		double price = 0;
+		double orderBook=0;
+		HashMap<Calendar,RTData> dataList = new HashMap<Calendar,RTData>();
+		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		try {
+
+			con = DriverManager.getConnection(url + userpass);
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT date, time, price, orderBook FROM realtimedata  WHERE symbol='"+stock.getSymbol()+"'");
+			
+			while (rs.next()) {
+				date.setTime(rs.getDate("marketCap"));
+				//get time and insert into date
+				price=rs.getDouble("PE");
+				orderBook=rs.getDouble("PEG");
+				System.out.println( );
+				dataList.put(date, new RTData(stock, date, price, orderBook));
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (con != null) {
+                    con.close();
+                }} catch (SQLException ex) {
+                    System.out.println("error- while closing connection");
+                }
+            }
+		return dataList;
+		
+	}
+
 	
 	
 }
