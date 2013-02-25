@@ -56,7 +56,6 @@ public class GUI extends JFrame implements ActionListener {
 			else {
 				editStocksFrame.setVisible(true);
 			}
-			convertList(controller.getSymbols());
 		}
 		else if(e.getSource() == setWaitTimeItem) {
 			// Set Frequency
@@ -101,8 +100,8 @@ public class GUI extends JFrame implements ActionListener {
 			for(ArrayList<String> s: itemsToBeAdded){
 				controller.addStock(s.get(0), s.get(1), s.get(2), s.get(3));
 			}
-			for(int i = 0; i<addListModel.getSize(); i++){
-				controller.removeSymbol(addListModel.get(i));
+			for(int i = 0; i<removeListModel.getSize(); i++){
+				controller.removeSymbol(removeListModel.get(i));
 			}
 			clearListModels();
 			controller.saveSettings();
@@ -136,10 +135,8 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 		else if(e.getSource() == doneButton) {
-			{
-				itemsToBeAdded.add(stockDetails());
-				addListModel.add(0,symbolField.getText());	
-			}
+			itemsToBeAdded.add(stockDetails());
+			addListModel.add(0,symbolField.getText());	
 			clearTextFields();
 			addStockFrame.setVisible(false);
 		}
@@ -178,7 +175,6 @@ public class GUI extends JFrame implements ActionListener {
 		collectRealTimeDataButton.addActionListener(this);
 		collectQuarterlyDataButton.addActionListener(this);
 		
-		
 		file.setMnemonic('F');
 		settings.setMnemonic('S');
 		help.setMnemonic('H');
@@ -210,6 +206,7 @@ public class GUI extends JFrame implements ActionListener {
 	public void setupStocksFrame() {
 		
 		symbolListModel = new DefaultListModel<String>();
+		convertList(controller.getSymbols());
 		symbolList = new JList<String>(symbolListModel);
 		addListModel = new DefaultListModel<String>();
 		addList = new JList<String>(addListModel);
@@ -300,7 +297,6 @@ public class GUI extends JFrame implements ActionListener {
 		addStockPanel.add(doneButton);
 		addStockPanel.add(addAnotherButton);
 		
-		
 		nameLabel.setBounds(10,20,110,20);
 		symbolLabel.setBounds(10,60,110,20);
 		businessLabel.setBounds(10,100,110,20);
@@ -326,6 +322,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	private void convertList (LinkedList<String> list){
+		symbolListModel.clear();
 		for(String s : list){
 			symbolListModel.add(0,s);
 		}
