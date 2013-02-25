@@ -54,22 +54,6 @@ public class GUI extends JFrame implements ActionListener {
 		if(e.getSource() == editStocksItem) {
 			if(editStocksFrame == null) {
 				setupStocksFrame();
-				addListModel.add(0,"hej");
-				addListModel.add(0,"bye");
-				symbolListModel.add(0,"aaa");
-				symbolListModel.add(0,"yaa");
-				symbolListModel.add(0,"aha");
-				symbolListModel.add(0,"aka");
-				symbolListModel.add(0,"ass");
-				symbolListModel.add(0,"ooa");
-				symbolListModel.add(0,"apo");
-				symbolListModel.add(0,"eaa");
-				symbolListModel.add(0,"aua");
-				symbolListModel.add(0,"aua");
-				symbolListModel.add(0,"auu");
-				symbolListModel.add(0,"aii");
-				symbolListModel.add(0,"aul");
-				
 			}
 			else {
 				editStocksFrame.setVisible(true);
