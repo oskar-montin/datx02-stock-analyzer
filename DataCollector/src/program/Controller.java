@@ -65,9 +65,9 @@ public class Controller {
 	 */
 	public boolean addStock(String symbol, String name, String business, String stockExchange) {
 		Stock stock = new Stock(name, symbol, business, stockExchange);
-		if(!DatabaseHandler.addStock(stock)){
+	/*	if(!DatabaseHandler.addStock(stock)){
 			return false;
-		}
+		}*/
 		return settings.addSymbol(stock.getSymbol());
 	}
 
