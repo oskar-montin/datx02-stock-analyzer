@@ -6,8 +6,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import data.DailyData;
@@ -26,7 +28,6 @@ public class DatabaseHandler {
 	private static String user="runa", password="123456",  url="jdbc:mysql://localhost:3306/test?";
 	private static String  userpass="user=root&password=123456";
 	private static DatabaseHandler dataBase;
-
 	
 	public static void main(String[] args){
 		//try {
@@ -36,9 +37,26 @@ public class DatabaseHandler {
 			//} catch (Exception ex) {
 			// handle the error
 			//}
-		getStock("symm");
 		
-		
+	//	---- FOR TESTING ----
+//		Calendar cal =Calendar.getInstance();
+//		cal.set(Calendar.MONTH, 10);
+//		addDate(cal);
+//		addQuarterlyData(new QuarterlyData(getStock("symm"), cal, 12, 13, 14, 15 ));
+//
+//
+//		QuarterlyData i = getQuarterlyData(getStock("symm"));
+//	
+//	
+//
+//			
+//			System.out.println(i.getDividentPerShare());
+//			System.out.println(i.getYield());
+//			System.out.println(i.getStock().getSymbol());
+//			
+//			System.out.println(i.getDateCollected().get(Calendar.MONTH) +" minit:  " + i.getDateCollected().get(Calendar.DAY_OF_MONTH));
+//		
+//		
 	}
 	
 	
@@ -109,13 +127,13 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		String queryData = "INSERT INTO realTimeData (stock, date, time, price, orderBook) VALUES('"+entry.getSymbol()+"', '"+getDate(entry.getDate())+"', '"+getTime(entry.getDate())+"', '"+entry.getPrice()+"', '"+entry.getOrderBook()+"')";
-		
+		String queryData = "INSERT INTO realTimeData (stock, date, time, price, orderBook) VALUES('"+entry.getStock().getSymbol()+"', "+getDate(entry.getDate())+", "+getTime(entry.getDate())+", '"+entry.getPrice()+"', '"+entry.getOrderBook()+"')";
+
 		try {
 			con = DriverManager.getConnection(url + userpass);
 		     st = con.createStatement();
 	         st.executeUpdate(queryData);
-			
+	         
 			} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
@@ -152,8 +170,8 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
-		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDate())+"', '"+data.getMarketCap()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
+		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
+		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getMarketCap()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
 
 		
 		try {
@@ -197,7 +215,7 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getSymbol()+"', '"+ getDate(data.getDateCollected())+"', '"+data.getYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
+		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
 		
 		try {
 			con = DriverManager.getConnection(url + userpass);
@@ -324,7 +342,7 @@ public class DatabaseHandler {
 		
 		int year,month,day ;
 		year = date.get(Calendar.YEAR);
-		month = date.get(Calendar.MONTH) +1;
+		month = date.get(Calendar.MONTH);
 		day = date.get(Calendar.DATE);
 		
 		return" '"+year+"-"+month+"-"+day+"'";
@@ -369,13 +387,12 @@ public class DatabaseHandler {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT name, stockExchange, business FROM Stock WHERE symbol='"+symbol+"';");
-			
+			rs = st.executeQuery("SELECT name, stockExchange, business FROM Stock WHERE symbol='"+symbol+"'");
+
 			if(rs.next()){
 				name=rs.getString("name");
 				stockExchange =rs.getString("stockExchange");
 				business=rs.getString("business");
-				System.out.println( );
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -394,11 +411,7 @@ public class DatabaseHandler {
                     System.out.println("error- while closing connection");
                 }
             }
-		System.out.println(symbol);
-		System.out.println(name);
-		System.out.println(stockExchange);
-		System.out.println(business);
-		return new Stock(symbol, name, stockExchange, business);
+		return new Stock( name, symbol, stockExchange, business);
 		
 	}
 	
@@ -411,23 +424,24 @@ public class DatabaseHandler {
 	 * 
 	 * @author Runa Gulliksson
 	 */
-	public static QuarterlyData getQuaterlyData(Stock stock){
+	public static QuarterlyData getQuarterlyData(Stock stock){
 		
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
 		
-		Calendar releaseDate = null;
+		Calendar releaseDate = Calendar.getInstance();
 		Double yield = null, solidity = null, NAV=null, dividentPerShare=null;
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT * FROM QuaterlyData WHERE symbol='"+stock.getSymbol()+"'");
+			rs = st.executeQuery("SELECT * FROM QuarterlyData WHERE stock='"+stock.getSymbol()+"'");
 			
 
 			if(rs.next()){
-				releaseDate.setTime(rs.getDate("date"));
+				releaseDate.setTime(rs.getDate("releasedate"));
+				releaseDate.set(Calendar.MONTH, (releaseDate.get(Calendar.MONTH)+1));
 				yield=rs.getDouble("yield");
 				solidity =rs.getDouble("solidity");
 				NAV=rs.getDouble("NAV");
@@ -467,7 +481,7 @@ public class DatabaseHandler {
 	 */
 	public static HashMap<Calendar,DailyData> getDailyData(Stock stock){
 
-		Calendar date = null;
+		Calendar date = Calendar.getInstance();
 		double marketCap = 0;
 		double dividentYield=0;
 		double PE=0;
@@ -488,17 +502,25 @@ public class DatabaseHandler {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT marketcap, dividentYield, PE, PEG FROM Daily_data  WHERE symbol='"+stock.getSymbol()+"'");
+			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+stock.getSymbol()+"'");
 			
 			while (rs.next()) {
 				marketCap=rs.getDouble("marketCap");
 				dividentYield=rs.getDouble("dividentYield");
 				PE=rs.getDouble("PE");
-				PE=rs.getDouble("PEG");
-				System.out.println( );
+				PS=rs.getDouble("PS");
+				PEG=rs.getDouble("PEG");
+				openPrice=rs.getDouble("openPrice");
+				closePrice=rs.getDouble("closePrice");
+				high=rs.getDouble("high");
+				low=rs.getDouble("low");
+				volume=rs.getLong("volume");
+				date.setTime(rs.getDate("date"));
+				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
+				
 				dataList.put(date, new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			}
-			
+	
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -531,7 +553,8 @@ public class DatabaseHandler {
 	 */
 	public static HashMap<Calendar,RTData> getRTData(Stock stock){
 
-		Calendar date = Calendar.getInstance();
+		Calendar date = Calendar.getInstance() ;
+		Calendar time = Calendar.getInstance() ;
 		double price = 0;
 		double orderBook=0;
 		HashMap<Calendar,RTData> dataList = new HashMap<Calendar,RTData>();
@@ -544,14 +567,17 @@ public class DatabaseHandler {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT date, time, price, orderBook FROM realtimedata  WHERE symbol='"+stock.getSymbol()+"'");
-			
+			rs = st.executeQuery("SELECT date, time, price, orderBook FROM realtimedata  WHERE stock='"+stock.getSymbol()+"'");
+	
 			while (rs.next()) {
-				date.setTime(rs.getDate("marketCap"));
-				//get time and insert into date
-				price=rs.getDouble("PE");
-				orderBook=rs.getDouble("PEG");
-				System.out.println( );
+				date.setTime(rs.getDate("date"));
+				time.setTime(rs.getTime("time"));
+				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
+				date.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY));
+				date.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
+				price=rs.getDouble("price");
+				orderBook=rs.getDouble("orderBook");
+				
 				dataList.put(date, new RTData(stock, date, price, orderBook));
 			}
 			
