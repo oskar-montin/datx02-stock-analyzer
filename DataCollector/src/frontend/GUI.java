@@ -1,7 +1,6 @@
 package frontend;
 
 import java.awt.event.ActionEvent;
-
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,8 +9,7 @@ import javax.swing.*;
 
 import program.Controller;
 
-/**A simple, not so functional(yet) GUI. A lot of dead functions
- * that requires implementation. 
+/**A simple GUI. 
  * 
  * May break this up into more classes as required, this is
  * to be decided.
@@ -34,7 +32,7 @@ public class GUI extends JFrame implements ActionListener {
 	private JScrollPane symbolScrollPane, addScrollPane, removeScrollPane;
 	private JMenuBar menuBar;
 	private JMenu file, settings, help, about;
-	private JMenuItem editStocksItem, setFrequencyItem,
+	private JMenuItem editStocksItem, setWaitTimeItem,
 						exitItem, helpItem, aboutItem;
 	private JButton collectRealTimeDataButton, collectDailyDataButton,
 						collectQuarterlyDataButton, addStockButton,
@@ -60,7 +58,7 @@ public class GUI extends JFrame implements ActionListener {
 			}
 			convertList(controller.getSymbols());
 		}
-		else if(e.getSource() == setFrequencyItem) {
+		else if(e.getSource() == setWaitTimeItem) {
 			// Set Frequency
 		}
 		else if(e.getSource() == exitItem) {
@@ -108,6 +106,8 @@ public class GUI extends JFrame implements ActionListener {
 			}
 			clearListModels();
 			controller.saveSettings();
+			convertList(controller.getSymbols());
+			editStocksFrame.setVisible(false);
 		}
 		else if(e.getSource() == cancelButton) {
 			clearListModels();
@@ -164,13 +164,13 @@ public class GUI extends JFrame implements ActionListener {
 		about = new JMenu("About");
 		
 		editStocksItem = new JMenuItem("Edit stocks in database");
-		setFrequencyItem = new JMenuItem("Set RT frequency");
+		setWaitTimeItem = new JMenuItem("Set RT wait-time");
 		exitItem = new JMenuItem("Exit");
 		helpItem = new JMenuItem("FAQ");
 		aboutItem = new JMenuItem("Version");
 		
 		editStocksItem.addActionListener(this);
-		setFrequencyItem.addActionListener(this);
+		setWaitTimeItem.addActionListener(this);
 		exitItem.addActionListener(this);
 		helpItem.addActionListener(this);
 		aboutItem.addActionListener(this);
@@ -184,7 +184,7 @@ public class GUI extends JFrame implements ActionListener {
 		help.setMnemonic('H');
 		about.setMnemonic('A');
 		editStocksItem.setMnemonic('N');
-		setFrequencyItem.setMnemonic('R');
+		setWaitTimeItem.setMnemonic('R');
 		exitItem.setMnemonic('X');
 		
 		this.add(mainPanel);
@@ -192,7 +192,7 @@ public class GUI extends JFrame implements ActionListener {
 		mainPanel.add(collectDailyDataButton);
 		mainPanel.add(collectQuarterlyDataButton);
 		file.add(editStocksItem);
-		settings.add(setFrequencyItem);	
+		settings.add(setWaitTimeItem);	
 		file.add(exitItem);
 		help.add(helpItem);
 		about.add(aboutItem);
@@ -208,7 +208,6 @@ public class GUI extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 	public void setupStocksFrame() {
-		
 		
 		symbolListModel = new DefaultListModel<String>();
 		symbolList = new JList<String>(symbolListModel);
