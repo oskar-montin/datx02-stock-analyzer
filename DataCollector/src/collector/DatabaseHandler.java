@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import data.DailyData;
 import data.QuarterlyData;
@@ -30,6 +31,7 @@ public class DatabaseHandler {
 	private static DatabaseHandler dataBase;
 	
 	public static void main(String[] args){
+		// --- connecting to driver probably needed when not importing jarfile ---
 		//try {
 			// The newInstance() call is a work around for some
 			// broken Java implementations
@@ -39,24 +41,24 @@ public class DatabaseHandler {
 			//}
 		
 	//	---- FOR TESTING ----
-//		Calendar cal =Calendar.getInstance();
-//		cal.set(Calendar.MONTH, 10);
-//		addDate(cal);
-//		addQuarterlyData(new QuarterlyData(getStock("symm"), cal, 12, 13, 14, 15 ));
-//
-//
-//		QuarterlyData i = getQuarterlyData(getStock("symm"));
-//	
-//	
-//
-//			
-//			System.out.println(i.getDividentPerShare());
-//			System.out.println(i.getYield());
-//			System.out.println(i.getStock().getSymbol());
-//			
-//			System.out.println(i.getDateCollected().get(Calendar.MONTH) +" minit:  " + i.getDateCollected().get(Calendar.DAY_OF_MONTH));
-//		
-//		
+		Calendar cal =Calendar.getInstance();
+		cal.set(Calendar.MONTH, 11);
+		//addDate(cal);
+		//addDailyData(new DailyData(getStock("symm"), cal, 212, 213, 214, 215, 216 ));
+
+
+		PriorityQueue<DailyData> data = getDailyData(getStock("symm"));
+	
+	
+		while(!data.isEmpty()){
+			System.out.println(data.size());
+			DailyData i = data.poll();
+			System.out.println(i.getStock().getSymbol());
+
+			System.out.println(i.getDate().get(Calendar.MONTH)  );
+			
+		}	
+		
 	}
 	
 	
@@ -479,7 +481,7 @@ public class DatabaseHandler {
 	 * 
 	 * @author Runa Gulliksson
 	 */
-	public static HashMap<Calendar,DailyData> getDailyData(Stock stock){
+	public static PriorityQueue<DailyData> getDailyData(Stock stock){
 
 		Calendar date = Calendar.getInstance();
 		double marketCap = 0;
@@ -492,7 +494,7 @@ public class DatabaseHandler {
 		double high=0;
 		double low=0;
 		long volume=0;
-		HashMap<Calendar, DailyData> dataList = new HashMap<Calendar, DailyData>();
+		PriorityQueue<DailyData> dataList = new PriorityQueue<DailyData>();
 		
 		Connection con = null;
 		Statement st = null;
@@ -517,8 +519,9 @@ public class DatabaseHandler {
 				volume=rs.getLong("volume");
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
+				System.out.println(date.get(Calendar.MONTH));
 				
-				dataList.put(date, new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
+				dataList.add(new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			}
 	
 			
@@ -551,13 +554,13 @@ public class DatabaseHandler {
 	 * 
 	 * @author Runa Gulliksson
 	 */
-	public static HashMap<Calendar,RTData> getRTData(Stock stock){
+	public static PriorityQueue<RTData> getRTData(Stock stock){
 
 		Calendar date = Calendar.getInstance() ;
 		Calendar time = Calendar.getInstance() ;
 		double price = 0;
 		double orderBook=0;
-		HashMap<Calendar,RTData> dataList = new HashMap<Calendar,RTData>();
+		PriorityQueue<RTData> dataList = new PriorityQueue<RTData>();
 		
 		Connection con = null;
 		Statement st = null;
@@ -578,7 +581,7 @@ public class DatabaseHandler {
 				price=rs.getDouble("price");
 				orderBook=rs.getDouble("orderBook");
 				
-				dataList.put(date, new RTData(stock, date, price, orderBook));
+				dataList.add( new RTData(stock, date, price, orderBook));
 			}
 			
 			

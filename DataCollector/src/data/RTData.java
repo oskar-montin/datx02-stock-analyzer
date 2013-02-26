@@ -8,7 +8,7 @@ import java.util.Calendar;
  * @author oskarnylen
  */
 
-public class RTData implements MarketItem {
+public class RTData implements MarketItem, Comparable<RTData> {
 
 
 	private Stock stock;
@@ -63,6 +63,11 @@ public class RTData implements MarketItem {
 
 	public double getOrderBook() {
 		return orderBook;
+	}
+
+	@Override
+	public int compareTo(RTData arg0) {
+		return this.getDate().compareTo(arg0.getDate());
 	}
 
 }
