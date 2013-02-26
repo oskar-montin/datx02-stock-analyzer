@@ -1,99 +1,40 @@
 package data;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 
 /**
  * Class that handles big numbers. The number is divided into one value part, and one suffix part. The suffixes are K (thousands)
  * M (million) and B (billion).
  * 
- * @author oskarnylen
+ * @author oskar-montin, oskarnylen
  */
-public class LargeDouble implements Comparable<LargeDouble> {
+public class LargeDouble implements Comparable<LargeDouble>{
+	private BigDecimal value;
+	private String fullString;
 	
-	private Double value;
-	private String suffix = "";
-	private long suffixLong;
-
-	private String fullValue;
-
-	/**
-	 * Constructor with a string as a parameter. Divides the value and the suffix into variables.
-	 * 
-	 * @param s - a LargeDouble as a string
-	 */
-	public LargeDouble(String s){
-		fullValue = s;
-
+	public LargeDouble(String s) {
+		String temp;
+		this.fullString = s;
 		if(s.contains("K")){
-			String temp = s.replace("K", "");
-
-			suffix = "K";
-			suffixLong = 1000;
-			value = Double.parseDouble(temp);
+			temp = s.replace("K", "e3");
 		}else if(s.contains("M")){
-			String temp = s.replace("M", "");
-
-			suffix = "M";
-			suffixLong = 1000000;
-			
-			value = Double.parseDouble(temp);
+			temp = s.replace("M", "e6");
 		}else if(s.contains("B")){
-			String temp = s.replace("B", "");
-
-			suffix = "B";
-			suffixLong = 1000000000;
-			
-			value = Double.parseDouble(temp);
+			temp = s.replace("B", "e9");
+		}else if(s.contains("T")){
+			temp = s.replace("T", "e12");
 		}else {
-			
-			suffixLong = 1;
-			value = Double.parseDouble(s);
+			temp = s;
 		}
-
+		value = new BigDecimal(temp);
 	}
-
-	/**
-	 * A constructor with a double as parameter. Sets the value of the LargeDouble to the parameter, and the suffix to
-	 * null
-	 * @param d
-	 */
-	public LargeDouble(Double d){
-		
-		if(d < 1000){
-			suffix = "";
-			suffixLong = 1;
-			value = d;
-			fullValue = Double.toString(d);
-		} else if(d >= 1000 && d < 1000000){
-			suffix = "K";
-			suffixLong = 1000;
-			d = d/1000;
-			value = d;
-			fullValue = Double.toString(d)+"K";
-		} else if(d >= 1000000 && d < 1000000000){
-			suffix = "M";
-			suffixLong = 1000000;
-			d = d/1000000;
-			value = d;
-			fullValue = Double.toString(d)+"M";
-		} else {
-			suffix = "B";
-			suffixLong = 1000000000;
-			d = d/1000000000;
-			value = d;
-			fullValue = Double.toString(d)+"B";
-		}
-		
-		
+	
+	public LargeDouble(BigDecimal d) {
+		value = d;
 	}
-
-	public String getSuffix() {
-		return suffix;
-	}
-
-	public Double getValue() {
-		return value;
-	}
-
+	
 	/**
 	 * Adds a LargeDouble
 	 * 
@@ -101,9 +42,9 @@ public class LargeDouble implements Comparable<LargeDouble> {
 	 * @return
 	 */
 	public LargeDouble add(LargeDouble d) {
-		// TODO Auto-generated catch block
-		return d;
+		return new LargeDouble(this.value.add(d.getValue()));
 	}
+
 
 	/**
 	 * Subtracts a large double
@@ -112,23 +53,7 @@ public class LargeDouble implements Comparable<LargeDouble> {
 	 * @return
 	 */
 	public LargeDouble sub(LargeDouble d) {
-		/*
-		 * Normalize both numbers to millions
-		 */
-		double firstValue = makeComparable(this);
-		double secondValue = makeComparable(d);
-		
-		double sum = firstValue-secondValue;
-		
-		
-		
-		/*
-		 * Normalize them back
-		 */
-		sum = sum*1000000;
-		
-		LargeDouble returnValue = new LargeDouble(sum);
-		return returnValue;
+		return new LargeDouble(this.value.subtract(d.getValue()));
 	}
 
 	/**
@@ -137,9 +62,8 @@ public class LargeDouble implements Comparable<LargeDouble> {
 	 * @param d
 	 * @return
 	 */
-	public int mul(LargeDouble d) {
-		// TODO Auto-generated catch block
-		return 0;
+	public LargeDouble mul(LargeDouble d) {
+		return new LargeDouble(this.value.multiply(d.getValue()));
 	}
 
 	/**
@@ -148,52 +72,77 @@ public class LargeDouble implements Comparable<LargeDouble> {
 	 * @param d
 	 * @return
 	 */
-	public int div(LargeDouble d) {
-		// TODO Auto-generated catch block
-		return 0;
+	public LargeDouble div(LargeDouble d) {
+		return new LargeDouble(this.value.divide(d.getValue()));
 	}
-
-	/**
-	 * Method to make the LargeDouble comparable. Mainly a help method for compareTo.
-	 * 
-	 * @param d - a LargeDouble
-	 * @return - a double normalized as millions
-	 */
-	public double makeComparable(LargeDouble d){
-		double comparableValue;
-
-		if(d.getSuffix() == "B"){
-			comparableValue = d.getValue()*1000;
-
-		} else if(d.getSuffix() == "M"){
-			comparableValue = d.getValue();
-
-		} else if(d.getSuffix() == "K"){
-			comparableValue = d.getValue()/1000;
-		} else {
-			comparableValue = d.getValue()/1000000;
-		}
-		return comparableValue;
-	}
-
-	@Override
-	public int compareTo(LargeDouble d) {
-
-		double thisComparableValue = makeComparable(this);
-		double thatComparableValue = makeComparable(d);
-
-		if(thisComparableValue > thatComparableValue){
-			return -1;
-		}else if(thisComparableValue < thatComparableValue){
-			return 1;
-		}else{
-			return 0;
-		}
-	}
-
-	@Override
+	
 	public String toString() {
-		return fullValue;
+		if(this.value.intValue()==0) {
+			return new String("0");
+		}
+		if(fullString!=null) {
+			return fullString;
+		} else {
+			BigDecimal temp = this.value;
+			BigInteger unscaled = temp.unscaledValue();
+			double scaledVal;
+			int scale = Math.abs(this.value.scale());
+			String unscaledString = unscaled.toString();
+			int digits=unscaledString.length();
+			scale +=digits-1;
+			if(scale%3!=0) {
+				scale -= scale%3;
+			}
+			scaledVal = Double.parseDouble(unscaledString);
+			int exp = (int)Math.pow(10, scale-Math.abs(this.value.scale()));
+			scaledVal /= exp;
+			
+			
+			Suffix[] suffixes = Suffix.values();
+			for(int i = suffixes.length-1; i>=0;i--) {
+				if(scale>=suffixes[i].getExponent()) {
+					return new String(scaledVal+suffixes[i].getSuffix());
+				}
+			}
+			return unscaled.toString();
+		}
+	}
+	
+	public BigDecimal getValue() {
+		return value;
+	}
+
+
+
+	enum Suffix {
+		NONE(0,""),K(3,"K"),M(6,"M"),B(9,"B"),T(12,"T");
+		int exponent;
+		String suffix;
+		Suffix(int exponent, String suffix) {
+			this.exponent = exponent;
+			this.suffix = suffix;
+		}
+		public int getExponent() {
+			return this.exponent;
+		}
+		public String getSuffix() {
+			return this.suffix;
+		}
+	}
+
+
+
+	@Override
+	public int compareTo(LargeDouble arg0) {
+		return this.value.compareTo(arg0.getValue());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
 	}
 
 	@Override
@@ -205,16 +154,6 @@ public class LargeDouble implements Comparable<LargeDouble> {
 		if (getClass() != obj.getClass())
 			return false;
 		LargeDouble other = (LargeDouble) obj;
-		if (fullValue == null) {
-			if (other.fullValue != null)
-				return false;
-		} else if (!fullValue.equals(other.fullValue))
-			return false;
-		if (suffix == null) {
-			if (other.suffix != null)
-				return false;
-		} else if (!suffix.equals(other.suffix))
-			return false;
 		if (value == null) {
 			if (other.value != null)
 				return false;
@@ -222,16 +161,6 @@ public class LargeDouble implements Comparable<LargeDouble> {
 			return false;
 		return true;
 	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((fullValue == null) ? 0 : fullValue.hashCode());
-		result = prime * result + ((suffix == null) ? 0 : suffix.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
+	
+	
 }
-
