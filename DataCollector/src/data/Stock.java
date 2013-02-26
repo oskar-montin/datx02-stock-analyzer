@@ -57,6 +57,7 @@ public class Stock implements MarketItem {
 	@Override
 	public String toString() {
 		return "Stock [name=" + name + ", symbol=" + symbol + ", business="
-				+ business + "]";
+				+ business + ", stockExchange=" + stockExchange + "]";
 	}
+
 }
