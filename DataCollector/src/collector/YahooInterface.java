@@ -62,6 +62,9 @@ public class YahooInterface {
 			String inputLine;
 			while ((inputLine = reader.readLine()) != null) {
 
+				/*
+				 * Creating a CSVParser to parse the data correctly
+				 */
 				CSVParser csvp = new CSVParser();
 
 				String[] yahooStockInfo = inputLine.split(",");
@@ -83,15 +86,14 @@ public class YahooInterface {
 			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("MalformedURLException: " + e.getMessage());
+			System.err.println("MalformedURLException in getRTData: " + e.getMessage());
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.err.println("IOException: " + e.getMessage());
+			System.err.println("IOException in getRTData: " + e.getMessage());
 			return null;
 		}
 
-		System.out.println(RTDataPoint.toString());
 		return RTDataPoint;
 	}
 	
@@ -156,6 +158,9 @@ public class YahooInterface {
 			String inputLine;
 			while ((inputLine = reader.readLine()) != null) {
 
+				/*
+				 * Creating a CSVParser to parse the data correctly
+				 */
 				CSVParser csvp = new CSVParser();
 
 				String[] yahooStockInfo = inputLine.split(",");
@@ -190,11 +195,11 @@ public class YahooInterface {
 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("MalformedURLException: " + e.getMessage());
+			System.err.println("MalformedURLException in getDailyData: " + e.getMessage());
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.err.println("IOException: " + e.getMessage());
+			System.err.println("IOException in getDailyData: " + e.getMessage());
 			return null;
 		}
 
@@ -245,15 +250,16 @@ public class YahooInterface {
 			while ((inputLine = reader.readLine()) != null) {
 
 				CSVParser csvp = new CSVParser();
-
+				YahooParser yp = new YahooParser();
 
 
 				String[] yahooStockInfo = inputLine.split(",");
 
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
 				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
-				solidity = YahooParser.balanceParser("BAC", "Total Stockholder Equity")/
-						YahooParser.balanceParser("BAC", "Total Assets");
+				
+				solidity = yp.balanceParser(symbol, "Total Stockholder Equity")/
+							yp.balanceParser(symbol, "Total Assets");
 
 
 				name = yahooStockInfo[2];
@@ -271,15 +277,14 @@ public class YahooInterface {
 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("MalformedURLException: " + e.getMessage());
+			System.err.println("MalformedURLException in getQuarterlyData: " + e.getMessage());
 			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.err.println("IOException: " + e.getMessage());
+			System.err.println("IOException in getQuarterlyData: " + e.getMessage());
 			return null;
 		}
 
-		System.out.println(quarterlyDataPoint.toString());
 		return quarterlyDataPoint;
 	}
 }

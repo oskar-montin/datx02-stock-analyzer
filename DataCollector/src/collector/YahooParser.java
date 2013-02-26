@@ -24,7 +24,7 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Total Assets" or "Total Stockholder Equity"
 	 * @return
 	 */
-	public static double balanceParser(String symbol, String key) {
+	public double balanceParser(String symbol, String key) {
 		
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/bs?s=" + symbol);
@@ -56,15 +56,15 @@ public class YahooParser {
 			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Caught NumberFormatException: " + e.getMessage());
+			System.err.println("Caught NumberFormatException in balanceParser: " + e.getMessage());
 			return Double.NEGATIVE_INFINITY;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Caught MalformedURLException: " + e.getMessage());
+			System.err.println("Caught MalformedURLException in balanceParser: " + e.getMessage());
 			return Double.NEGATIVE_INFINITY;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.err.println("IOException: " + e.getMessage());
+			System.err.println("IOException in balanceParser: " + e.getMessage());
 			return Double.NEGATIVE_INFINITY;
 		}
         
@@ -78,7 +78,7 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Return on Equity"
 	 * @return
 	 */
-	public static double generalParser(String symbol, String key) {
+	public double generalParser(String symbol, String key) {
 		
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/ks?s=" + symbol);
@@ -107,17 +107,17 @@ public class YahooParser {
 			in.close();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("MalformedURLException: " + e.getMessage());
+			System.err.println("MalformedURLException in generalParser: " + e.getMessage());
 			return Double.NEGATIVE_INFINITY;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.err.println("IOException: " + e.getMessage());
+			System.err.println("IOException in generalParser: " + e.getMessage());
 			return Double.NEGATIVE_INFINITY;
 		}
 		return value;
 	}
 	
-	public static Double trimmer(String s){
+	public Double trimmer(String s){
 		
 		double returnValue;
 		
