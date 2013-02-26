@@ -41,22 +41,27 @@ public class DatabaseHandler {
 			//}
 		
 	//	---- FOR TESTING ----
-		Calendar cal =Calendar.getInstance();
-		cal.set(Calendar.MONTH, 11);
-		//addDate(cal);
-		//addDailyData(new DailyData(getStock("symm"), cal, 212, 213, 214, 215, 216 ));
-
-
-		PriorityQueue<DailyData> data = getDailyData(getStock("symm"));
-	
-	
-		while(!data.isEmpty()){
-			DailyData i = data.poll();
-			System.out.println(i.getStock().getSymbol());
-
-			System.out.println(i.getDate().get(Calendar.DAY_OF_MONTH)  );
-			
-		}	
+//		Calendar cal =Calendar.getInstance();
+//		cal.set(Calendar.HOUR_OF_DAY, 10 );
+//		addDate(cal);
+//		addTime(cal);
+//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
+//
+//
+//		PriorityQueue<RTData> data = getRTData(getStock("symm"));
+//	
+//	
+//		while(!data.isEmpty()){
+//			RTData i = data.poll();
+//			System.out.println(i.getStock().getSymbol());
+//
+//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
+//			System.out.println("date: "+i.getDate().get(Calendar.DAY_OF_MONTH)  );
+//			System.out.println("time: "+i.getDate().get(Calendar.HOUR_OF_DAY)  );
+//
+//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
+//			
+//		}	
 		
 	}
 	
@@ -124,7 +129,7 @@ public class DatabaseHandler {
 	 * 
 	 * @author Runa Gulliksson
 	 */
-	public static boolean addRTEntry(RTData entry){
+	public static boolean addRTData(RTData entry){
 
 		Connection con = null;
 		Statement st = null;
@@ -396,7 +401,6 @@ public class DatabaseHandler {
 				business=rs.getString("business");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
             try {
@@ -475,7 +479,7 @@ public class DatabaseHandler {
 	 * Method collects all DalyData connected with a stock from the database.
 	 * 
 	 * @param Stock 
-	 * @return All DailyData, connected with the given Stock, stored in a hashmap wih Calendar as key.
+	 * @return All DailyData, connected with the given Stock, stored in a PriorityQueue prioritized after date.
 	 * 						
 	 * 
 	 * @author Runa Gulliksson
@@ -550,7 +554,7 @@ public class DatabaseHandler {
 	 * Method collects all realtimeData connected with a stock from the database.
 	 * 
 	 * @param Stock 
-	 * @return All RTData, connected with the given Stock, stored in a hashmap with Calendar as key.					
+	 * @return All RTData, connected with the given Stock, stored in a PriorityQueue prioritized after date.					
 	 * 
 	 * @author Runa Gulliksson
 	 */
