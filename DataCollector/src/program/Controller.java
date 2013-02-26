@@ -174,7 +174,7 @@ public class Controller {
 		int i = 0;
 		for(String symbol : this.settings.getSymbols()) {
 			RTData data = YahooInterface.getRTData(symbol);
-			DatabaseHandler.addRTEntry(data);
+			DatabaseHandler.addRTData(data);
 			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
 		}
 		this.controllerProgress.update(100, "Finished. All real time data collected");
