@@ -151,15 +151,6 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 	@Override
 	public int compareTo(DailyData o) {
 		return this.getDate().compareTo(o.getDate());
-//		int comp = this.getDate().compareTo(o.getDate());
-//		if (comp==0){
-//			return 0;
-//		}
-//		if (comp==1){
-//			return -1;
-//		}
-//		
-//		else return 1;
 	}
 	
 }

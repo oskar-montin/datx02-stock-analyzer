@@ -51,11 +51,10 @@ public class DatabaseHandler {
 	
 	
 		while(!data.isEmpty()){
-			System.out.println(data.size());
 			DailyData i = data.poll();
 			System.out.println(i.getStock().getSymbol());
 
-			System.out.println(i.getDate().get(Calendar.MONTH)  );
+			System.out.println(i.getDate().get(Calendar.DAY_OF_MONTH)  );
 			
 		}	
 		
@@ -483,7 +482,6 @@ public class DatabaseHandler {
 	 */
 	public static PriorityQueue<DailyData> getDailyData(Stock stock){
 
-		Calendar date = Calendar.getInstance();
 		double marketCap = 0;
 		double dividentYield=0;
 		double PE=0;
@@ -517,11 +515,13 @@ public class DatabaseHandler {
 				high=rs.getDouble("high");
 				low=rs.getDouble("low");
 				volume=rs.getLong("volume");
+				Calendar date = Calendar.getInstance();
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
 				System.out.println(date.get(Calendar.MONTH));
 				
 				dataList.add(new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
+			
 			}
 	
 			
@@ -556,8 +556,6 @@ public class DatabaseHandler {
 	 */
 	public static PriorityQueue<RTData> getRTData(Stock stock){
 
-		Calendar date = Calendar.getInstance() ;
-		Calendar time = Calendar.getInstance() ;
 		double price = 0;
 		double orderBook=0;
 		PriorityQueue<RTData> dataList = new PriorityQueue<RTData>();
@@ -573,6 +571,8 @@ public class DatabaseHandler {
 			rs = st.executeQuery("SELECT date, time, price, orderBook FROM realtimedata  WHERE stock='"+stock.getSymbol()+"'");
 	
 			while (rs.next()) {
+				Calendar date = Calendar.getInstance() ;
+				Calendar time = Calendar.getInstance() ;
 				date.setTime(rs.getDate("date"));
 				time.setTime(rs.getTime("time"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
