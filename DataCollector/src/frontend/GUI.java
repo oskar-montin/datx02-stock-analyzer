@@ -1,5 +1,7 @@
 package frontend;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -58,7 +60,22 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 		else if(e.getSource() == setWaitTimeItem) {
-			// Set Frequency
+			String wt = JOptionPane.showInputDialog("Set desired wait time");
+			while(true){
+				try {
+					long waitTime = Long.valueOf(wt).longValue();
+					controller.changeWaitTime(waitTime);
+					System.out.println("Input is: " + wt);
+					break;
+				}
+				catch (NumberFormatException nonNumericalInput) {
+					if(wt == null) {
+						break;
+					}
+					wt = JOptionPane.showInputDialog
+							("Illegal value - Set desired wait time");
+				}
+			}
 		}
 		else if(e.getSource() == exitItem) {
 			System.exit(0);
@@ -150,10 +167,16 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	public void setupMainFrame() {
 		
+		FlowLayout layout = new FlowLayout();
+		layout.setVgap(150);
+		this.setLayout(layout);
 		mainPanel = new JPanel();
 		collectDailyDataButton = new JButton("Collect daily data");
+		collectDailyDataButton.setPreferredSize(new Dimension(175, 40));
 		collectRealTimeDataButton = new JButton("Collect real-time data");
+		collectRealTimeDataButton.setPreferredSize(new Dimension(175, 40));
 		collectQuarterlyDataButton = new JButton("Collect quarterly data");
+		collectQuarterlyDataButton.setPreferredSize(new Dimension(175, 40));
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		settings = new JMenu("Settings");
