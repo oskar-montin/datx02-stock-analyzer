@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import data.DailyData;
+import data.LargeDouble;
 import data.QuarterlyData;
 import data.RTData;
 import data.Stock;
@@ -177,7 +178,7 @@ public class DatabaseHandler {
 		Connection con = null;
 		Statement st = null;
 		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
-		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getMarketCap()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
+		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getMarketCap().toString()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
 
 		
 		try {
@@ -486,7 +487,7 @@ public class DatabaseHandler {
 	 */
 	public static PriorityQueue<DailyData> getDailyData(Stock stock){
 
-		double marketCap = 0;
+		String marketCap = ""; //----
 		double dividentYield=0;
 		double PE=0;
 		double PS=0;
@@ -509,7 +510,7 @@ public class DatabaseHandler {
 			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+stock.getSymbol()+"'");
 			
 			while (rs.next()) {
-				marketCap=rs.getDouble("marketCap");
+				marketCap=rs.getString("marketCap");
 				dividentYield=rs.getDouble("dividentYield");
 				PE=rs.getDouble("PE");
 				PS=rs.getDouble("PS");
@@ -524,7 +525,7 @@ public class DatabaseHandler {
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
 				System.out.println(date.get(Calendar.MONTH));
 				
-				dataList.add(new DailyData(stock, date, marketCap, dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
+				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			
 			}
 	
