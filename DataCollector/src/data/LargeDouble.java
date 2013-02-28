@@ -16,7 +16,13 @@ public class LargeDouble implements Comparable<LargeDouble>{
 	
 	public LargeDouble(String s) {
 		String temp;
-		this.fullString = s;
+		if(s.equals("") || s == null) {
+			this.fullString = null;
+			value = new BigDecimal(0);
+			return;
+		} else {
+			this.fullString = s;
+		}
 		if(s.contains("K")){
 			temp = s.replace("K", "e3");
 		}else if(s.contains("M")){
@@ -74,6 +80,10 @@ public class LargeDouble implements Comparable<LargeDouble>{
 	 */
 	public LargeDouble div(LargeDouble d) {
 		return new LargeDouble(this.value.divide(d.getValue()));
+	}
+	
+	public double toDouble() {
+		return this.value.doubleValue();
 	}
 	
 	public String toString() {
