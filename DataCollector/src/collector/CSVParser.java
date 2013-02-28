@@ -59,8 +59,11 @@ public class CSVParser {
 	 * @return a double in the scale of million dollars
 	 */
 	public LargeDouble parseToLargeDouble(String str){
-		LargeDouble returnValue = new LargeDouble(str);
-		return returnValue;
+		if(str.equals("-") || str.equals("N/A") || str.equals("\"N/A\"")){
+			return new LargeDouble("");
+		}
+		
+		return new LargeDouble(str);
 	}
 	
 }
