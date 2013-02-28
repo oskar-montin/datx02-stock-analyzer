@@ -1,5 +1,7 @@
 package collector;
 
+import data.LargeDouble;
+
 /**
  * CSVParser is a help method to parse data specifically from YahooFinance
  * 
@@ -56,24 +58,8 @@ public class CSVParser {
 	 * @param str - the string to be parsed
 	 * @return a double in the scale of million dollars
 	 */
-	public double parseToDoubleMarketCap(String str){
-		Double returnValue;
-		returnString = str;
-		returnString.charAt(returnString.length()-1);
-		
-		if(returnString.charAt(returnString.length()-1) == 'B'){
-			returnString = returnString.substring(0, returnString.length()-1);
-			returnValue = Double.parseDouble(returnString);
-			returnValue = returnValue*1000;
-			
-		} else if(returnString.charAt(returnString.length()-1) == 'M'){
-			returnString = returnString.substring(0, returnString.length()-1);
-			returnValue = Double.parseDouble(returnString);
-			
-		} else {
-			returnValue = Double.parseDouble(returnString);
-			returnValue = returnValue/1000000;
-		}
+	public LargeDouble parseToLargeDouble(String str){
+		LargeDouble returnValue = new LargeDouble(str);
 		return returnValue;
 	}
 	

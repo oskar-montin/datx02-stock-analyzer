@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import data.DailyData;
+import data.LargeDouble;
 import data.QuarterlyData;
 import data.RTData;
 import data.Stock;
@@ -112,7 +113,7 @@ public class YahooInterface {
 		DailyData dailyDataPoint = null;
 
 		/* KEYS */
-		double marketCap;
+		LargeDouble marketCap;
 		double dividentYield;
 		double PE;
 		double PS;
@@ -165,7 +166,7 @@ public class YahooInterface {
 
 				String[] yahooStockInfo = inputLine.split(",");
 
-				marketCap = csvp.parseToDoubleMarketCap(yahooStockInfo[0]);
+				marketCap = csvp.parseToLargeDouble(yahooStockInfo[0]);
 				dividentYield = csvp.parseToDouble(yahooStockInfo[1]);
 				PE = csvp.parseToDouble(yahooStockInfo[2]);
 				PS = csvp.parseToDouble(yahooStockInfo[3]);

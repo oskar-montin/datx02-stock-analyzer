@@ -17,7 +17,7 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 	
 
 	/* KEYS */
-	private double marketCap;
+	private LargeDouble marketCap;
 	private double dividentYield;
 	private double PE;
 	private double PS;
@@ -46,7 +46,7 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
  * @param low
  * @param volume
  */
-	public DailyData(Stock stock, Calendar date, double marketCap,
+	public DailyData(Stock stock, Calendar date, LargeDouble marketCap,
 			double dividentYield, double PE, 
 			double PS, double PEG, double openPrice,
 			double closePrice, double high,
@@ -99,7 +99,7 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 		return date;
 	}
 
-	public double getMarketCap() {
+	public LargeDouble getMarketCap() {
 		return marketCap;
 	}
 
