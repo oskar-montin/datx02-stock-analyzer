@@ -76,28 +76,10 @@ public class LargeDouble implements Comparable<LargeDouble>{
 	 * Divides two LargeDoubles
 	 * 
 	 * @param d
-	 * @param precision the amount of decimals allowed in te division
 	 * @return
 	 */
-	public LargeDouble div(LargeDouble d, int precision) {
-		BigDecimal bd = null;
-		try{
-			bd = this.value.divide(d.getValue());
-			return new LargeDouble(bd);
-		} catch(Exception e) {
-			Double dv1 = this.value.unscaledValue().doubleValue();
-			Double dv2 = d.getValue().unscaledValue().doubleValue();
-			Double div = dv1/dv2;
-			int newScale = this.value.scale()-d.getValue().scale();
-			while(newScale<precision && div <100) {
-				div*=10;
-				newScale++;
-			}
-			int i= div.intValue();
-			bd = new BigDecimal(new BigInteger(""+i),newScale);
-		}
-		//double a = this.toDouble()/d.toDouble();
-		return new LargeDouble(bd);
+	public LargeDouble div(LargeDouble d) {
+		return new LargeDouble(this.value.divide(d.getValue()));
 	}
 	
 	public double toDouble() {
@@ -114,7 +96,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			BigDecimal temp = this.value;
 			BigInteger unscaled = temp.unscaledValue();
 			double scaledVal;
-			int scale = -this.value.scale();
+			int scale = Math.abs(this.value.scale());
 			String unscaledString = unscaled.toString();
 			int digits=unscaledString.length();
 			scale +=digits-1;
@@ -122,7 +104,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 				scale -= scale%3;
 			}
 			scaledVal = Double.parseDouble(unscaledString);
-			int exp = (int)Math.pow(10, scale-(-this.value.scale()));
+			int exp = (int)Math.pow(10, scale-Math.abs(this.value.scale()));
 			scaledVal /= exp;
 			
 			
