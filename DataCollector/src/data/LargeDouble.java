@@ -13,7 +13,7 @@ import java.math.BigInteger;
 public class LargeDouble implements Comparable<LargeDouble>{
 	private BigDecimal value;
 	private String fullString;
-	
+
 	public LargeDouble(String s) {
 		String temp;
 		if(s.equals("") || s == null) {
@@ -34,13 +34,14 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		}else {
 			temp = s;
 		}
+		System.out.println(temp);
 		value = new BigDecimal(temp);
 	}
-	
+
 	public LargeDouble(BigDecimal d) {
 		value = d;
 	}
-	
+
 	/**
 	 * Adds a LargeDouble
 	 * 
@@ -76,16 +77,34 @@ public class LargeDouble implements Comparable<LargeDouble>{
 	 * Divides two LargeDoubles
 	 * 
 	 * @param d
+	 * @param precision the amount of decimals allowed in te division
 	 * @return
 	 */
-	public LargeDouble div(LargeDouble d) {
-		return new LargeDouble(this.value.divide(d.getValue()));
+	public LargeDouble div(LargeDouble d, int precision) {
+		BigDecimal bd = null;
+		try{
+			bd = this.value.divide(d.getValue());
+			return new LargeDouble(bd);
+		} catch(Exception e) {
+			Double dv1 = this.value.unscaledValue().doubleValue();
+			Double dv2 = d.getValue().unscaledValue().doubleValue();
+			Double div = dv1/dv2;
+			int newScale = this.value.scale()-d.getValue().scale();
+			while(newScale<precision && div <100) {
+				div*=10;
+				newScale++;
+			}
+			int i= div.intValue();
+			bd = new BigDecimal(new BigInteger(""+i),newScale);
+		}
+		//double a = this.toDouble()/d.toDouble();
+		return new LargeDouble(bd);
 	}
-	
+
 	public double toDouble() {
 		return this.value.doubleValue();
 	}
-	
+
 	public String toString() {
 		if(this.value.intValue()==0) {
 			return new String("0");
@@ -96,7 +115,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			BigDecimal temp = this.value;
 			BigInteger unscaled = temp.unscaledValue();
 			double scaledVal;
-			int scale = Math.abs(this.value.scale());
+			int scale = -this.value.scale();
 			String unscaledString = unscaled.toString();
 			int digits=unscaledString.length();
 			scale +=digits-1;
@@ -104,10 +123,10 @@ public class LargeDouble implements Comparable<LargeDouble>{
 				scale -= scale%3;
 			}
 			scaledVal = Double.parseDouble(unscaledString);
-			int exp = (int)Math.pow(10, scale-Math.abs(this.value.scale()));
+			int exp = (int)Math.pow(10, scale-(-this.value.scale()));
 			scaledVal /= exp;
-			
-			
+
+
 			Suffix[] suffixes = Suffix.values();
 			for(int i = suffixes.length-1; i>=0;i--) {
 				if(scale>=suffixes[i].getExponent()) {
@@ -117,7 +136,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			return unscaled.toString();
 		}
 	}
-	
+
 	public BigDecimal getValue() {
 		return value;
 	}
@@ -171,6 +190,6 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			return false;
 		return true;
 	}
-	
-	
+
+
 }

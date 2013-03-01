@@ -44,5 +44,6 @@ public final class YahooWebKeys {
 	public final static String avg3monthVol = "Avg Vol";
 	public final static String sharesOutstanding = "Shares Outstanding";
 	public final static String fiveYearAverageDividendYield = "5 Year Average Dividend Yield";
+	public final static String NAV = "Net Tangible Assets";
 	
 }

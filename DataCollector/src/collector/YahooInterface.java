@@ -222,7 +222,7 @@ public class YahooInterface {
 
 		double yield;
 		double solidity;
-		double NAV = Double.NEGATIVE_INFINITY;
+		LargeDouble NAV;
 		double dividentPerShare;
 
 		Calendar date = Calendar.getInstance();
@@ -259,8 +259,10 @@ public class YahooInterface {
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
 				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
 				
-				solidity = yp.balanceParser(symbol, "Total Stockholder Equity")/
-							yp.balanceParser(symbol, "Total Assets");
+				NAV = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.NAV));
+				
+				solidity = new LargeDouble(yp.balanceParser(symbol, "Total Stockholder Equity")).
+						div(new LargeDouble(yp.balanceParser(symbol, "Total Assets")),4).toDouble();
 
 
 				name = yahooStockInfo[2];
