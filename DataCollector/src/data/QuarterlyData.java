@@ -14,7 +14,7 @@ public class QuarterlyData implements MarketItem {
 	private Calendar dateCollected;
 	private double yield;
 	private double solidity;
-	private LargeDouble NAV;
+	private double NAV;
 	private double dividentPerShare;
 
 
@@ -29,7 +29,7 @@ public class QuarterlyData implements MarketItem {
 	 * @param dividentPerShare
 	 */
 	public QuarterlyData(Stock stock, Calendar releaseDate, double yield,
-			double solidity, LargeDouble NAV, double dividentPerShare) {
+			double solidity, double NAV, double dividentPerShare) {
 		this.stock = stock;
 		this.dateCollected = releaseDate;
 		this.yield = yield;
@@ -66,7 +66,7 @@ public class QuarterlyData implements MarketItem {
 		return solidity;
 	}
 
-	public LargeDouble getNAV() {
+	public double getNAV() {
 		return NAV;
 	}
 

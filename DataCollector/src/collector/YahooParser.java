@@ -15,7 +15,7 @@ import java.net.URLConnection;
 
 public class YahooParser {
 	
-	
+	private static double value;
 	
 	/**
 	 * Parses data from the balance sheet from the latest quarterly report.
@@ -24,8 +24,8 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Total Assets" or "Total Stockholder Equity"
 	 * @return
 	 */
-	public String balanceParser(String symbol, String key) {
-		String value = "";
+	public double balanceParser(String symbol, String key) {
+		
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/bs?s=" + symbol);
 			URLConnection yc = oracle.openConnection();
@@ -45,9 +45,7 @@ public class YahooParser {
 						
 							String tempString = tempArray[0].replace(",","");
 							
-							String temp2 = tempString.trim();
-							
-							value = temp2;
+							value = Double.parseDouble(tempString);
 
 			    			break;
 			    		}
@@ -59,15 +57,15 @@ public class YahooParser {
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Caught NumberFormatException in balanceParser: " + e.getMessage());
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Caught MalformedURLException in balanceParser: " + e.getMessage());
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("IOException in balanceParser: " + e.getMessage());
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		}
         
 		return value;
@@ -80,8 +78,8 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Return on Equity"
 	 * @return
 	 */
-	public String generalParser(String symbol, String key) {
-		String value = "";
+	public double generalParser(String symbol, String key) {
+		
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/ks?s=" + symbol);
 			URLConnection yc = oracle.openConnection();
@@ -101,7 +99,7 @@ public class YahooParser {
 					
 					String nonparsedValue = temp3[0];
 					
-					String parsedValue = trimmer(nonparsedValue);
+					Double parsedValue = trimmer(nonparsedValue);
 					
 					value = parsedValue;
 				}
@@ -110,39 +108,59 @@ public class YahooParser {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			System.err.println("MalformedURLException in generalParser: " + e.getMessage());
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("IOException in generalParser: " + e.getMessage());
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		}
 		return value;
 	}
 	
-	public String trimmer(String s){
+	public Double trimmer(String s){
 		
-		String returnValue = s;
+		double returnValue;
 		
 		if(s.contains("N/A")){
-			return "";
+			return Double.NEGATIVE_INFINITY;
 		}
 		if(s.contains(",")){
 			String temp = s.replace(",", "");
-			return temp;
-		}
-		if(s.contains("%")){
-			double returnDouble;
-			String[] temp;
-			temp = s.split("%");
-			returnDouble = Double.parseDouble(temp[0]);
-			returnDouble = returnDouble/100;
-			returnValue = returnDouble+"";
+			returnValue = Double.parseDouble(temp);
 			return returnValue;
 		}
-		if(s.contains(" ")){
-			String temp = s.trim();
-			return temp;
+		if(s.contains("%")){
+			
+			String[] temp;
+			temp = s.split("%");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue/100;
+			return returnValue;
 		}
-		return returnValue;
+		if(s.contains("T")){
+
+			String[] temp;
+			temp = s.split("T");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000;
+			return returnValue;
+		}
+		if(s.contains("M")){
+			String[] temp;
+			temp = s.split("M");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000000;
+			return returnValue;
+		}
+		if(s.contains("B")){
+			String[] temp;
+			temp = s.split("B");
+			returnValue = Double.parseDouble(temp[0]);
+			returnValue = returnValue*1000000000;
+			return returnValue;
+		}
+			returnValue = Double.parseDouble(s);
+			return returnValue;
+		
 	}
 }

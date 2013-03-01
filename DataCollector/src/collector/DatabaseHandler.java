@@ -437,8 +437,7 @@ public class DatabaseHandler {
 		ResultSet rs = null;
 		
 		Calendar releaseDate = Calendar.getInstance();
-		String NAV = "";
-		Double yield = null, solidity = null, dividentPerShare=null;
+		Double yield = null, solidity = null, NAV=null, dividentPerShare=null;
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
@@ -451,7 +450,7 @@ public class DatabaseHandler {
 				releaseDate.set(Calendar.MONTH, (releaseDate.get(Calendar.MONTH)+1));
 				yield=rs.getDouble("yield");
 				solidity =rs.getDouble("solidity");
-				NAV=rs.getString("NAV");
+				NAV=rs.getDouble("NAV");
 				dividentPerShare=rs.getDouble("dividentPerShare");
 			}
 			
@@ -473,7 +472,7 @@ public class DatabaseHandler {
                     System.out.println("error- while closing connection");
                 }
             }
-		return new QuarterlyData(stock, releaseDate, yield, solidity, new LargeDouble(NAV), dividentPerShare);
+		return new QuarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare);
 		
 	}
 	
@@ -529,6 +528,7 @@ public class DatabaseHandler {
 				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			
 			}
+	
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -610,4 +610,7 @@ public class DatabaseHandler {
 		return dataList;
 		
 	}
+
+	
+	
 }
