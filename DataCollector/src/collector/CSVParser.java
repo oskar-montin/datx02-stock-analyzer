@@ -62,7 +62,7 @@ public class CSVParser {
 		if(str.equals("-") || str.equals("N/A") || str.equals("\"N/A\"")){
 			return new LargeDouble("");
 		}
-		
+
 		return new LargeDouble(str);
 	}
 	

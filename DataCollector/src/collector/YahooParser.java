@@ -15,7 +15,7 @@ import java.net.URLConnection;
 
 public class YahooParser {
 	
-	private static double value;
+	
 	
 	/**
 	 * Parses data from the balance sheet from the latest quarterly report.
@@ -24,8 +24,8 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Total Assets" or "Total Stockholder Equity"
 	 * @return
 	 */
-	public double balanceParser(String symbol, String key) {
-		
+	public String balanceParser(String symbol, String key) {
+		String value = "";
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/bs?s=" + symbol);
 			URLConnection yc = oracle.openConnection();
@@ -45,7 +45,9 @@ public class YahooParser {
 						
 							String tempString = tempArray[0].replace(",","");
 							
-							value = Double.parseDouble(tempString);
+							String temp2 = tempString.trim();
+							
+							value = temp2;
 
 			    			break;
 			    		}
@@ -57,15 +59,15 @@ public class YahooParser {
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Caught NumberFormatException in balanceParser: " + e.getMessage());
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			System.err.println("Caught MalformedURLException in balanceParser: " + e.getMessage());
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("IOException in balanceParser: " + e.getMessage());
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		}
         
 		return value;
@@ -78,8 +80,8 @@ public class YahooParser {
 	 * @param key - the key of the value eg: "Return on Equity"
 	 * @return
 	 */
-	public double generalParser(String symbol, String key) {
-		
+	public String generalParser(String symbol, String key) {
+		String value = "";
         try {
 			URL oracle = new URL("http://finance.yahoo.com/q/ks?s=" + symbol);
 			URLConnection yc = oracle.openConnection();
@@ -99,7 +101,7 @@ public class YahooParser {
 					
 					String nonparsedValue = temp3[0];
 					
-					Double parsedValue = trimmer(nonparsedValue);
+					String parsedValue = trimmer(nonparsedValue);
 					
 					value = parsedValue;
 				}
@@ -108,59 +110,39 @@ public class YahooParser {
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			System.err.println("MalformedURLException in generalParser: " + e.getMessage());
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.err.println("IOException in generalParser: " + e.getMessage());
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		}
 		return value;
 	}
 	
-	public Double trimmer(String s){
+	public String trimmer(String s){
 		
-		double returnValue;
+		String returnValue = s;
 		
 		if(s.contains("N/A")){
-			return Double.NEGATIVE_INFINITY;
+			return "";
 		}
 		if(s.contains(",")){
 			String temp = s.replace(",", "");
-			returnValue = Double.parseDouble(temp);
-			return returnValue;
+			return temp;
 		}
 		if(s.contains("%")){
-			
+			double returnDouble;
 			String[] temp;
 			temp = s.split("%");
-			returnValue = Double.parseDouble(temp[0]);
-			returnValue = returnValue/100;
+			returnDouble = Double.parseDouble(temp[0]);
+			returnDouble = returnDouble/100;
+			returnValue = returnDouble+"";
 			return returnValue;
 		}
-		if(s.contains("T")){
-
-			String[] temp;
-			temp = s.split("T");
-			returnValue = Double.parseDouble(temp[0]);
-			returnValue = returnValue*1000;
-			return returnValue;
+		if(s.contains(" ")){
+			String temp = s.trim();
+			return temp;
 		}
-		if(s.contains("M")){
-			String[] temp;
-			temp = s.split("M");
-			returnValue = Double.parseDouble(temp[0]);
-			returnValue = returnValue*1000000;
-			return returnValue;
-		}
-		if(s.contains("B")){
-			String[] temp;
-			temp = s.split("B");
-			returnValue = Double.parseDouble(temp[0]);
-			returnValue = returnValue*1000000000;
-			return returnValue;
-		}
-			returnValue = Double.parseDouble(s);
-			return returnValue;
-		
+		return returnValue;
 	}
 }

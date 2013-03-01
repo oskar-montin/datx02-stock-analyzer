@@ -13,6 +13,7 @@ public final class YahooWebKeys {
 	 */
 	public final static String totalLiabilities = "Total Liabilities";
 	public final static String totalAssets = "Total Assets";
+	public final static String netTangibleAssets = "Net Tangible Assets";
 	public final static String totalStockholderEquity = "Total Stockholder Equity";
 	public final static String enterpriseValue = "Enterprise Value";
 	public final static String trailingPE = "Trailing P/E";
