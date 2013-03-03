@@ -46,4 +46,14 @@ public final class YahooWebKeys {
 	public final static String fiveYearAverageDividendYield = "5 Year Average Dividend Yield";
 	public final static String NAV = "Net Tangible Assets";
 	
+	public final static String netIncome = "Net Income";
+	/**
+	 * net income applicable to common shares
+	 */
+	public final static String netIncomeAPTCS = "Net Income Applicable To Common Shares";
+	public final static String totalRevenue = "Total Revenue";
+	public final static String costRevenue = "Cost of Revenue";
+	public final static String inventory = "Inventory";
+	public final static String totalCurrentAssets = "Total Current Assets";
+	public final static String totalCurrentLiabilities = "Total Current Liabilities";
 }

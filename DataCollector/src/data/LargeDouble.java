@@ -34,7 +34,6 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		}else {
 			temp = s;
 		}
-		System.out.println(temp);
 		value = new BigDecimal(temp);
 	}
 
