@@ -26,11 +26,11 @@ import data.Stock;
  */
 
 public class DatabaseHandler {
-	
+
 	private static String user="runa", password="123456",  url="jdbc:mysql://localhost:3306/test?";
 	private static String  userpass="user=root&password=123456";
 	private static DatabaseHandler dataBase;
-	
+
 	public static void main(String[] args){
 		// --- connecting to driver probably needed when not importing jarfile ---
 		//try {
@@ -66,18 +66,48 @@ public class DatabaseHandler {
 			
 		}	
 		
+		// The newInstance() call is a work around for some
+		// broken Java implementations
+		//Class.forName("com.mysql.jdbc.Driver").newInstance();
+		//} catch (Exception ex) {
+		// handle the error
+		//}
+
+		//	---- FOR TESTING ----
+		//		Calendar cal =Calendar.getInstance();
+		//		cal.set(Calendar.HOUR_OF_DAY, 10 );
+		//		addDate(cal);
+		//		addTime(cal);
+		//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
+		//
+		//
+		//		PriorityQueue<RTData> data = getRTData(getStock("symm"));
+		//	
+		//	
+		//		while(!data.isEmpty()){
+		//			RTData i = data.poll();
+		//			System.out.println(i.getStock().getSymbol());
+		//
+		//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
+		//			System.out.println("date: "+i.getDate().get(Calendar.DAY_OF_MONTH)  );
+		//			System.out.println("time: "+i.getDate().get(Calendar.HOUR_OF_DAY)  );
+		//
+		//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
+		//			
+		//		}	
+
 	}
-	
-	
+
+
 	private DatabaseHandler(){
-		
+
 	}
-	
+
 	static public DatabaseHandler getInstance(){
 		dataBase = new DatabaseHandler();
 		return dataBase;
 	}
-	
+
 	/**
 	 * Method adds a new stock with stock-data to the Stock-table 
 	 * in the database
@@ -91,36 +121,36 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		
+
 		String query = "INSERT INTO Stock (symbol, name, stockexchange, business) VALUES('"+stock.getSymbol()+"', '"+stock.getName()+"', '"+stock.getStockExchange()+"', '"+stock.getBusiness()+"')";
-		
+
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(query);
+			st = con.createStatement();
+			st.executeUpdate(query);
 
-			
-			} catch (SQLException ex) {
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
-			return true;
-		
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
+		return true;
+
 	}
 
 	/**
@@ -140,31 +170,31 @@ public class DatabaseHandler {
 
 		try {
 			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(queryData);
-	         
-			} catch (SQLException ex) {
+			st = con.createStatement();
+			st.executeUpdate(queryData);
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
 		return true;
-		
+
 	}
-	
+
 	/**
 	 * Method adds all data that is to be added once daily to the database.
 	 * The data is split into two tables, DailyValues and DailyKeys.
@@ -182,35 +212,35 @@ public class DatabaseHandler {
 		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
 		String queryKeys = "INSERT INTO DailyKeys (stock, date, marketCap, PE, PS, PEG, dividentYield) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getMarketCap().toString()+"', '"+data.getPE()+"', '"+data.getPS()+"', '"+data.getPEG()+"', '"+data.getDividentYield()+"')";
 
-		
+
 		try {
 			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(queryValues);
-	         st.executeUpdate(queryKeys);
+			st = con.createStatement();
+			st.executeUpdate(queryValues);
+			st.executeUpdate(queryKeys);
 
-			
-			} catch (SQLException ex) {
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
-			return true;
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
+		return true;
 	}
-	
+
 	/**
 	 * Method adds all quarterly data that is used to a QuarterlyData-table 
 	 * in database
@@ -224,35 +254,35 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
-		
+		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getDividendYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
+
 		try {
 			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(query);
+			st = con.createStatement();
+			st.executeUpdate(query);
 
-			
-			} catch (SQLException ex) {
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
-			return true;
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
+		return true;
 	}
-	
+
 	/**
 	 * Method adds a date to the date-table before using the date as key in other tables
 	 * 
@@ -266,35 +296,35 @@ public class DatabaseHandler {
 		Connection con = null;
 		Statement st = null;
 		String query = "INSERT INTO Date (date) VALUES("+getDate(date)+")";
-		
+
 		try {
 			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(query);
+			st = con.createStatement();
+			st.executeUpdate(query);
 
-			
-			} catch (SQLException ex) {
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
-			return true;
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
+		return true;
 	}
-	
-	
+
+
 	/**
 	 * Method adds a time to the time-table before using the date as key in other tables
 	 * 
@@ -308,36 +338,36 @@ public class DatabaseHandler {
 		Connection con = null;
 		Statement st = null;
 		String query = "INSERT INTO Time (time) VALUES("+getTime(date)+")";
-		
-		try {
-			
-			con = DriverManager.getConnection(url + userpass);
-		     st = con.createStatement();
-	         st.executeUpdate(query);
 
-			
-			} catch (SQLException ex) {
+		try {
+
+			con = DriverManager.getConnection(url + userpass);
+			st = con.createStatement();
+			st.executeUpdate(query);
+
+
+		} catch (SQLException ex) {
 			// handle any errors
 			System.out.println("SQLException: " + ex.getMessage());
 			System.out.println("SQLState: " + ex.getSQLState());
 			System.out.println("VendorError: " + ex.getErrorCode());
 			return false;
-			} finally {
-	            try {
-	                if (st != null) {
-	                    st.close();
-	                }
-	                if (con != null) {
-	                    con.close();
-	                }} catch (SQLException ex) {
-	                    return false;
-	                }
-	            }
-			
-			return true;
+		} finally {
+			try {
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					return false;
+				}
+		}
+
+		return true;
 	}
-	
-	
+
+
 	/**
 	 * Method generates a value-string for a date
 	 * helpmethod for inserting a date database
@@ -348,15 +378,15 @@ public class DatabaseHandler {
 	 * @author Runa Gulliksson
 	 */
 	private static String getDate(Calendar date){
-		
+
 		int year,month,day ;
 		year = date.get(Calendar.YEAR);
 		month = date.get(Calendar.MONTH);
 		day = date.get(Calendar.DATE);
-		
+
 		return" '"+year+"-"+month+"-"+day+"'";
 	}
-	
+
 	/**
 	 * Method generates a value-string for a time
 	 * helpmethod for inserting a time database
@@ -367,15 +397,15 @@ public class DatabaseHandler {
 	 * @author Runa Gulliksson
 	 */
 	private static String getTime(Calendar date){
-		
+
 		int hour, minit;
 		hour = date.get(Calendar.HOUR_OF_DAY);
 		minit = date.get(Calendar.MINUTE);
-		
+
 		return"'"+hour+":"+minit+":00'";
 	}
-	
-	
+
+
 	/**
 	 * Method collects all attributes connected with a stock from the database.
 	 * Returns an instance of stock with the collected data.
@@ -386,11 +416,11 @@ public class DatabaseHandler {
 	 * @author Runa Gulliksson
 	 */
 	public static Stock getStock(String symbol){
-		
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		
+
 		String name = null, stockExchange = null, business = null;
 		try {
 
@@ -406,23 +436,23 @@ public class DatabaseHandler {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }} catch (SQLException ex) {
-                    System.out.println("error- while closing connection");
-                }
-            }
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
 		return new Stock( name, symbol, stockExchange, business);
-		
+
 	}
-	
+
 	/**
 	 * Method collects all quarterlyData connected with a stock from the database.
 	 * Returns an instance of QuaterlyData with the collected data.
@@ -433,51 +463,72 @@ public class DatabaseHandler {
 	 * @author Runa Gulliksson
 	 */
 	public static QuarterlyData getQuarterlyData(Stock stock){
-		
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		
+
+		String NAV = "";
 		Calendar releaseDate = Calendar.getInstance();
-		Double yield = null, solidity = null, NAV=null, dividentPerShare=null;
+		double yield = 0;
+		double solidity = 0;
+		double dividentPerShare = 0;
+
+		double ROE = 0;							
+		double EPS = 0;								
+		double NAVPS = 0;							
+		double pricePerNAVPS = 0;						
+		double acidTestRatio = 0;						
+		double balanceLiquidity = 0;						
+		String workingCapital = "";							
+
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT * FROM QuarterlyData WHERE stock='"+stock.getSymbol()+"'");
-			
+
 
 			if(rs.next()){
 				releaseDate.setTime(rs.getDate("releasedate"));
 				releaseDate.set(Calendar.MONTH, (releaseDate.get(Calendar.MONTH)+1));
 				yield=rs.getDouble("yield");
 				solidity =rs.getDouble("solidity");
-				NAV=rs.getDouble("NAV");
+				NAV=rs.getString("NAV");
 				dividentPerShare=rs.getDouble("dividentPerShare");
+				ROE = rs.getDouble("ROE");
+				EPS = rs.getDouble("ROE");
+				NAVPS = rs.getDouble("NAVPS");
+				pricePerNAVPS = rs.getDouble("pricePerNAVPS");
+				acidTestRatio = rs.getDouble("acidTestRatio");
+				balanceLiquidity = rs.getDouble("balanceLiquidity");
+				workingCapital = rs.getString("workingCapital");
 			}
-			
-			
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }} catch (SQLException ex) {
-                    System.out.println("error- while closing connection");
-                }
-            }
-		return new QuarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare);
-		
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
+
+		return new QuarterlyData(stock, releaseDate, yield, solidity, new LargeDouble(NAV), dividentPerShare, ROE,
+				EPS, NAVPS, pricePerNAVPS, acidTestRatio, balanceLiquidity, new LargeDouble(workingCapital));
+
 	}
-	
+
 	/**
 	 * Method collects all DalyData connected with a stock from the database.
 	 * 
@@ -489,7 +540,7 @@ public class DatabaseHandler {
 	 */
 	public static PriorityQueue<DailyData> getDailyData(Stock stock){
 
-		String marketCap = ""; //
+		String marketCap = ""; //----
 		double dividentYield=0;
 		double PE=0;
 		double PS=0;
@@ -500,17 +551,17 @@ public class DatabaseHandler {
 		double low=0;
 		long volume=0;
 		PriorityQueue<DailyData> dataList = new PriorityQueue<DailyData>();
-		
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		
+
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+stock.getSymbol()+"'");
-			
+
 			while (rs.next()) {
 				marketCap=rs.getString("marketCap");
 				dividentYield=rs.getDouble("dividentYield");
@@ -525,33 +576,35 @@ public class DatabaseHandler {
 				Calendar date = Calendar.getInstance();
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
-				
+
+				System.out.println(date.get(Calendar.MONTH));
+
 				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
-			
+
 			}
-	
-			
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }} catch (SQLException ex) {
-                    System.out.println("error- while closing connection");
-                }
-            }
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
 		return dataList;
-		
+
 	}
-	
+
 	/**
 	 * Method collects all realtimeData connected with a stock from the database.
 	 * 
@@ -565,17 +618,17 @@ public class DatabaseHandler {
 		double price = 0;
 		double orderBook=0;
 		PriorityQueue<RTData> dataList = new PriorityQueue<RTData>();
-		
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		
+
 		try {
 
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT date, time, price, orderBook FROM realtimedata  WHERE stock='"+stock.getSymbol()+"'");
-	
+
 			while (rs.next()) {
 				Calendar date = Calendar.getInstance() ;
 				Calendar time = Calendar.getInstance() ;
@@ -586,32 +639,32 @@ public class DatabaseHandler {
 				date.set(Calendar.MINUTE, time.get(Calendar.MINUTE));
 				price=rs.getDouble("price");
 				orderBook=rs.getDouble("orderBook");
-				
+
 				dataList.add( new RTData(stock, date, price, orderBook));
 			}
-			
-			
+
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }} catch (SQLException ex) {
-                    System.out.println("error- while closing connection");
-                }
-            }
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
 		return dataList;
-		
+
 	}
 
-	
-	
+
+
 }

@@ -13,7 +13,7 @@ import java.math.BigInteger;
 public class LargeDouble implements Comparable<LargeDouble>{
 	private BigDecimal value;
 	private String fullString;
-	
+
 	public LargeDouble(String s) {
 		String temp;
 		if(s.equals("") || s == null) {
@@ -36,11 +36,11 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		}
 		value = new BigDecimal(temp);
 	}
-	
+
 	public LargeDouble(BigDecimal d) {
 		value = d;
 	}
-	
+
 	/**
 	 * Adds a LargeDouble
 	 * 
@@ -99,11 +99,11 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		//double a = this.toDouble()/d.toDouble();
 		return new LargeDouble(bd);
 	}
-	
+
 	public double toDouble() {
 		return this.value.doubleValue();
 	}
-	
+
 	public String toString() {
 		if(this.value.intValue()==0) {
 			return new String("0");
@@ -124,8 +124,8 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			scaledVal = Double.parseDouble(unscaledString);
 			int exp = (int)Math.pow(10, scale-(-this.value.scale()));
 			scaledVal /= exp;
-			
-			
+
+
 			Suffix[] suffixes = Suffix.values();
 			for(int i = suffixes.length-1; i>=0;i--) {
 				if(scale>=suffixes[i].getExponent()) {
@@ -135,7 +135,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			return unscaled.toString();
 		}
 	}
-	
+
 	public BigDecimal getValue() {
 		return value;
 	}
@@ -189,6 +189,6 @@ public class LargeDouble implements Comparable<LargeDouble>{
 			return false;
 		return true;
 	}
-	
-	
+
+
 }
