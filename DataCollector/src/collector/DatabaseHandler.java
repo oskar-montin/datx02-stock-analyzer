@@ -34,38 +34,6 @@ public class DatabaseHandler {
 	public static void main(String[] args){
 		// --- connecting to driver probably needed when not importing jarfile ---
 		//try {
-			// The newInstance() call is a work around for some
-			// broken Java implementations
-			//Class.forName("com.mysql.jdbc.Driver").newInstance();
-			//} catch (Exception ex) {
-			// handle the error
-			//}
-		
-	//	---- FOR TESTING ----
-		Calendar cal =Calendar.getInstance();
-		long longy= Long.MAX_VALUE;
-		System.out.println(longy);
-		cal.set(Calendar.YEAR, 1999 );
-		addDate(cal);
-		addTime(cal);
-		addDailyData(new DailyData(getStock("symm"), cal, new LargeDouble("120.2B"), 11, 12, 13, 14, 15, 16, 17, 18, longy ));
-
-
-		PriorityQueue<DailyData> data = getDailyData(getStock("symm"));
-	
-	
-		while(!data.isEmpty()){
-			DailyData i = data.poll();
-			System.out.println(i.getStock().getSymbol());
-
-			System.out.println("market : "+i.getMarketCap().toString() );
-			System.out.println("volume: "+i.getVolume()  );
-			System.out.println("time: "+i.getDate().get(Calendar.HOUR_OF_DAY)  );
-
-			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
-			
-		}	
-		
 		// The newInstance() call is a work around for some
 		// broken Java implementations
 		//Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -254,7 +222,7 @@ public class DatabaseHandler {
 
 		Connection con = null;
 		Statement st = null;
-		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getDividendYield()+"', '"+data.getSolidity()+"', '"+data.getNAV()+"', '"+data.getDividentPerShare()+"')";
+		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare, ROE, EPS, NAVPS, pricePerNAVPS, acidTestRatio, balanceLiquidity, workingCapital) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getDividendYield()+"', '"+data.getSolidity()+"', '"+data.getNAV().toString()+"', '"+data.getDividentPerShare()+"', '"+data.getROE()+"', '"+data.getEPS()+"', '"+data.getNAVPS()+"', '"+data.getPricePerNAVPS()+"', '"+data.getAcidTestRatio()+"', '"+data.getBalanceLiquidity()+"', '"+data.getWorkingCapital().toString()+"')";
 
 		try {
 			con = DriverManager.getConnection(url + userpass);
@@ -497,7 +465,7 @@ public class DatabaseHandler {
 				NAV=rs.getString("NAV");
 				dividentPerShare=rs.getDouble("dividentPerShare");
 				ROE = rs.getDouble("ROE");
-				EPS = rs.getDouble("ROE");
+				EPS = rs.getDouble("EPS");
 				NAVPS = rs.getDouble("NAVPS");
 				pricePerNAVPS = rs.getDouble("pricePerNAVPS");
 				acidTestRatio = rs.getDouble("acidTestRatio");
