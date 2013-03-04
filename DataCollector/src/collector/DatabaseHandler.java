@@ -436,7 +436,7 @@ public class DatabaseHandler {
 		Statement st = null;
 		ResultSet rs = null;
 
-		String NAV = "";
+		String NAV = ""; //---
 		Calendar releaseDate = Calendar.getInstance();
 		double yield = 0;
 		double solidity = 0;
@@ -448,7 +448,7 @@ public class DatabaseHandler {
 		double pricePerNAVPS = 0;						
 		double acidTestRatio = 0;						
 		double balanceLiquidity = 0;						
-		String workingCapital = "";							
+		String workingCapital = "";		//------					
 
 		try {
 
@@ -544,8 +544,6 @@ public class DatabaseHandler {
 				Calendar date = Calendar.getInstance();
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
-
-				System.out.println(date.get(Calendar.MONTH));
 
 				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 
