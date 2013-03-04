@@ -93,7 +93,7 @@ public class YahooParser {
 			System.err.println("IOException in balanceParser: " + e.getMessage());
 			return "";
 		}
-		return value+"T";
+		return value+"K";
 	}
 
 	/**
@@ -202,7 +202,7 @@ public class YahooParser {
 			System.err.println("IOException in balanceParser: " + e.getMessage());
 			return "";
 		}
-		return value+"T";
+		return value+"K";
 	}
 
 	public String trimmer(String s){
