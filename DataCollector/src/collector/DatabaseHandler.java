@@ -42,27 +42,29 @@ public class DatabaseHandler {
 			//}
 		
 	//	---- FOR TESTING ----
-//		Calendar cal =Calendar.getInstance();
-//		cal.set(Calendar.HOUR_OF_DAY, 10 );
-//		addDate(cal);
-//		addTime(cal);
-//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
-//
-//
-//		PriorityQueue<RTData> data = getRTData(getStock("symm"));
-//	
-//	
-//		while(!data.isEmpty()){
-//			RTData i = data.poll();
-//			System.out.println(i.getStock().getSymbol());
-//
-//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
-//			System.out.println("date: "+i.getDate().get(Calendar.DAY_OF_MONTH)  );
-//			System.out.println("time: "+i.getDate().get(Calendar.HOUR_OF_DAY)  );
-//
-//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
-//			
-//		}	
+		Calendar cal =Calendar.getInstance();
+		long longy= Long.MAX_VALUE;
+		System.out.println(longy);
+		cal.set(Calendar.YEAR, 1999 );
+		addDate(cal);
+		addTime(cal);
+		addDailyData(new DailyData(getStock("symm"), cal, new LargeDouble("120.2B"), 11, 12, 13, 14, 15, 16, 17, 18, longy ));
+
+
+		PriorityQueue<DailyData> data = getDailyData(getStock("symm"));
+	
+	
+		while(!data.isEmpty()){
+			DailyData i = data.poll();
+			System.out.println(i.getStock().getSymbol());
+
+			System.out.println("market : "+i.getMarketCap().toString() );
+			System.out.println("volume: "+i.getVolume()  );
+			System.out.println("time: "+i.getDate().get(Calendar.HOUR_OF_DAY)  );
+
+			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
+			
+		}	
 		
 	}
 	
@@ -487,7 +489,7 @@ public class DatabaseHandler {
 	 */
 	public static PriorityQueue<DailyData> getDailyData(Stock stock){
 
-		String marketCap = ""; //----
+		String marketCap = ""; //
 		double dividentYield=0;
 		double PE=0;
 		double PS=0;
@@ -523,7 +525,6 @@ public class DatabaseHandler {
 				Calendar date = Calendar.getInstance();
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
-				System.out.println(date.get(Calendar.MONTH));
 				
 				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
 			
