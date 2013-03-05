@@ -49,12 +49,13 @@ public class DatabaseHandler {
 		//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
 		//
 		//
-		//		PriorityQueue<RTData> data = getRTData(getStock("symm"));
+				PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
 		//	
 		//	
-		//		while(!data.isEmpty()){
-		//			RTData i = data.poll();
-		//			System.out.println(i.getStock().getSymbol());
+				while(!data.isEmpty()){
+				QuarterlyData i = data.poll();
+					System.out.println(i.getStock().getSymbol());
+					System.out.println(i.getStock().getBusiness());
 		//
 		//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
 		//			System.out.println("date: "+i.getDate().get(Calendar.DAY_OF_MONTH)  );
@@ -62,7 +63,7 @@ public class DatabaseHandler {
 		//
 		//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
 		//			
-		//		}	
+				}	
 
 	}
 
@@ -417,7 +418,7 @@ public class DatabaseHandler {
 					System.out.println("error- while closing connection");
 				}
 		}
-		return new Stock( name, symbol, stockExchange, business);
+		return new Stock( name, symbol,  business, stockExchange);
 
 	}
 
@@ -633,4 +634,88 @@ public class DatabaseHandler {
 
 
 
+
+
+
+/**
+ * Method collects all QuarterlyData connected with a business from the database.
+ * 
+ * @param Stock 
+ * @return All QuarterltDat, connected with the given Stocks business, stored in a PriorityQueue prioritized after date.					
+ * 
+ * @author Runa Gulliksson
+ */
+public static PriorityQueue<QuarterlyData> getBusinessData(Stock stock){
+
+	String NAV = ""; //---
+	Calendar releaseDate = Calendar.getInstance();
+	double yield = 0;
+	double solidity = 0;
+	double dividentPerShare = 0;
+
+	double ROE = 0;							
+	double EPS = 0;								
+	double NAVPS = 0;							
+	double pricePerNAVPS = 0;						
+	double acidTestRatio = 0;						
+	double balanceLiquidity = 0;						
+	String workingCapital = "";		//------		
+	
+	PriorityQueue<QuarterlyData> dataList = new PriorityQueue<QuarterlyData>();
+
+	Connection con = null;
+	Statement st = null;
+	ResultSet rs = null;
+
+	try {
+
+		con = DriverManager.getConnection(url + userpass);
+		st = con.createStatement();
+		rs = st.executeQuery("SELECT * FROM QuarterlyData WHERE stock = ANY (SELECT symbol FROM stock WHERE business ='"+stock.getBusiness()+"')");
+		
+		while (rs.next()) {
+
+			releaseDate.setTime(rs.getDate("releasedate"));
+			releaseDate.set(Calendar.MONTH, (releaseDate.get(Calendar.MONTH)+1));
+			yield=rs.getDouble("yield");
+			solidity =rs.getDouble("solidity");
+			NAV=rs.getString("NAV");
+			dividentPerShare=rs.getDouble("dividentPerShare");
+			ROE = rs.getDouble("ROE");
+			EPS = rs.getDouble("EPS");
+			NAVPS = rs.getDouble("NAVPS");
+			pricePerNAVPS = rs.getDouble("pricePerNAVPS");
+			acidTestRatio = rs.getDouble("acidTestRatio");
+			balanceLiquidity = rs.getDouble("balanceLiquidity");
+			workingCapital = rs.getString("workingCapital");
+
+			dataList.add( new QuarterlyData(stock, releaseDate, yield, solidity, new LargeDouble(NAV), dividentPerShare, ROE,
+					EPS, NAVPS, pricePerNAVPS, acidTestRatio, balanceLiquidity, new LargeDouble(workingCapital)));
+		}
+
+
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}finally {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (st != null) {
+				st.close();
+			}
+			if (con != null) {
+				con.close();
+			}} catch (SQLException ex) {
+				System.out.println("error- while closing connection");
+			}
+	}
+	return dataList;
+
 }
+
+
+
+}
+

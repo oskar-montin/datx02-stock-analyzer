@@ -8,7 +8,7 @@ import java.util.Calendar;
  * @author oskarnylen
  */
 
-public class QuarterlyData implements MarketItem {
+public class QuarterlyData implements MarketItem, Comparable<QuarterlyData> {
 
 
 
@@ -144,6 +144,12 @@ public class QuarterlyData implements MarketItem {
 				+ ", pricePerNAVPS=" + pricePerNAVPS + ", acidTestRatio=" + acidTestRatio
 				+ ", balanceLiquidity=" + balanceLiquidity
 				+ ", workingCapital=" + workingCapital + "]";
+	}
+
+	@Override
+	public int compareTo(QuarterlyData o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
