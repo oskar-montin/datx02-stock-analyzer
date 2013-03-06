@@ -40,7 +40,6 @@ public class DatabaseHandler {
 		//} catch (Exception ex) {
 		// handle the error
 		//}
-
 		//	---- FOR TESTING ----
 		//		Calendar cal =Calendar.getInstance();
 		//		cal.set(Calendar.HOUR_OF_DAY, 10 );
@@ -49,13 +48,13 @@ public class DatabaseHandler {
 		//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
 		//
 		//
-				PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
+		//		PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
 		//	
 		//	
-				while(!data.isEmpty()){
-				QuarterlyData i = data.poll();
-					System.out.println(i.getStock().getSymbol());
-					System.out.println(i.getStock().getBusiness());
+		//		while(!data.isEmpty()){
+		//		QuarterlyData i = data.poll();
+		//			System.out.println(i.getStock().getSymbol());
+		//			System.out.println(i.getStock().getBusiness());
 		//
 		//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
 		//			System.out.println("date: "+i.getDate().get(Calendar.DAY_OF_MONTH)  );
@@ -63,7 +62,7 @@ public class DatabaseHandler {
 		//
 		//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
 		//			
-				}	
+		//		}	
 
 	}
 
@@ -647,7 +646,10 @@ public class DatabaseHandler {
  */
 public static PriorityQueue<QuarterlyData> getBusinessData(Stock stock){
 
+	Statement stS;
 	String NAV = ""; //---
+	String symbol="";
+	Stock businessStock = null;
 	Calendar releaseDate = Calendar.getInstance();
 	double yield = 0;
 	double solidity = 0;
@@ -671,10 +673,12 @@ public static PriorityQueue<QuarterlyData> getBusinessData(Stock stock){
 
 		con = DriverManager.getConnection(url + userpass);
 		st = con.createStatement();
+		stS = con.createStatement();
 		rs = st.executeQuery("SELECT * FROM QuarterlyData WHERE stock = ANY (SELECT symbol FROM stock WHERE business ='"+stock.getBusiness()+"')");
 		
 		while (rs.next()) {
 
+			symbol = rs.getString("stock");
 			releaseDate.setTime(rs.getDate("releasedate"));
 			releaseDate.set(Calendar.MONTH, (releaseDate.get(Calendar.MONTH)+1));
 			yield=rs.getDouble("yield");
@@ -689,7 +693,13 @@ public static PriorityQueue<QuarterlyData> getBusinessData(Stock stock){
 			balanceLiquidity = rs.getDouble("balanceLiquidity");
 			workingCapital = rs.getString("workingCapital");
 
-			dataList.add( new QuarterlyData(stock, releaseDate, yield, solidity, new LargeDouble(NAV), dividentPerShare, ROE,
+			ResultSet rsS = stS.executeQuery("SELECT * FROM stock WHERE symbol = '"+symbol+"'");
+			
+			if(rsS.next()){
+				businessStock = new Stock(rsS.getString("name"), rsS.getString("symbol"), rsS.getString("business"), rsS.getString("stockExchange") );
+			}
+			
+			dataList.add( new QuarterlyData(businessStock, releaseDate, yield, solidity, new LargeDouble(NAV), dividentPerShare, ROE,
 					EPS, NAVPS, pricePerNAVPS, acidTestRatio, balanceLiquidity, new LargeDouble(workingCapital)));
 		}
 

@@ -16,7 +16,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 
 	public LargeDouble(String s) {
 		String temp;
-		if(s.equals("") || s == null) {
+		if( s == null || s.equals("") ) {
 			this.fullString = null;
 			value = new BigDecimal(0);
 			return;
