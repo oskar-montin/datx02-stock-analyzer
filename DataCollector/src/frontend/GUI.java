@@ -60,7 +60,7 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 		else if(e.getSource() == setWaitTimeItem) {
-			String wt = JOptionPane.showInputDialog("Set desired wait time");
+			String wt = JOptionPane.showInputDialog("Set desired wait time", controller.getCurrentWaitTime());
 			while(true){
 				try {
 					long waitTime = Long.valueOf(wt).longValue();
@@ -89,9 +89,11 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		else if(e.getSource() == collectDailyDataButton) {
 			controller.collectDailyData();
+			JOptionPane.showMessageDialog(null, "Daily data collected.");
 		}
 		else if(e.getSource() == collectQuarterlyDataButton) {
 			controller.collectQuarterlyData();
+			JOptionPane.showMessageDialog(null, "Quarterly data collected.");
 		}
 		else if(e.getSource() == collectRealTimeDataButton) {
 			if(collectRealTimeDataButton.getText() == "Collect real-time data"){
