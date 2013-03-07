@@ -23,7 +23,7 @@ public class CSVParser {
 		returnString = str;
 		
 		if(returnString.equals("-") || returnString.equals("N/A") || returnString.equals("\"N/A\"")){
-			return Double.NEGATIVE_INFINITY;
+			return -Math.PI;
 		}
 		
 		else {

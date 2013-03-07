@@ -27,7 +27,7 @@ import data.Stock;
 
 public class DatabaseHandler {
 
-	private static String user="runa", password="123456",  url="jdbc:mysql://localhost:3306/test?";
+	private static String  url="jdbc:mysql://129.16.20.232:3306/test?";
 	private static String  userpass="user=root&password=123456";
 	private static DatabaseHandler dataBase;
 
@@ -41,14 +41,15 @@ public class DatabaseHandler {
 		// handle the error
 		//}
 		//	---- FOR TESTING ----
-		//		Calendar cal =Calendar.getInstance();
-		//		cal.set(Calendar.HOUR_OF_DAY, 10 );
-		//		addDate(cal);
-		//		addTime(cal);
-		//		addRTData(new RTData(getStock("symm"), cal, 212, 213));
+				Calendar cal =Calendar.getInstance();
+				cal.set(Calendar.MONTH, 7 );
+				addDate(cal);
+				//addTime(cal);
+				addStock(new Stock("name", "sym", "sfs", "bus"));
+				addQuarterlyData(new QuarterlyData(getStock("sym"), cal, 212, 213, new LargeDouble ("235"), 34, Double.MIN_VALUE, 567, 64, 34, 455,64, new LargeDouble ("46")));
 		//
 		//
-		//		PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
+				//PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
 		//	
 		//	
 		//		while(!data.isEmpty()){
