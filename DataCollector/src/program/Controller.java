@@ -19,7 +19,7 @@ import data.Stock;
 public class Controller {
 	private Settings settings;
 	private static Controller instance;
-	private final RealTimeThread realTimeThread;
+	private RealTimeThread realTimeThread;
 	private final ProgressInfo controllerProgress;
 
 	private Controller() {
@@ -65,9 +65,9 @@ public class Controller {
 	 */
 	public boolean addStock(String symbol, String name, String business, String stockExchange) {
 		Stock stock = new Stock(name, symbol, business, stockExchange);
-		if(!DatabaseHandler.addStock(stock)){
-			return false;
-		}
+		//if(!DatabaseHandler.addStock(stock)){
+			//return false;
+		//}
 		return settings.addSymbol(stock.getSymbol());
 	}
 
@@ -184,6 +184,9 @@ public class Controller {
 	 * Starts the real time thread to collect data.
 	 */
 	public void startRealTimeCollecting() {
+		if(this.realTimeThread==null) {
+			this.realTimeThread = new RealTimeThread();
+		}
 		this.realTimeThread.start();
 	}
 
@@ -191,7 +194,10 @@ public class Controller {
 	 * Stops the real time thread.
 	 */
 	public void stopRealTimeCollecting() {
-		this.realTimeThread.stopRT();
+		if(this.realTimeThread!=null) {
+			this.realTimeThread.stopRT();
+			this.realTimeThread = null;
+		}
 	}
 
 	private class RealTimeThread extends Thread{
