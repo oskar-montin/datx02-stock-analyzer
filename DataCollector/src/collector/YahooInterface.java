@@ -42,7 +42,7 @@ public class YahooInterface {
 		Calendar date = Calendar.getInstance();
 		String name;
 		String stockExchange;
-		
+
 		/*
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
 		 * necessary tag + keys + necessary tag.
@@ -84,7 +84,7 @@ public class YahooInterface {
 
 
 			if(reader != null) reader.close();
-			
+
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			System.err.println("MalformedURLException in getRTData: " + e.getMessage());
@@ -97,8 +97,8 @@ public class YahooInterface {
 
 		return RTDataPoint;
 	}
-	
-	
+
+
 	/**
 	 * Method that collects data from Yahoo into a DailyData-object. Also using CSVParser to be able to use the data
 	 * correctly. Supposed to be used once a day after the markets are closed.
@@ -144,8 +144,8 @@ public class YahooInterface {
 
 					YahooKeys.open +
 					YahooKeys.previousClose +
-					YahooKeys.highLimit +
-					YahooKeys.lowLimit +
+					YahooKeys.daysHigh +
+					YahooKeys.daysLow +
 					YahooKeys.volume +
 
 					YahooKeys.name +
@@ -206,7 +206,7 @@ public class YahooInterface {
 
 		return dailyDataPoint;
 	}
-	
+
 	/**
 	 * Method that collects data from Yahoo into a QuarterlyData-object. Also using CSVParser to be able to use the data
 	 * correctly. Supposed to be used four times a year.
@@ -232,13 +232,13 @@ public class YahooInterface {
 		double acidTestRatio;							// (current assets - inventory) / current liabilities
 		double balanceLiquidity;						// current assets / current liabilities
 		LargeDouble workingCapital;							// current assets - current liabilities
-		
+
 		LargeDouble assetsMinusInventory;
-		
+
 		Calendar date = Calendar.getInstance();
 		String name;
 		String stockExchange;
-		
+
 		/*
 		 * Fetch CSV data from YahooFinance. The URL consists of a base + symbol of the stock + 
 		 * necessary tag + keys + necessary tag.
@@ -246,9 +246,9 @@ public class YahooInterface {
 		try {
 			URL ulr = new URL(YahooKeys.baseURL + symbol + "&f=" +
 					YahooKeys.dividentYield +							//"Div & Yield" in %
-																		
+
 					YahooKeys.dividentPerShare +						//Divident / total shares
-					
+
 					YahooKeys.name +
 					YahooKeys.stockExchange +
 
@@ -267,35 +267,42 @@ public class YahooInterface {
 
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
 				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
-				
+
 				NAV = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.NAV));
-				
+
+
+
 				solidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)).
 						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalAssets)),4).toDouble();
 
-				ROE = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncome)).
-						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)),4).toDouble();
 
-				EPS = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncome)).
+				ROE = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
+						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)),4).toDouble();
+				
+
+				EPS = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
 						div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
-				
+
 				NAVPS = NAV.div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
-				
+
 				pricePerNAVPS = YahooInterface.getDailyData(symbol).getClosePrice()/NAVPS;
-				
-				assetsMinusInventory = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.inventory)));
-				
+
+				assetsMinusInventory = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
+						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.inventory)));
+
 				acidTestRatio = assetsMinusInventory.div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
-				
-				balanceLiquidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
-				
-				workingCapital = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)));
-				
+
+				balanceLiquidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
+						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
+
+				workingCapital = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
+						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)));
+
 				name = yahooStockInfo[2];
 				stockExchange = yahooStockInfo[3];
 
 				Stock stock = new Stock(name, symbol, stockExchange);
-				
+
 				quarterlyDataPoint = new QuarterlyData(stock, date, yield, 
 						solidity, NAV, dividentPerShare, ROE, EPS, NAVPS, pricePerNAVPS,
 						acidTestRatio, balanceLiquidity, workingCapital);

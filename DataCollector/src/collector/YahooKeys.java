@@ -85,6 +85,8 @@ public final class YahooKeys {
 	public final static String baseURL = "http://finance.yahoo.com/d/quotes.csv?s=";
 	
 	//Tags
+	
+
 	public final static String afterHoursChangeRT = "c8";
 	public final static String annualizedGain = "g3";
 	public final static String ask = "a";

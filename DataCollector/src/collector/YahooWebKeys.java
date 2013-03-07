@@ -47,6 +47,7 @@ public final class YahooWebKeys {
 	public final static String NAV = "Net Tangible Assets";
 	
 	public final static String netIncome = "Net Income";
+	
 	/**
 	 * net income applicable to common shares
 	 */

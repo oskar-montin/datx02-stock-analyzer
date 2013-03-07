@@ -61,7 +61,7 @@ public class YahooParser {
 						in.reset();
 						while((inputLine = in.readLine()) != null){
 							if(inputLine.contains("-")){
-								value = "";
+								value = "-1";
 								return value;
 							}
 							if(inputLine.matches(".*\\d.*")){
@@ -153,7 +153,7 @@ public class YahooParser {
 	public String resultParser(String symbol, String key) {
 		String value = "";
 		try {
-			URL oracle = new URL("http://finance.yahoo.com/q/is?s=" + symbol);
+			URL oracle = new URL("http://finance.yahoo.com/q/is?s=" + symbol + "+Income+Statement&annual");
 			URLConnection yc = oracle.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					yc.getInputStream()));
@@ -170,7 +170,7 @@ public class YahooParser {
 					in.reset();
 					while((inputLine = in.readLine()) != null){
 						if(inputLine.contains("-")){
-							value = "";
+							value = "-1";
 							return value;
 						}
 						if(inputLine.matches(".*\\d.*")){
@@ -210,7 +210,7 @@ public class YahooParser {
 		String returnValue = s.trim();
 
 		if(s.contains("N/A")){
-			return "";
+			return "-1";
 		}
 		if(s.contains(",")){
 			String temp = s.replace(",", "");
