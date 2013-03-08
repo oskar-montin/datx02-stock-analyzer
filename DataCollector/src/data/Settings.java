@@ -15,6 +15,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.PriorityQueue;
+
+import collector.DatabaseHandler;
 
 /**
  * 
@@ -32,8 +35,19 @@ public class Settings implements Serializable {
 	private LinkedList<String> symbols = new LinkedList<String>();
 	private long waitTime;
 	private Calendar dailyUpdateTime;
+
 	
 	private Settings() {
+		
+		PriorityQueue<Stock> queue = DatabaseHandler.getAllStocks();
+		
+		/**
+		 * Add already existing stocks into the settings file.
+		 */
+		while(queue.size() != 0){
+			this.addSymbol((queue.poll().getSymbol()));
+		}
+		
 		try {
 			Settings s = loadFromFile();
 			this.dailyUpdateTime = s.getDailyUpdateTime();
