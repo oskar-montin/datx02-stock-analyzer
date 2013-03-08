@@ -7,7 +7,7 @@ package data;
  * @author oskarnylen
  */
 
-public class Stock implements MarketItem {
+public class Stock implements MarketItem, Comparable<Stock> {
 
 	private String name;
 	private String symbol;
@@ -58,6 +58,14 @@ public class Stock implements MarketItem {
 	public String toString() {
 		return "Stock [name=" + name + ", symbol=" + symbol + ", business="
 				+ business + ", stockExchange=" + stockExchange + "]";
+	}
+
+
+
+	@Override
+	public int compareTo(Stock o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

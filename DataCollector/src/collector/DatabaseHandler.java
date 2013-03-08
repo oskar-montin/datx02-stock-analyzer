@@ -41,20 +41,22 @@ public class DatabaseHandler {
 		// handle the error
 		//}
 		//	---- FOR TESTING ----
+		System.out.println("start");
 				Calendar cal =Calendar.getInstance();
-				cal.set(Calendar.MONTH, 7 );
+		//		cal.set(Calendar.MONTH, 7 );
 				addDate(cal);
 				//addTime(cal);
-				addStock(new Stock("name", "sym", "sfs", "bus"));
-				addQuarterlyData(new QuarterlyData(getStock("sym"), cal, 212, 213, new LargeDouble ("235"), 34, Double.MIN_VALUE, 567, 64, 34, 455,64, new LargeDouble ("46")));
+		//		addStock(new Stock("name", "sym", "sfs", "bus"));
+		//		addQuarterlyData(new QuarterlyData(getStock("sym"), cal, 212, 213, new LargeDouble ("235"), 34, Double.MIN_VALUE, 567, 64, 34, 455,64, new LargeDouble ("46")));
 		//
 		//
-				//PriorityQueue<QuarterlyData> data = getBusinessData(getStock("symm"));
+				System.out.println("added");
+				PriorityQueue<Stock> data = getAllStocks();
 		//	
 		//	
-		//		while(!data.isEmpty()){
-		//		QuarterlyData i = data.poll();
-		//			System.out.println(i.getStock().getSymbol());
+				while(!data.isEmpty()){
+				Stock i = data.poll();
+					System.out.println(i.getSymbol());
 		//			System.out.println(i.getStock().getBusiness());
 		//
 		//			System.out.println("Month : "+i.getDate().get(Calendar.MONTH)  );
@@ -63,7 +65,7 @@ public class DatabaseHandler {
 		//
 		//			System.out.println("min: "+i.getDate().get(Calendar.MINUTE)  );
 		//			
-		//		}	
+				}	
 
 	}
 
@@ -133,6 +135,9 @@ public class DatabaseHandler {
 	 */
 	public static boolean addRTData(RTData entry){
 
+		addTime(entry.getDate());
+		addDate(entry.getDate());
+		addStock(entry.getStock());
 		Connection con = null;
 		Statement st = null;
 		String queryData = "INSERT INTO realTimeData (stock, date, time, price, orderBook) VALUES('"+entry.getStock().getSymbol()+"', "+getDate(entry.getDate())+", "+getTime(entry.getDate())+", '"+entry.getPrice()+"', '"+entry.getOrderBook()+"')";
@@ -176,6 +181,8 @@ public class DatabaseHandler {
 	public static boolean addDailyData(DailyData data){
 
 
+		addDate(data.getDate());
+		addStock(data.getStock());
 		Connection con = null;
 		Statement st = null;
 		String queryValues = "INSERT INTO DailyValues (stock, date, closePrice, openPrice, high, low, volume) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDate())+", '"+data.getClosePrice()+"', '"+data.getOpenPrice()+"', '"+data.getHigh()+"', '"+data.getLow()+"', '"+data.getVolume()+"')";
@@ -221,6 +228,9 @@ public class DatabaseHandler {
 	 */
 	public static boolean addQuarterlyData(QuarterlyData data){
 
+
+		addDate(data.getDateCollected());
+		addStock(data.getStock());
 		Connection con = null;
 		Statement st = null;
 		String query = "INSERT INTO quarterlyData(stock, releaseDate, yield, solidity, NAV, dividentPerShare, ROE, EPS, NAVPS, pricePerNAVPS, acidTestRatio, balanceLiquidity, workingCapital) VALUES('"+data.getStock().getSymbol()+"', "+ getDate(data.getDateCollected())+", '"+data.getDividendYield()+"', '"+data.getSolidity()+"', '"+data.getNAV().toString()+"', '"+data.getDividentPerShare()+"', '"+data.getROE()+"', '"+data.getEPS()+"', '"+data.getNAVPS()+"', '"+data.getPricePerNAVPS()+"', '"+data.getAcidTestRatio()+"', '"+data.getBalanceLiquidity()+"', '"+data.getWorkingCapital().toString()+"')";
@@ -633,6 +643,58 @@ public class DatabaseHandler {
 	}
 
 
+	/**
+	 * Method collects all stocks in database.
+	 *  
+	 * @return All stocks, stored in a PriorityQueue.					
+	 * 
+	 * @author Runa Gulliksson
+	 */
+	public static PriorityQueue<Stock> getAllStocks(){
+
+		String name="", symbol="", business="", stockExchange="";
+		PriorityQueue<Stock> dataList = new PriorityQueue<Stock>();
+
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			con = DriverManager.getConnection(url + userpass);
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT * From stock");
+
+			while (rs.next()) {
+				name=rs.getString("name");
+				symbol=rs.getString("symbol");
+				business=rs.getString("business");
+				stockExchange=rs.getString("stockExchange");
+
+				dataList.add( new Stock(name, symbol, business, stockExchange ));
+			}
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
+		return dataList;
+
+	}
 
 
 

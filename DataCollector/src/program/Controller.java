@@ -176,8 +176,6 @@ public class Controller {
 		int i = 0;
 		for(String symbol : this.settings.getSymbols()) {
 			RTData data = YahooInterface.getRTData(symbol);
-			//adds time for an rtData, here?
-			DatabaseHandler.addTime(data.getDate());
 			DatabaseHandler.addRTData(data);
 			
 			this.controllerProgress.update((i/size)*100, "Data added: "+symbol);
