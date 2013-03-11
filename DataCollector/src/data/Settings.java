@@ -38,6 +38,18 @@ public class Settings implements Serializable {
 
 	
 	private Settings() {
+		try {
+			Settings s = loadFromFile();
+			this.dailyUpdateTime = s.getDailyUpdateTime();
+			this.symbols = s.getSymbols();
+			this.waitTime = s.waitTime;
+			
+		} catch(Exception e) {
+			Calendar date = Calendar.getInstance();
+			date.set(0,0,0,12,0);
+			this.dailyUpdateTime = date;
+			this.waitTime = 60*15*1000;
+		}
 		
 		PriorityQueue<Stock> queue = DatabaseHandler.getAllStocks();
 		
@@ -46,19 +58,6 @@ public class Settings implements Serializable {
 		 */
 		while(queue.size() != 0){
 			this.addSymbol((queue.poll().getSymbol()));
-		}
-		
-		try {
-			Settings s = loadFromFile();
-			this.dailyUpdateTime = s.getDailyUpdateTime();
-			this.symbols.addAll(s.getSymbols());
-			this.waitTime = s.waitTime;
-			
-		} catch(Exception e) {
-			Calendar date = Calendar.getInstance();
-			date.set(0,0,0,12,0);
-			this.dailyUpdateTime = date;
-			this.waitTime = 60*15*1000;
 		}
 	}
 	
