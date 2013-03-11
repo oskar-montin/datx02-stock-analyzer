@@ -16,6 +16,9 @@ public class LargeDouble implements Comparable<LargeDouble>{
 
 	public LargeDouble(String s) {
 		String temp;
+		String temp2;
+		String temp3;
+
 		if( s == null || s.equals("") ) {
 			this.fullString = null;
 			value = new BigDecimal(0);
@@ -23,6 +26,7 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		} else {
 			this.fullString = s;
 		}
+		
 		if(s.contains("K")){
 			temp = s.replace("K", "e3");
 		}else if(s.contains("M")){
@@ -34,7 +38,11 @@ public class LargeDouble implements Comparable<LargeDouble>{
 		}else {
 			temp = s;
 		}
-		value = new BigDecimal(temp);
+		
+		temp2 = temp.replace("(", "");
+		temp3 = temp2.replace(")", "");
+		
+		value = new BigDecimal(temp3);
 	}
 
 	public LargeDouble(BigDecimal d) {
