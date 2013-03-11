@@ -51,7 +51,7 @@ public class Settings implements Serializable {
 		try {
 			Settings s = loadFromFile();
 			this.dailyUpdateTime = s.getDailyUpdateTime();
-			this.symbols = s.getSymbols();
+			this.symbols.addAll(s.getSymbols());
 			this.waitTime = s.waitTime;
 			
 		} catch(Exception e) {
@@ -123,6 +123,9 @@ public class Settings implements Serializable {
 	 * @return true if the symbol wasn't already in the list
 	 */
 	public boolean addSymbol(String symbol) {
+		if(symbols.contains(symbol)) {
+			return false;
+		}
 		return symbols.add(symbol);
 	}
 	
