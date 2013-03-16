@@ -216,6 +216,11 @@ public class YahooParser {
 			String temp = s.replace(",", "");
 			return temp;
 		}
+		if(s.contains("(") || s.contains(")")){
+			String temp = s.replace("(", "");
+			String temp2 = temp.replace(")", "");
+			return temp2;
+		}
 		if(s.contains("%")){
 			Double temp2;
 			String[] temp;
