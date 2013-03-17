@@ -265,59 +265,76 @@ public class YahooInterface {
 
 				String[] yahooStockInfo = inputLine.split(",");
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
-				
+
 				if(!yahooStockInfo[0].equals("N/A")){
 					dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
 				}else{
 					dividentPerShare = -Math.PI;
 				}
 
-				
-				
+
+
 				NAV = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.NAV));
 
 
+				if(!yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity).equals("-1") || 
+						!yp.balanceParser(symbol, YahooWebKeys.totalAssets).equals("-1")){
+					solidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)).
+							div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalAssets)),4).toDouble();
+				} else {
+					solidity = -Math.PI;
+				}
 
-				solidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)).
-						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalAssets)),4).toDouble();
+				if(!yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS).equals("-1") || 
+						!yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity).equals("-1")){
+					ROE = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
+							div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)),4).toDouble();
+				}else {
+					ROE = -Math.PI;
+				}
 
+				if(!yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS).equals("-1") || 
+						!yp.generalParser(symbol, YahooWebKeys.sharesOutstanding).equals("-1")){
+					EPS = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
+							div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
+				}else{
+					EPS = -Math.PI;
+				}
 
-				ROE = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
-						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalStockholderEquity)),4).toDouble();
-				
+				if(!NAV.equals("-1") || 
+						!yp.generalParser(symbol, YahooWebKeys.sharesOutstanding).equals("-1")){
+					NAVPS = NAV.div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
+				}else{
+					NAVPS = -Math.PI;
+				}
 
-				EPS = new LargeDouble(yp.resultParser(symbol, YahooWebKeys.netIncomeAPTCS)).
-						div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
+				if(NAVPS != -Math.PI || YahooInterface.getDailyData(symbol).getClosePrice() != -Math.PI){
+					pricePerNAVPS = YahooInterface.getDailyData(symbol).getClosePrice()/NAVPS;
+				}else{
+					pricePerNAVPS = -Math.PI;
+				}
 
-				NAVPS = NAV.div(new LargeDouble(yp.generalParser(symbol, YahooWebKeys.sharesOutstanding)),4).toDouble();
-
-				pricePerNAVPS = YahooInterface.getDailyData(symbol).getClosePrice()/NAVPS;
-
-				
 				assetsMinusInventory = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
 						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.inventory)));
+
 				if(!yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets).equals("-1") || 
 						!yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities).equals("-1")){
-
 					acidTestRatio = assetsMinusInventory.div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
-
 				}else{
 					acidTestRatio = -Math.PI;
 				}
-				
-				
-				
+
 				if(!yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets).equals("-1") || 
-				   !yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities).equals("-1")){
-					
+						!yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities).equals("-1")){
+
 					balanceLiquidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
 							div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
-					
+
 				}else{
 					balanceLiquidity = -Math.PI;
 				}
 
-				
+
 				workingCapital = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
 						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)));
 
