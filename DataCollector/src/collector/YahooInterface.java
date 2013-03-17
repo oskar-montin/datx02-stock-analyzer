@@ -264,10 +264,16 @@ public class YahooInterface {
 				YahooParser yp = new YahooParser();
 
 				String[] yahooStockInfo = inputLine.split(",");
-
 				yield = csvp.parseToDouble(yahooStockInfo[0]);
-				dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
+				
+				if(!yahooStockInfo[0].equals("N/A")){
+					dividentPerShare = csvp.parseToDouble(yahooStockInfo[1]);
+				}else{
+					dividentPerShare = -Math.PI;
+				}
 
+				
+				
 				NAV = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.NAV));
 
 
@@ -287,14 +293,31 @@ public class YahooInterface {
 
 				pricePerNAVPS = YahooInterface.getDailyData(symbol).getClosePrice()/NAVPS;
 
+				
 				assetsMinusInventory = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
 						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.inventory)));
+				if(!yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets).equals("-1") || 
+						!yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities).equals("-1")){
 
-				acidTestRatio = assetsMinusInventory.div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
+					acidTestRatio = assetsMinusInventory.div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
 
-				balanceLiquidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
-						div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
+				}else{
+					acidTestRatio = -Math.PI;
+				}
+				
+				
+				
+				if(!yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets).equals("-1") || 
+				   !yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities).equals("-1")){
+					
+					balanceLiquidity = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
+							div(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)), 4).toDouble();
+					
+				}else{
+					balanceLiquidity = -Math.PI;
+				}
 
+				
 				workingCapital = new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentAssets)).
 						sub(new LargeDouble(yp.balanceParser(symbol, YahooWebKeys.totalCurrentLiabilities)));
 

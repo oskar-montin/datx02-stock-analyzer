@@ -22,7 +22,8 @@ public class CSVParser {
 	public double parseToDouble(String str){
 		returnString = str;
 		
-		if(returnString.equals("-") || returnString.equals("N/A") || returnString.equals("\"N/A\"")){
+		if(returnString.equals("-") || returnString.equals("N/A") || returnString.equals("\"N/A\"") 
+				|| returnString.equals("Missing Format Variable.")){
 			return -Math.PI;
 		}
 		
