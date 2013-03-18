@@ -1,6 +1,7 @@
 package data;
 
 import java.util.Calendar;
+import java.util.Comparator;
 
 /**
  * Datatype of the closing price (daily) keys and values.
@@ -164,4 +165,20 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 		return this.getDate().compareTo(o.getDate());
 	}
 	
+	public int compareDateTo(DailyData o) {
+		return this.getDate().compareTo(o.getDate());
+	}
+	
+	public static Comparator<DailyData> getDateComperator() {
+		Comparator<DailyData> comp = new Comparator<DailyData>() {
+
+			@Override
+			public int compare(DailyData o1, DailyData o2) {
+				return o1.compareDateTo(o2);
+			}
+			
+		};
+		return comp;
+		
+	}
 }
