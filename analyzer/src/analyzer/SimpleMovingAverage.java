@@ -43,14 +43,13 @@ public class SimpleMovingAverage {
 			movingAverageList.add(new SimpleData(dailyDataList.get(i)));
 			for(int j = 0; j < offset; j++){
 				total = total + dailyDataList.get(i+j).getClosePrice();
-				System.out.println(total);
 			}
 			movingAverageList.get(i).setClosePrice(total/offset);
 		}
-		System.out.println("SMA: " + movingAverageList);
 	}
 	
 	public LinkedList<SimpleData> getMovingAverage(){
+		Collections.reverse(movingAverageList);
 		return movingAverageList;
 	}
 }
