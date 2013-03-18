@@ -46,7 +46,7 @@ public class RTData implements MarketItem, Comparable<RTData> {
 	@Override
 	public String toString() {
 		return "RTData [stock=" + stock + ", date=[" + date.get(Calendar.HOUR_OF_DAY) +
-				", " + date.get(Calendar.MINUTE) + ", " + date.get(Calendar.SECOND) + ", price=" + price
+				", " + date.get(Calendar.MINUTE) + "], " + date.get(Calendar.SECOND) + ", price=" + price
 				+ ", orderBook=" + orderBook + "]";
 	}
 	

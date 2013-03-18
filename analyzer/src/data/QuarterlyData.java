@@ -132,7 +132,7 @@ public class QuarterlyData implements MarketItem, Comparable<QuarterlyData> {
 	public String toString() {
 		return "QuarterlyData [stock=" + stock + ", dateCollected=[" 
 				+ dateCollected.get(Calendar.YEAR) + ", " + (dateCollected.get(Calendar.MONTH) + 1)
-				+ ", solidity=" + solidity
+				+ "], solidity=" + solidity
 				+ ", NAV=" + NAV + ", dividentPerShare=" + dividentPerShare
 				+ ", ROE=" + ROE + ", EPS=" + EPS + ", NAVPS=" + NAVPS
 				+ ", pricePerNAVPS=" + pricePerNAVPS + ", acidTestRatio=" + acidTestRatio
