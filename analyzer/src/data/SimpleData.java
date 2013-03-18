@@ -64,8 +64,8 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	
 	@Override
 	public String toString() {
-		return "SimpleData [stock=" + stock + ", date=" + date
-				+ ", closePrice=" + closePrice + "]";
+		return "SimpleData [stock=" + stock + ", [date=" + date.get(Calendar.YEAR) 
+				+ "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.DAY_OF_MONTH) + "], [closePrice=" + closePrice + "]";
 	}
 
 

@@ -32,8 +32,6 @@ public class DatabaseHandler {
 	private static DatabaseHandler dataBase;
 
 
-
-
 	/**
 	 * Method generates a value-string for a date
 	 * helpmethod for inserting a date database
