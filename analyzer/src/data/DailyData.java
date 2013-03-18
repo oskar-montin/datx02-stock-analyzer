@@ -151,7 +151,8 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 	
 	@Override
 	public String toString() {
-		return "DailyData [stock=" + stock + ", date=" + date + ", marketCap="
+		return "DailyData [stock=" + stock + ", date=[" + date.get(Calendar.YEAR) 
+				+ ", " + (date.get(Calendar.MONTH)+1) + ", " + date.get(Calendar.DAY_OF_MONTH) + "], marketCap="
 				+ marketCap + ", dividentYield=" + dividentYield + ", PE=" + PE
 				+ ", PS=" + PS + ", PEG=" + PEG + ", openPrice=" + openPrice
 				+ ", closePrice=" + closePrice + ", high=" + high + ", low="
