@@ -12,7 +12,7 @@ public class ROCHandler {
 	
 	private DailyData[] dailyData;
 	private RateOfChange[] rocList;
-	private Double[] maxScope = new Double[2];
+	private Double[] maxScope;
 	private Double[] midScope = new Double[2];
 	private Double[] normalScope = new Double[2];
 	private int period;
@@ -31,6 +31,33 @@ public class ROCHandler {
 		this.period = period;
 		createRocArray();
 		
+	}
+	
+	private void calculateMaxScope() {
+		this.maxScope = new Double[]{new Double(0),new Double(0)};
+		if(this.rocList.length<=0)
+			return;
+		Double max = Double.NEGATIVE_INFINITY;
+		Double min = Double.POSITIVE_INFINITY;
+		Double temp = 0.0;
+		for(RateOfChange roc:rocList) {
+			//Om v vill avrunda (ceil)
+			max = Math.ceil(Math.max(max, roc.getRate()));
+			min = (double) Math.round(Math.min(min, roc.getRate()));
+			//Om vi vill ha jämnvikt i omfånget ex: [-5,5], [-2,2], [-8,8]
+			temp = Math.max(Math.abs(max), Math.abs(min));
+			this.maxScope[0] = -temp;
+			this.maxScope[1] = temp;
+			//Annars om vi vill kunna ha ex [-1,4]: 
+			//this.maxScope[0] = min; this.maxScope[1] = max;
+		}
+	}
+	
+	public Double[] getMaxScope() {
+		if(this.maxScope == null) {
+			calculateMaxScope();
+		}
+		return this.maxScope;
 	}
 	
 	private void createRocArray() {
