@@ -22,7 +22,7 @@ import data.Stock;
 
 /**
  * DatabaseHandler is a CLASS that adds and collects data from database.
- * IMPORTANT- always add date (and time) separately before adding data connected whit that date (and time).
+ * 
  */
 
 public class DatabaseHandler {
