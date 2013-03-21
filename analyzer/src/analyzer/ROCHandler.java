@@ -13,8 +13,6 @@ public class ROCHandler {
 	private DailyData[] dailyData;
 	private RateOfChange[] rocList;
 	private Double[] maxScope;
-	private Double[] midScope = new Double[2];
-	private Double[] normalScope = new Double[2];
 	private int period;
 	
 	public ROCHandler(PriorityQueue<DailyData> dailyData, int period) {
@@ -33,31 +31,74 @@ public class ROCHandler {
 		
 	}
 	
-	private void calculateMaxScope() {
-		this.maxScope = new Double[]{new Double(0),new Double(0)};
-		if(this.rocList.length<=0)
-			return;
-		Double max = Double.NEGATIVE_INFINITY;
-		Double min = Double.POSITIVE_INFINITY;
-		Double temp = 0.0;
-		for(RateOfChange roc:rocList) {
-			//Om v vill avrunda (ceil)
-			max = Math.ceil(Math.max(max, roc.getRate()));
-			min = (double) Math.round(Math.min(min, roc.getRate()));
-			//Om vi vill ha jämnvikt i omfånget ex: [-5,5], [-2,2], [-8,8]
-			temp = Math.max(Math.abs(max), Math.abs(min));
-			this.maxScope[0] = -temp;
-			this.maxScope[1] = temp;
-			//Annars om vi vill kunna ha ex [-1,4]: 
-			//this.maxScope[0] = min; this.maxScope[1] = max;
+	/**
+	 * 
+	 * @param boundPercent a double larger than 0 and lesser or equal to 100 representing in % how large share 
+	 * of all the roc-values that must be within the returned scope, example: a boundPercent of 100 
+	 * will give the max scope while a boundPercent of 50 will return a scope that holds for half of the roc's.
+	 * @param equilibrium if true the return scope will take the form 
+	 * {-Max(Abs(minValue),Abs(maxValue)),Max(Abs(minValue),Abs(maxValue))}, if false: 
+	 * {minValue,maxValue)
+	 * 
+	 * @return the scope that holds for boundPercent % of all rates of changes for this roc handler
+	 */
+	public Double[] getScope(double boundPercent, boolean equilibrium) {
+		if(boundPercent<=0 || boundPercent>100) {
+			throw new IllegalArgumentException("rate must be 0<boundPercent<=100");
 		}
+		Double[] scope;
+		Double maxRate;
+		int i = ((int) (this.rocList.length*(boundPercent/100))-1);
+		i = i<0 ? 0:i; //We don't like index out of bounds :)
+		Arrays.sort(this.rocList,RateOfChange.getRateComparator(true));
+		
+		if(equilibrium) {
+			maxRate = this.rocList[i].getRate();
+			scope = new Double[]{-Math.abs(maxRate),Math.abs(maxRate)};
+		} else { // n < (2*n log n)
+			Double max = Double.NEGATIVE_INFINITY;
+			Double min = Double.POSITIVE_INFINITY;
+			for(int k = 0, nr = 0; k<this.rocList.length && nr<=i; k++ ) {
+				if(this.rocList[k].getRate() > max) {
+					if(nr!=(i-1) || min>=0) {
+						max = this.rocList[k].getRate();
+						if(this.rocList[k].getRate()>=0) {
+							nr++;
+						}
+					}
+				}
+				if(this.rocList[k].getRate() < min) {
+					if(nr!=(i-1) || max>=0) {
+						min = this.rocList[k].getRate();
+						if(this.rocList[k].getRate()<0) {
+							nr++;
+						}
+					}
+				}
+			}
+			
+			 
+			scope = new Double[]{-Math.abs(min),Math.abs(max)};
+		}
+		return scope;
 	}
 	
-	public Double[] getMaxScope() {
-		if(this.maxScope == null) {
-			calculateMaxScope();
+	/**
+	 * @param equilibrium if true the return scope will take the form 
+	 * {-Max(Abs(minValue),Abs(maxValue)),Max(Abs(minValue),Abs(maxValue))}, if false: 
+	 * {minValue,maxValue)
+	 * 
+	 * @return the max scope of the this rate of change object
+	 */
+	public Double[] getMaxScope(boolean equilibrium) {
+		if(equilibrium) {
+			if(this.maxScope==null) {
+				this.maxScope=getScope(100,equilibrium);
+			}
+			return this.maxScope;
+		} else {
+			return getScope(100, equilibrium);
 		}
-		return this.maxScope;
 	}
 	
 	private void createRocArray() {
