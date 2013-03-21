@@ -19,17 +19,6 @@ public class RelativeStrengthIndex {
 	private double avgGain, avgLoss;
 	private String stock;
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-//		-----For testing-----
-//		RelativeStrengthIndex rsi = new RelativeStrengthIndex(DatabaseHandler.getStock("AAPL"), 2 );
-//		LinkedList<Double> rsList = rsi.getRSI();
-//		while (!rsList.isEmpty()){
-//			System.out.println(rsList.removeLast());
-//		}
-	}
 
 	/**
 	 * Constructor that collects data for a specific stock and calculates RSI
@@ -41,8 +30,39 @@ public class RelativeStrengthIndex {
 	public RelativeStrengthIndex(Stock stock, int offset) {
 		
 		dailyDataQueue = DatabaseHandler.getDailyData(stock);
-		RSI = new LinkedList<Double>();
 		this.stock = stock.getSymbol();
+		this.CalculateRSI(dailyDataQueue, offset);
+		
+	}
+	
+	/**
+	 * Return RSI-valuelist
+	 * 
+	 * @return Linkedlist of RSI-values oldest first.
+	 */
+	
+	public LinkedList<Double> getRSI(){
+		return RSI;
+	}
+
+	/**
+	 * Return stock connected with this instance.
+	 * 
+	 * @return symbol for stock.
+	 */
+	public String getStock(){
+		return stock;
+	}
+
+	/**
+	 * Calculates RSI values.
+	 * 
+	 * @param PriorityQueue with dailyData.
+	 * @param Number of periods for RSI calculation
+	 * @return LinkedList with all RSI-values, oldest first.
+	 */
+	private void CalculateRSI(PriorityQueue<DailyData> dailyDataQueue, int offset){
+		RSI = new LinkedList<Double>();
 		double sumGain = 0, sumLoss = 0, diff;
 		DailyData now, priv;
 		
@@ -91,25 +111,29 @@ public class RelativeStrengthIndex {
 		
 		else System.out.println("error in RSI: to large period.");
 		
+		
 	}
 	
 	/**
-	 * Return RSI-valuelist
-	 * 
-	 * @return Linkedlist of RSI-values oldest first.
-	 */
-	
-	public LinkedList<Double> getRSI(){
-		return RSI;
-	}
-
-	/**
-	 * Return stock connected with this instance.
+	 * Add day to RSI. /// migth not be needed
 	 * 
 	 * @return symbol for stock.
 	 */
-	public String getStock(){
-		return stock;
+	private void addDay(double avgGain, double avgLoss, DailyData old, DailyData newDay ){
+	
 	}
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+//		-----For testing-----
+//		RelativeStrengthIndex rsi = new RelativeStrengthIndex(DatabaseHandler.getStock("AAPL"), 8 );
+//		LinkedList<Double> rsList = rsi.getRSI();
+//		while (!rsList.isEmpty()){
+//			System.out.println(rsList.removeLast());
+//		}
+	}
+
 
 }
