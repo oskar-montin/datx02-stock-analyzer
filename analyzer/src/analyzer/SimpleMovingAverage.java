@@ -25,6 +25,9 @@ public class SimpleMovingAverage {
 	 * @param offset - The number of days the SMA should be set to.
 	 */
 	public SimpleMovingAverage(Stock stock, int offset){
+		if(offset < 1 || offset > DatabaseHandler.getDailyData(stock).size()){
+			System.out.println("Too big or small offset");
+		}
 		
 		dailyDataList = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock));
 
@@ -49,7 +52,6 @@ public class SimpleMovingAverage {
 	}
 	
 	public LinkedList<SimpleData> getMovingAverage(){
-		Collections.reverse(movingAverageList);
 		return movingAverageList;
 	}
 }

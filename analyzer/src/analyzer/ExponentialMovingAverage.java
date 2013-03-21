@@ -27,23 +27,28 @@ public class ExponentialMovingAverage {
 	 * @param offset
 	 */
 	public ExponentialMovingAverage(Stock stock, int offset){
-
+		if(offset < 1 || offset > DatabaseHandler.getDailyData(stock).size()){
+			System.out.println("Too big or small offset");
+		}
+		
 		dailyDataList = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock));
 		Collections.reverse(dailyDataList);
 
 		movingAverageList = new SimpleMovingAverage(stock, offset).getMovingAverage();
-		Collections.reverse(movingAverageList);
 
+		
 		/*
 		 * Make sure that the dailyDataList has the same number of entries (with the same dates) as movingAverageList
 		 */
-		for(int i = movingAverageList.size(); i < dailyDataList.size(); i++){
-			dailyDataList.removeLast();
+		for(int i = offset-1; i > 0; i--){
+			dailyDataList.removeLast().getClosePrice();
 		}
 
+		
+		
 		Collections.reverse(movingAverageList);
-		Collections.reverse(dailyDataList);
 
+		
 		/*
 		 * Make sure that the first EMA is the same as the SMA for the same period
 		 */
@@ -52,12 +57,15 @@ public class ExponentialMovingAverage {
 
 		LinkedList<Double> priceList = new LinkedList<Double>();
 
+		Collections.reverse(dailyDataList);
 
 		for(int i = 0; !dailyDataList.isEmpty(); i++){
 			if(i == 0){
 				priceList.add(yesterdayEMA);
+				
 				dailyDataList.poll();
 			} else {
+				
 				DailyData sd = dailyDataList.poll();
 				//call the EMA calculation
 				double EMA = CalculateEMA(sd.getClosePrice(), offset, yesterdayEMA);
@@ -74,12 +82,12 @@ public class ExponentialMovingAverage {
 		for(int i = 0; i < priceList.size()-1; i++){
 			movingAverageList.get(i).setClosePrice(priceList.get(i));
 		}
+		movingAverageList.getLast().setClosePrice(priceList.getLast());
 	}
 
-
-	public double CalculateEMA(double todaysPrice, double numberOfDays, double EMAYesterday){
+	private double CalculateEMA(double todaysPrice, double numberOfDays, double EMAYesterday){
 		double k = 2 / (numberOfDays + 1);
-		return (todaysPrice * k) + (EMAYesterday * (1-k));
+		return (todaysPrice*k) + (EMAYesterday*(1-k));
 	}
 
 	public LinkedList<SimpleData> getMovingAverage(){
