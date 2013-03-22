@@ -51,15 +51,12 @@ public class SimpleData implements MarketItem, Comparable<SimpleData> {
 	public double getValue() {
 		return value;
 	}
-	
-	public void setClosePrice(double price){
-		value = price;
-	}
+
 	
 	@Override
 	public String toString() {
 		return "SimpleData [stock=" + stock + ", [date=" + date.get(Calendar.YEAR) 
-				+ "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.DAY_OF_MONTH) + "], [closePrice=" + value + "]";
+				+ "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.DAY_OF_MONTH) + "], [value=" + value + "]";
 	}
 
 
