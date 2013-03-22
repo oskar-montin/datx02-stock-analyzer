@@ -26,7 +26,7 @@ public class SimpleMovingAverage {
 	 */
 	public SimpleMovingAverage(Stock stock, int offset){
 		if(offset < 1 || offset > DatabaseHandler.getDailyData(stock).size()){
-			System.out.println("Too big or small offset");
+			throw new IllegalArgumentException();
 		}
 		
 		dailyDataList = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock));

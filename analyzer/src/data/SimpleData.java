@@ -14,7 +14,7 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	private Stock stock;
 	private Calendar date;
 	
-	private double closePrice;
+	private double value;
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	public SimpleData(Stock stock, Calendar date, double closePrice) {
 		this.stock = stock;
 		this.date = date;
-		this.closePrice = closePrice;
+		this.value = closePrice;
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	public SimpleData(DailyData dd) {
 		this.stock = dd.getStock();
 		this.date = dd.getDate();
-		this.closePrice = dd.getClosePrice();
+		this.value = dd.getClosePrice();
 	}
 	
 
@@ -48,11 +48,11 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	}
 
 	public double getClosePrice() {
-		return closePrice;
+		return value;
 	}
 	
 	public void setClosePrice(double price){
-		closePrice = price;
+		value = price;
 	}
 	
 
@@ -65,7 +65,7 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	@Override
 	public String toString() {
 		return "SimpleData [stock=" + stock + ", [date=" + date.get(Calendar.YEAR) 
-				+ "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.DAY_OF_MONTH) + "], [closePrice=" + closePrice + "]";
+				+ "-" + (date.get(Calendar.MONTH)+1) + "-" + date.get(Calendar.DAY_OF_MONTH) + "], [closePrice=" + value + "]";
 	}
 
 
