@@ -1,6 +1,7 @@
 package data;
 
 import java.util.Calendar;
+import java.util.Comparator;
 
 /**
  * Datatype of the closing price (daily) keys and values.
@@ -8,7 +9,7 @@ import java.util.Calendar;
  * @author oskarnylen, 
  */
 
-public class SimpleData implements MarketItem, Comparable<DailyData> {
+public class SimpleData implements MarketItem, Comparable<SimpleData> {
 
 
 	private Stock stock;
@@ -22,10 +23,10 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	 * @param date
 	 * @param closePrice
 	 */
-	public SimpleData(Stock stock, Calendar date, double closePrice) {
+	public SimpleData(Stock stock, Calendar date, double value) {
 		this.stock = stock;
 		this.date = date;
-		this.value = closePrice;
+		this.value = value;
 	}
 	
 	/**
@@ -47,20 +48,13 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 		return date;
 	}
 
-	public double getClosePrice() {
+	public double getValue() {
 		return value;
 	}
 	
 	public void setClosePrice(double price){
 		value = price;
 	}
-	
-
-	@Override
-	public int compareTo(DailyData o) {
-		return this.getDate().compareTo(o.getDate());
-	}
-
 	
 	@Override
 	public String toString() {
@@ -80,6 +74,42 @@ public class SimpleData implements MarketItem, Comparable<DailyData> {
 	public String getSymbol() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int compareTo(SimpleData o) {
+		return this.getDate().compareTo(o.getDate());
+	}
+	
+	public static Comparator<SimpleData> getValueComparator(final boolean abs) {
+		Comparator<SimpleData> comp = new Comparator<SimpleData>() {
+
+			@Override
+			public int compare(SimpleData o1, SimpleData o2) {
+				if(abs) {
+					Double d1 = Math.abs(o1.getValue());
+					Double d2 = Math.abs(o2.getValue());
+					return d1.compareTo(d2);
+				} else {
+					return new Double(o1.getValue()).compareTo(o2.getValue());
+				}
+			}
+			
+		};
+		return comp;
+	}
+	
+	public static Comparator<SimpleData> getDateComperator() {
+		Comparator<SimpleData> comp = new Comparator<SimpleData>() {
+
+			@Override
+			public int compare(SimpleData o1, SimpleData o2) {
+				return o1.getDate().compareTo(o2.getDate());
+			}
+			
+		};
+		return comp;
+		
 	}
 	
 }
