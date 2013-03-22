@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import data.DailyData;
+import data.SimpleData;
 import data.Stock;
 
 /**
@@ -15,9 +16,9 @@ import data.Stock;
 public class RelativeStrengthIndex {
 
 	private PriorityQueue<DailyData> dailyDataQueue;
-	private LinkedList<Double> RSI; // oldest first
+	private LinkedList<SimpleData> RSI; // oldest first
 	private double avgGain, avgLoss;
-	private String stock;
+	private Stock stock;
 	
 
 	/**
@@ -27,10 +28,10 @@ public class RelativeStrengthIndex {
 	 * @param stock
 	 * @param offset - The number of days used for the RSI.
 	 */
-	public RelativeStrengthIndex(Stock stock, int offset) {
+	public RelativeStrengthIndex(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
 		
-		dailyDataQueue = DatabaseHandler.getDailyData(stock);
-		this.stock = stock.getSymbol();
+		dailyDataQueue = dailyData;
+		this.stock = stock;
 		this.CalculateRSI(dailyDataQueue, offset);
 		
 	}
@@ -41,7 +42,7 @@ public class RelativeStrengthIndex {
 	 * @return Linkedlist of RSI-values oldest first.
 	 */
 	
-	public LinkedList<Double> getRSI(){
+	public LinkedList<SimpleData> getRSI(){
 		return RSI;
 	}
 
@@ -50,7 +51,7 @@ public class RelativeStrengthIndex {
 	 * 
 	 * @return symbol for stock.
 	 */
-	public String getStock(){
+	public Stock getStock(){
 		return stock;
 	}
 
@@ -62,9 +63,9 @@ public class RelativeStrengthIndex {
 	 * @return LinkedList with all RSI-values, oldest first.
 	 */
 	private void CalculateRSI(PriorityQueue<DailyData> dailyDataQueue, int offset){
-		RSI = new LinkedList<Double>();
+		RSI = new LinkedList<SimpleData>();
 		double sumGain = 0, sumLoss = 0, diff;
-		DailyData now, priv;
+		DailyData now = null, priv;
 		
 		if (dailyDataQueue.size()>=offset+1){
 			
@@ -86,7 +87,7 @@ public class RelativeStrengthIndex {
 			
 			avgGain = sumGain/offset;
 			avgLoss = sumLoss/offset;
-			RSI.add(100-100/(1+avgGain/avgLoss));
+			RSI.add(new SimpleData(stock, now.getDate(), (100-100/(1+avgGain/avgLoss))));
 			
 			while(!dailyDataQueue.isEmpty()){
 				
@@ -94,17 +95,18 @@ public class RelativeStrengthIndex {
 				diff=now.getClosePrice()-priv.getClosePrice();
 				
 				if(diff>0){
-					avgGain=(avgGain*13+diff)/offset;
-					avgLoss=(avgLoss*13)/offset;
+					avgGain=(avgGain*(offset-1)+diff)/offset;
+					avgLoss=(avgLoss*(offset-1))/offset;
 				}
 				else{
-					avgGain=(avgGain*13)/offset;
-					avgLoss=(avgLoss*13+diff)/offset;
+					avgGain=(avgGain*(offset-1))/offset;
+					avgLoss=(avgLoss*(offset-1)-diff)/offset;
 					
 				}
+				
+				RSI.add(new SimpleData(stock, now.getDate(), (100-100/(1+avgGain/avgLoss))));
 
-				RSI.add(100-100/(1+avgGain/avgLoss));
-
+				priv=now;
 			}
 
 		}
@@ -128,11 +130,11 @@ public class RelativeStrengthIndex {
 	 */
 	public static void main(String[] args) {
 //		-----For testing-----
-//		RelativeStrengthIndex rsi = new RelativeStrengthIndex(DatabaseHandler.getStock("AAPL"), 8 );
-//		LinkedList<Double> rsList = rsi.getRSI();
-//		while (!rsList.isEmpty()){
-//			System.out.println(rsList.removeLast());
-//		}
+		RelativeStrengthIndex rsi = new RelativeStrengthIndex(DatabaseHandler.getStock("AAPL"), DatabaseHandler.getDailyData(DatabaseHandler.getStock("AAPL")) , 4);
+		LinkedList<SimpleData> rsList = rsi.getRSI();
+		while (!rsList.isEmpty()){
+			System.out.println(rsList.removeLast().getValue());
+		}
 	}
 
 
