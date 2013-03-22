@@ -7,26 +7,28 @@ import java.util.PriorityQueue;
 
 import data.DailyData;
 import data.RateOfChange;
+import data.SimpleData;
 
 public class ROCHandler {
 	
 	private DailyData[] dailyData;
-	private RateOfChange[] rocList;
+	private SimpleData[] rocList;
 	private Double[] maxScope;
 	private int period;
 	
-	public ROCHandler(PriorityQueue<DailyData> dailyData, int period) {
+	public ROCHandler(PriorityQueue<DailyData> dailyData, int offset) {
 		if(dailyData == null) {
 			throw new NullPointerException("dailyData == null");
 		}
 		if(period>=dailyData.size()) {
 			throw new IllegalArgumentException("Period > size of data");
 		} 
+		this.period = offset;
 		
 		this.dailyData = new DailyData[dailyData.size()];
 		this.dailyData = dailyData.toArray(this.dailyData);
-		rocList = new RateOfChange[dailyData.size()-period];
-		this.period = period;
+		rocList = new SimpleData[dailyData.size()-period];
+		this.period = offset;
 		createRocArray();
 		
 	}
@@ -50,27 +52,27 @@ public class ROCHandler {
 		Double maxRate;
 		int i = ((int) (this.rocList.length*(boundPercent/100))-1);
 		i = i<0 ? 0:i; //We don't like index out of bounds :)
-		Arrays.sort(this.rocList,RateOfChange.getRateComparator(true));
+		Arrays.sort(this.rocList,SimpleData.getValueComparator(true));
 		
 		if(equilibrium) {
-			maxRate = this.rocList[i].getRate();
+			maxRate = this.rocList[i].getValue();
 			scope = new Double[]{-Math.abs(maxRate),Math.abs(maxRate)};
-		} else { // n < (2*n log n)
+		} else { 
 			Double max = Double.NEGATIVE_INFINITY;
 			Double min = Double.POSITIVE_INFINITY;
 			for(int k = 0, nr = 0; k<this.rocList.length && nr<=i; k++ ) {
-				if(this.rocList[k].getRate() > max) {
+				if(this.rocList[k].getValue() > max) {
 					if(nr!=(i-1) || min>=0) {
-						max = this.rocList[k].getRate();
-						if(this.rocList[k].getRate()>=0) {
+						max = this.rocList[k].getValue();
+						if(this.rocList[k].getValue()>=0) {
 							nr++;
 						}
 					}
 				}
-				if(this.rocList[k].getRate() < min) {
+				if(this.rocList[k].getValue() < min) {
 					if(nr!=(i-1) || max>=0) {
-						min = this.rocList[k].getRate();
-						if(this.rocList[k].getRate()<0) {
+						min = this.rocList[k].getValue();
+						if(this.rocList[k].getValue()<0) {
 							nr++;
 						}
 					}
@@ -107,22 +109,22 @@ public class ROCHandler {
 		}
 	}
 	
-	public static RateOfChange getROC(PriorityQueue<DailyData> dailyData, Calendar t, int period) {
+	public static SimpleData getROC(PriorityQueue<DailyData> dailyData, Calendar t, int period) {
 		return getROC(dailyData,new DailyData(null, t, null, 0, 0, 0, 0, 0, 0, 0, 0, 0),period);
 	}
 	
-	public static RateOfChange getROC(PriorityQueue<DailyData> dailyData, DailyData t, int period) {
+	public static SimpleData getROC(PriorityQueue<DailyData> dailyData, DailyData t, int period) {
 		DailyData[] temp = new DailyData[dailyData.size()];
 		temp = dailyData.toArray(temp);
 		int tIndex = Arrays.binarySearch(temp,t,DailyData.getDateComperator());
 		return getROC(temp,tIndex,period);
 	}	
 	
-	private static RateOfChange getROC(DailyData[] dailyData, int t, int n) {
+	private static SimpleData getROC(DailyData[] dailyData, int t, int n) {
 		if(t<n || t<0) {
 			return null;
 		}
 		Double rate = 100*(dailyData[t].getClosePrice()-dailyData[t-n].getClosePrice())/dailyData[t-n].getClosePrice();
-		return new RateOfChange(dailyData[t].getStock(),dailyData[t].getDate(),rate);
+		return new SimpleData(dailyData[t].getStock(),dailyData[t].getDate(),rate);
 	}
 }
