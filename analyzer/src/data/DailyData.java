@@ -9,13 +9,7 @@ import java.util.Comparator;
  * @author oskarnylen, 
  */
 
-public class DailyData implements MarketItem, Comparable<DailyData> {
-
-
-
-	private Stock stock;
-	private Calendar date;
-	
+public class DailyData extends SimpleData implements MarketItem{
 
 	/* KEYS */
 	private LargeDouble marketCap;
@@ -30,8 +24,7 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 	private double high;
 	private double low;
 	private long volume;
-	
-	
+
 /**
  * 
  * @param stock
@@ -52,14 +45,13 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 			double PS, double PEG, double openPrice,
 			double closePrice, double high,
 			double low, long volume) {
-		this.stock = stock;
-		this.date = date;
+		super(stock,date,closePrice);
+
 		this.openPrice = openPrice;
 		this.closePrice = closePrice;
 		this.high = high;
 		this.low = low;
 		this.volume = volume;
-		this.date = date;
 		this.marketCap = marketCap;
 		this.dividentYield = dividentYield;
 		this.PE = PE;
@@ -80,8 +72,7 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 	public DailyData(Stock stock, Calendar date,  double openPrice,
 			double closePrice, double high,
 			double low, long volume) {
-		this.stock = stock;
-		this.date = date;
+		super(stock,date,closePrice);
 		this.openPrice = openPrice;
 		this.closePrice = closePrice;
 		this.high = high;
@@ -158,27 +149,5 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 				+ ", PS=" + PS + ", PEG=" + PEG + ", openPrice=" + openPrice
 				+ ", closePrice=" + closePrice + ", high=" + high + ", low="
 				+ low + ", volume=" + volume + "]";
-	}
-
-	@Override
-	public int compareTo(DailyData o) {
-		return this.getDate().compareTo(o.getDate());
-	}
-	
-	public int compareDateTo(DailyData o) {
-		return this.getDate().compareTo(o.getDate());
-	}
-	
-	public static Comparator<DailyData> getDateComperator() {
-		Comparator<DailyData> comp = new Comparator<DailyData>() {
-
-			@Override
-			public int compare(DailyData o1, DailyData o2) {
-				return o1.compareDateTo(o2);
-			}
-			
-		};
-		return comp;
-		
 	}
 }

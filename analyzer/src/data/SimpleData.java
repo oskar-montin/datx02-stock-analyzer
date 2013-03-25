@@ -12,10 +12,10 @@ import java.util.Comparator;
 public class SimpleData implements MarketItem, Comparable<SimpleData> {
 
 
-	private Stock stock;
-	private Calendar date;
+	protected Stock stock;
+	protected Calendar date;
 	
-	private double value;
+	protected double value;
 
 	/**
 	 * 
