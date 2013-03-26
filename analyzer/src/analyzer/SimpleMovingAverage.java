@@ -15,7 +15,7 @@ import data.Stock;
  */
 public class SimpleMovingAverage {
 
-	private LinkedList<DailyData> dailyDataList;
+	private LinkedList<SimpleData> dailyDataList;
 	private LinkedList<SimpleData> movingAverageList;
 	private int offset;
 	
@@ -24,13 +24,13 @@ public class SimpleMovingAverage {
 	 * @param stock
 	 * @param offset - The number of days the SMA should be set to.
 	 */
-	public SimpleMovingAverage(PriorityQueue<DailyData> dailyData, int offset){
+	public SimpleMovingAverage(PriorityQueue<? extends SimpleData> dailyData, int offset){
 		if(offset < 1 || offset > dailyData.size()){
 			throw new IllegalArgumentException();
 		}
 		
 		this.offset = offset;
-		dailyDataList = new LinkedList<DailyData>(dailyData);
+		dailyDataList = new LinkedList<SimpleData>(dailyData);
 
 		Collections.reverse(dailyDataList);
 		
@@ -58,7 +58,7 @@ public class SimpleMovingAverage {
 		for(int i = 0; i < dailyDataList.size()-(offset-1); i++){
 			double total = 0;
 			for(int j = 0; j < offset; j++){
-				total = total + dailyDataList.get(i+j).getClosePrice();
+				total = total + dailyDataList.get(i+j).getValue();
 			}
 			movingAverageList.add(new SimpleData(dailyDataList.get(i).getStock(), 
 								  dailyDataList.get(i).getDate(), total/offset));

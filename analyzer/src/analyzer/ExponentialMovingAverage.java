@@ -1,5 +1,6 @@
 package analyzer;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -17,7 +18,7 @@ import data.Stock;
  */
 public class ExponentialMovingAverage {
 
-	private LinkedList<DailyData> dailyDataList;
+	private LinkedList<SimpleData> dailyDataList;
 
 	private LinkedList<SimpleData> simpleMovingAverageList;
 	
@@ -28,25 +29,24 @@ public class ExponentialMovingAverage {
 	 * @param stock
 	 * @param offset
 	 */
-	public ExponentialMovingAverage(PriorityQueue<DailyData> dailyData, int offset){
-		if(offset < 1 || offset > dailyData.size()){
+	public ExponentialMovingAverage(PriorityQueue<? extends SimpleData> MACDQueue, int offset){
+		if(offset < 1 || offset > MACDQueue.size()){
 			throw new IllegalArgumentException();
 		}
 		
-		dailyDataList = new LinkedList<DailyData>(dailyData);
+		dailyDataList = new LinkedList<SimpleData>(MACDQueue);
 		Collections.reverse(dailyDataList);
 
-		simpleMovingAverageList = new SimpleMovingAverage(dailyData, offset).getMovingAverage();
-		Collections.reverse(simpleMovingAverageList);
+		simpleMovingAverageList = new SimpleMovingAverage(MACDQueue, offset).getMovingAverage();
 		
 		movingAverageList = new LinkedList<SimpleData>();
-		
+
 		
 		/*
 		 * Make sure that the dailyDataList has the same number of entries (with the same dates) as movingAverageList
 		 */
 		for(int i = offset-1; i > 0; i--){
-			dailyDataList.removeLast().getClosePrice();
+			dailyDataList.removeLast().getValue();
 		}
 		
 		Collections.reverse(simpleMovingAverageList);
@@ -67,9 +67,9 @@ public class ExponentialMovingAverage {
 				priceList.add(yesterdayEMA);
 			} else {
 				
-				DailyData sd = dailyDataList.get(i);
+				SimpleData sd = dailyDataList.get(i);
 				//call the EMA calculation
-				double EMA = calculateEMA(sd.getClosePrice(), offset, yesterdayEMA);
+				double EMA = calculateEMA(sd.getValue(), offset, yesterdayEMA);
 				//put the calculated EMA in a list
 				priceList.add(EMA);
 				//make sure yesterdayEMA gets filled with the EMA we used this time around
