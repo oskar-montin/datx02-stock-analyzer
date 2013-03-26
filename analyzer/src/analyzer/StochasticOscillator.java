@@ -1,6 +1,7 @@
 package analyzer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import data.DailyData;
@@ -116,7 +117,7 @@ public class StochasticOscillator {
 	 */
 	private void computeD (){
 		/*
-		 * TODO how does exponential moving average work?
+		 * TODO once EMA is ready, use it.
 		 */
 	}
 	
@@ -144,6 +145,7 @@ public class StochasticOscillator {
 		this.midPeriod = midPeriod;
 		this.longPeriod = longPeriod;
 		this.dailyData = new ArrayList<DailyData>(dailyData);
+		Collections.reverse(this.dailyData);
 		stochasticOscillator();
 	}
 }
