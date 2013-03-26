@@ -37,9 +37,10 @@ public class ExponentialMovingAverage {
 		Collections.reverse(dailyDataList);
 
 		simpleMovingAverageList = new SimpleMovingAverage(dailyData, offset).getMovingAverage();
+		Collections.reverse(simpleMovingAverageList);
 		
 		movingAverageList = new LinkedList<SimpleData>();
-
+		
 		
 		/*
 		 * Make sure that the dailyDataList has the same number of entries (with the same dates) as movingAverageList

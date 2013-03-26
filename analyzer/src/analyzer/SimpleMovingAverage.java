@@ -48,6 +48,7 @@ public class SimpleMovingAverage {
 	}
 	
 	public LinkedList<SimpleData> getMovingAverage(){
+		Collections.reverse(movingAverageList);
 		return movingAverageList;
 	}
 	
