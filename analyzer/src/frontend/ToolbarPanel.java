@@ -140,10 +140,6 @@ public class ToolbarPanel extends JPanel {
 		return SMA.isSelected();
 	}
 	
-	public int getSMASize(){
-		return Integer.parseInt(SMAsize.getText());
-	}
-	
 	public boolean isEMASelected(){
 		return EMA.isSelected();
 	}
@@ -154,6 +150,27 @@ public class ToolbarPanel extends JPanel {
 	
 	public boolean isBBSelected(){
 		return BB.isSelected();
+	}
+	
+	
+	public int getSMASize(){
+		return Integer.parseInt(SMAsize.getText());
+	}
+	
+	public int getEMASize(){
+		return Integer.parseInt(EMAsize.getText());
+	}
+	
+	public int getFirstMACDSize(){
+		return Integer.parseInt(MACDFirstSize.getText());
+	}
+	
+	public int getSecondMACDSize(){
+		return Integer.parseInt(MACDSecondSize.getText());
+	}
+	
+	public int getSignalSize(){
+		return Integer.parseInt(MACDSignalSize.getText());
 	}
 	
 	public void resetAllMethods(){

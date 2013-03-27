@@ -32,10 +32,23 @@ public class GraphPanel extends JPanel {
 	private ChartPanel chartPanel;
 	private XYSeries stockSerie;
 	final XYSeriesCollection dataset = new XYSeriesCollection();
+	ArrayList<SimpleData> ddList;
 
-	public GraphPanel(PriorityQueue<DailyData> dailyDataQueue){
-		ArrayList<DailyData> ddList = new ArrayList<DailyData>(dailyDataQueue);
+	public GraphPanel(PriorityQueue<? extends SimpleData> dailyDataQueue){
+		ddList = new ArrayList<SimpleData>(dailyDataQueue);
 		title = ddList.get(0).getStock().getName();
+
+		stockSerie = createSeries(ddList, title);
+		dataset.addSeries(stockSerie);
+		final JFreeChart chart = createChart(dataset);
+
+		chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new Dimension(600, 400));
+	}
+	
+	public GraphPanel(PriorityQueue<? extends SimpleData> dailyDataQueue, String title){
+		ddList = new ArrayList<SimpleData>(dailyDataQueue);
+		this.title = title;
 
 		stockSerie = createSeries(ddList, title);
 		dataset.addSeries(stockSerie);
@@ -158,6 +171,12 @@ public class GraphPanel extends JPanel {
 		if(method.equals("EMA")){
 			XYSeries series = createSeries(list, "EMA");
 
+			dataset.addSeries(series);
+			createChart(dataset);
+		}
+		if(method.equals("MACD")){
+			XYSeries series = createSeries(list, "Signal Line");
+			
 			dataset.addSeries(series);
 			createChart(dataset);
 		}

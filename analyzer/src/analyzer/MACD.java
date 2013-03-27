@@ -49,8 +49,8 @@ public class MACD {
 		return compiledMACD;
 	}
 	
-	public LinkedList<SimpleData> getMACD(){
-		LinkedList<SimpleData> temp = new LinkedList<SimpleData>(MACDQueue);
+	public PriorityQueue<SimpleData> getMACD(){
+		PriorityQueue<SimpleData> temp = new PriorityQueue<SimpleData>(MACDQueue);
 		return temp;
 	}
 	

@@ -11,6 +11,7 @@ import core.Core;
 
 import analyzer.DatabaseHandler;
 import analyzer.ExponentialMovingAverage;
+import analyzer.MACD;
 import analyzer.SimpleMovingAverage;
 
 
@@ -54,6 +55,8 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 			statusbar.setStock(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)).poll());
 			mainPanel.add(graphPanel.getGraphPanel());
 			toolbar.resetAllMethods();
+			validate();
+			repaint();
 		}
 		
 		if(evt.getPropertyName().equals("setSMA")){
@@ -71,18 +74,35 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		if(evt.getPropertyName().equals("setEMA")){
 			if(toolbar.isEMASelected() == true){
 				String symbol = toolbar.getSelectedStock();
-				ExponentialMovingAverage ema = new ExponentialMovingAverage(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)),2);
+				int size = toolbar.getSMASize();
+				ExponentialMovingAverage ema = new ExponentialMovingAverage(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)),size);
 				graphPanel.addMethod(ema.getMovingAverage(), "EMA");
 			}else{
 				System.out.println("EMA false");
+				graphPanel.deleteMethod("EMA");
 			}
 		}
 		
 		if(evt.getPropertyName().equals("setMACD")){
 			if(toolbar.isMACDSelected() == true){
 				System.out.println("MACD true");
+				String symbol = toolbar.getSelectedStock();
+				MACD macd = new MACD(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol))
+						,toolbar.getFirstMACDSize()
+						,toolbar.getSecondMACDSize()
+						,toolbar.getSignalSize());
+				graphPanel = new GraphPanel(macd.getMACD(), 
+							DatabaseHandler.getStock(symbol).getName() + " MACD");
+				graphPanel.addMethod(macd.getSignal(), "MACD");
+				
+				mainPanel.add(graphPanel.getGraphPanel());
+				validate();
+				repaint();
 			}else{
+				mainPanel.remove(graphPanel.getGraphPanel());
 				System.out.println("MACD false");
+				validate();
+				repaint();
 			}
 		}
 		
