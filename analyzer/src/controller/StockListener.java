@@ -5,11 +5,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import core.Core;
 
 import data.Stock;
 
-public class StockController implements ActionListener, IController  {
+public class StockListener implements Listener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

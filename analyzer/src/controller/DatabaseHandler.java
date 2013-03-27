@@ -1,4 +1,4 @@
-package analyzer;
+package controller;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -345,7 +345,6 @@ public class DatabaseHandler {
 
 	}
 
-
 	/**
 	 * Method collects all stocks in database.
 	 *  
@@ -398,9 +397,6 @@ public class DatabaseHandler {
 		return dataList;
 
 	}
-
-
-
 
 	/**
 	 * Method collects all QuarterlyData connected with a business from the database.

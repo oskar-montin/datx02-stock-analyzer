@@ -7,9 +7,10 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import core.Core;
+import controller.Core;
+import controller.DatabaseHandler;
 
-import analyzer.DatabaseHandler;
+
 import analyzer.ExponentialMovingAverage;
 import analyzer.MACD;
 import analyzer.SimpleMovingAverage;
@@ -94,7 +95,6 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 				graphPanel = new GraphPanel(macd.getMACD(), 
 							DatabaseHandler.getStock(symbol).getName() + " MACD");
 				graphPanel.addMethod(macd.getSignal(), "MACD");
-				
 				mainPanel.add(graphPanel.getGraphPanel());
 				validate();
 				repaint();

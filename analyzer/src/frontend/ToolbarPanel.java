@@ -11,11 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import controller.BBController;
-import controller.EMAController;
-import controller.MACDController;
-import controller.SMAController;
-import controller.StockController;
+import controller.BBListener;
+import controller.EMAListener;
+import controller.MACDListener;
+import controller.SMAListener;
+import controller.StockListener;
 
 import data.Stock;
 
@@ -120,16 +120,16 @@ public class ToolbarPanel extends JPanel {
 		
 		add(BB);
 		
-		stockBox.addActionListener(new StockController());		
-		SMA.addActionListener(new SMAController());
-		SMAsize.addActionListener(new SMAController());
-		EMA.addActionListener(new EMAController());
-		EMAsize.addActionListener(new EMAController());
-		MACD.addActionListener(new MACDController());
-		MACDFirstSize.addActionListener(new MACDController());
-		MACDSecondSize.addActionListener(new MACDController());
-		MACDSignalSize.addActionListener(new MACDController());
-		BB.addActionListener(new BBController());
+		stockBox.addActionListener(new StockListener());		
+		SMA.addActionListener(new SMAListener());
+		SMAsize.addActionListener(new SMAListener());
+		EMA.addActionListener(new EMAListener());
+		EMAsize.addActionListener(new EMAListener());
+		MACD.addActionListener(new MACDListener());
+		MACDFirstSize.addActionListener(new MACDListener());
+		MACDSecondSize.addActionListener(new MACDListener());
+		MACDSignalSize.addActionListener(new MACDListener());
+		BB.addActionListener(new BBListener());
 	}
 	
 	public String getSelectedStock(){

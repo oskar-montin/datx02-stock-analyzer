@@ -3,9 +3,8 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.Core;
 
-public class EMAController implements ActionListener, IController {
+public class BBListener implements Listener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(Core.getInstance().hasGraph()){
@@ -13,10 +12,9 @@ public class EMAController implements ActionListener, IController {
 		}else {
 			System.out.println("No graph active");
 		}
-		
 	}
 	
 	public void execute() {
-		Core.getInstance().setEMA();
+		Core.getInstance().setBB();
 	}
 }

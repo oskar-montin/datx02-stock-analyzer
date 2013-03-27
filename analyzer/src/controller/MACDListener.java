@@ -3,9 +3,8 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.Core;
 
-public class BBController implements ActionListener, IController  {
+public class MACDListener implements Listener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(Core.getInstance().hasGraph()){
@@ -16,6 +15,6 @@ public class BBController implements ActionListener, IController  {
 	}
 	
 	public void execute() {
-		Core.getInstance().setBB();
+		Core.getInstance().setMACD();
 	}
 }

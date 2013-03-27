@@ -3,9 +3,8 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import core.Core;
 
-public class SMAController implements ActionListener, IController  {
+public class EMAListener implements Listener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(Core.getInstance().hasGraph()){
@@ -13,9 +12,10 @@ public class SMAController implements ActionListener, IController  {
 		}else {
 			System.out.println("No graph active");
 		}
+		
 	}
 	
 	public void execute() {
-		Core.getInstance().setSMA();
+		Core.getInstance().setEMA();
 	}
 }

@@ -4,7 +4,8 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import analyzer.DatabaseHandler;
+import controller.DatabaseHandler;
+
 
 
 import data.DailyData;
