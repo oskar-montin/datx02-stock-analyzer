@@ -9,7 +9,7 @@ import core.Core;
 
 import data.Stock;
 
-public class StockController implements ActionListener {
+public class StockController implements ActionListener, IController  {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

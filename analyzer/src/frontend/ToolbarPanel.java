@@ -54,7 +54,7 @@ public class ToolbarPanel extends JPanel {
 		stockBox = new JComboBox<String>();
 		stockBox.setPreferredSize(new Dimension(140,25));
 		stockBox.setToolTipText("Välj aktie");
-		stockBox.addActionListener(new StockController());
+
 		while(!stockQueue.isEmpty()){
 			stockBox.addItem(stockQueue.poll().getSymbol());
 		}
@@ -62,44 +62,42 @@ public class ToolbarPanel extends JPanel {
 		
 		SMA = new JCheckBox("SMA");
 		SMA.setToolTipText("Enable Simple Moving Average");
-		SMA.addActionListener(new SMAController());
+		
 		SMAsize = new JTextField("2");
 		SMAsize.setPreferredSize(new Dimension(25, 20));
 		SMAsize.setToolTipText("SMA offset");
-		SMAsize.addActionListener(new SMAController());
-		
+
 		
 		EMA = new JCheckBox("EMA");
 		EMA.setToolTipText("Enable Exponential Moving Average");
-		EMA.addActionListener(new EMAController());
+	
 		EMAsize = new JTextField("2");
 		EMAsize.setPreferredSize(new Dimension(25, 20));
 		SMAsize.setToolTipText("EMA offset");
-		EMAsize.addActionListener(new EMAController());
 		
 		
 		MACD = new JCheckBox("MACD");
 		MACD.setToolTipText("Enable Moving Average Convergence-Divergence");
-		MACD.addActionListener(new MACDController());
+		
 		
 		MACDFirstSize = new JTextField("12");
 		MACDFirstSize.setPreferredSize(new Dimension(25, 20));
 		MACDFirstSize.setToolTipText("MACD first EMA offset");
-		MACDFirstSize.addActionListener(new MACDController());
+		
 		
 		MACDSecondSize = new JTextField("26");
 		MACDSecondSize.setPreferredSize(new Dimension(25, 20));
 		MACDSecondSize.setToolTipText("MACD second EMA offset");
-		MACDSecondSize.addActionListener(new MACDController());
+		
 		
 		MACDSignalSize = new JTextField("9");
 		MACDSignalSize.setPreferredSize(new Dimension(25, 20));
 		MACDSignalSize.setToolTipText("MACD signal-line EMA offset");
-		MACDSignalSize.addActionListener(new MACDController());
+		
 		
 		
 		BB = new JCheckBox("Bollinger Bands");
-		BB.addActionListener(new BBController());
+		
 		
 		add(stockBox);
 		
@@ -121,6 +119,17 @@ public class ToolbarPanel extends JPanel {
 		add(separator3);
 		
 		add(BB);
+		
+		stockBox.addActionListener(new StockController());		
+		SMA.addActionListener(new SMAController());
+		SMAsize.addActionListener(new SMAController());
+		EMA.addActionListener(new EMAController());
+		EMAsize.addActionListener(new EMAController());
+		MACD.addActionListener(new MACDController());
+		MACDFirstSize.addActionListener(new MACDController());
+		MACDSecondSize.addActionListener(new MACDController());
+		MACDSignalSize.addActionListener(new MACDController());
+		BB.addActionListener(new BBController());
 	}
 	
 	public String getSelectedStock(){

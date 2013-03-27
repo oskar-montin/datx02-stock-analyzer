@@ -48,10 +48,8 @@ public class GraphPanel extends JPanel {
 	private XYSeries createSeries(List<? extends SimpleData> list, String name){
 		final XYSeries series = new XYSeries(name);
 
-		System.out.println("list: " + list.toString());
 		for(int i = list.size()-1; i>0; i--){
-			System.out.println(list.size());
-			System.out.println(list.get(i).getDate().get(Calendar.DAY_OF_MONTH));
+
 			series.add(i, list.get(i).getValue());
 		}
 
@@ -151,7 +149,6 @@ public class GraphPanel extends JPanel {
 	public void addMethod(LinkedList<? extends SimpleData> list, String method){
 		if(method.equals("SMA")){
 
-			System.out.println("SMA LIST: " + list.toString());
 			Collections.reverse(list);
 			XYSeries series = createSeries(list, "SMA");
 
@@ -159,7 +156,6 @@ public class GraphPanel extends JPanel {
 			createChart(dataset);
 		}
 		if(method.equals("EMA")){
-			System.out.println("EMA LIST: " + list.toString());
 			XYSeries series = createSeries(list, "EMA");
 
 			dataset.addSeries(series);

@@ -58,11 +58,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		if(evt.getPropertyName().equals("setSMA")){
 			if(toolbar.isSMASelected() == true){
-				System.out.println("SMA true");
 				String symbol = toolbar.getSelectedStock();
 				int size = toolbar.getSMASize();
 				SimpleMovingAverage sma = new SimpleMovingAverage(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)), size);
-				System.out.println("SMA before chart: " + sma.getMovingAverage());
 				graphPanel.addMethod(sma.getMovingAverage(), "SMA");
 			}else{
 				System.out.println("SMA false");
@@ -72,10 +70,8 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		
 		if(evt.getPropertyName().equals("setEMA")){
 			if(toolbar.isEMASelected() == true){
-				System.out.println("EMA true");
 				String symbol = toolbar.getSelectedStock();
 				ExponentialMovingAverage ema = new ExponentialMovingAverage(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)),2);
-				System.out.println(ema.getMovingAverage());
 				graphPanel.addMethod(ema.getMovingAverage(), "EMA");
 			}else{
 				System.out.println("EMA false");

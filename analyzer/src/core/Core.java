@@ -12,6 +12,8 @@ public class Core{
 	private final PropertyChangeSupport observers = new PropertyChangeSupport(this);
 	private static Core instance = null;
 	
+	private boolean hasGraph = false;
+	
 	public static Core getInstance(){
 		if(instance == null){
 			instance = new Core();
@@ -24,6 +26,7 @@ public class Core{
 	}
 	
 	public void setStock(){
+		hasGraph = true;
 		observers.firePropertyChange("setStock", null, null);
 	}
 
@@ -41,5 +44,9 @@ public class Core{
 
 	public void setMACD() {
 		observers.firePropertyChange("setMACD", null, null);
+	}
+	
+	public boolean hasGraph(){
+		return hasGraph;
 	}
 }

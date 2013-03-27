@@ -5,10 +5,15 @@ import java.awt.event.ActionListener;
 
 import core.Core;
 
-public class EMAController implements ActionListener {
+public class EMAController implements ActionListener, IController {
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		execute();
+		if(Core.getInstance().hasGraph()){
+			execute();
+		}else {
+			System.out.println("No graph active");
+		}
+		
 	}
 	
 	public void execute() {
