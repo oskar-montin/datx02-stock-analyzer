@@ -226,24 +226,41 @@ public class DatabaseHandler {
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+stock.getSymbol()+"'");
-
-			while (rs.next()) {
+			Calendar date = null;
+			if(rs.next()) {
 				marketCap=rs.getString("marketCap");
 				dividentYield=rs.getDouble("dividentYield");
 				PE=rs.getDouble("PE");
 				PS=rs.getDouble("PS");
 				PEG=rs.getDouble("PEG");
 				openPrice=rs.getDouble("openPrice");
-				closePrice=rs.getDouble("closePrice");
+				
 				high=rs.getDouble("high");
 				low=rs.getDouble("low");
 				volume=rs.getLong("volume");
-				Calendar date = Calendar.getInstance();
+				date = Calendar.getInstance();
 				date.setTime(rs.getDate("date"));
 				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
-
+			}
+			while (rs.next()) {
+				
+				closePrice=rs.getDouble("closePrice");
+				
 				dataList.add(new DailyData(stock, date, new LargeDouble(marketCap), dividentYield, PE, PS, PEG, openPrice, closePrice, high, low, volume));
-
+				
+				marketCap=rs.getString("marketCap");
+				dividentYield=rs.getDouble("dividentYield");
+				PE=rs.getDouble("PE");
+				PS=rs.getDouble("PS");
+				PEG=rs.getDouble("PEG");
+				openPrice=rs.getDouble("openPrice");
+				
+				high=rs.getDouble("high");
+				low=rs.getDouble("low");
+				volume=rs.getLong("volume");
+				date = Calendar.getInstance();
+				date.setTime(rs.getDate("date"));
+				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
 			}
 
 
