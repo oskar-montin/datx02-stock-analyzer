@@ -4,13 +4,17 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import util.Util;
+
 import data.Curve;
+import data.DailyData;
 import data.SimpleData;
 
 public class BollingerBands implements AnalysisMethod{
 	private SimpleData[] data;
 	private int offset;
 	private PriorityQueue<SimpleData> close,upper, middle, lower;
+	int value;
 	
 	public BollingerBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
@@ -24,12 +28,21 @@ public class BollingerBands implements AnalysisMethod{
 	}
 	
 	private void createBounds() {
+		SimpleData sma = null;
+		double standardDeviation = 0.0;
 		for(int i = offset;i<this.data.length;i++) {
-			SimpleData sma = SimpleMovingAverage.getSMA(data, i, offset);
+			sma = SimpleMovingAverage.getSMA(data, i, offset);
 			this.middle.add(sma);
-			double standardDeviation = standardDeviation(this.data, i, offset).getValue();
+			standardDeviation = standardDeviation(this.data, i, offset).getValue();
 			this.upper.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()+2*standardDeviation));
 			this.lower.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()-2*standardDeviation));
+		}
+		if(sma==null) {
+			value = 50;
+		} else {
+			double spann = 4*standardDeviation;
+			double lastValue = data[data.length-1].getValue()-sma.getValue()+2*standardDeviation;
+			value = (int) (lastValue*100/spann);
 		}
 	}
 	
@@ -45,10 +58,16 @@ public class BollingerBands implements AnalysisMethod{
 		return new SimpleData(sd[index].getStock(),sd[index].getDate(),Math.sqrt(total/offset));
 	}
 
+	/**
+	 * @return the value of this bollingerband. The result will be an integer, if the last close price
+	 * is inside the bollinger band it will return a value between 0 and 100, if its outside (happends in maybe 5-10%
+	 * of the cases it can be for instance -2 or 108. Cases where this happens is interesting and should therefore
+	 * not be inside the percent spann of 0 to 100. However, in a perfect world with a perfect implementation of the bollinger
+	 * bands this should not occur. A high value represents an overbought market, low underbought.
+	 */
 	@Override
 	public int value() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.value;
 	}
 
 	@Override
