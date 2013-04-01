@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import controller.DatabaseHandler;
+
 import util.Util;
 
 import data.DailyData;

@@ -5,7 +5,6 @@ import java.util.PriorityQueue;
 
 import util.Util;
 
-import analyzer.DatabaseHandler;
 import analyzer.ExponentialMovingAverage;
 import analyzer.FundamentalAnalysis;
 import analyzer.SimpleMovingAverage;
