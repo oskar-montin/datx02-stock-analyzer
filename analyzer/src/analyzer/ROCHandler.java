@@ -5,16 +5,19 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.PriorityQueue;
 
+import data.Curve;
 import data.DailyData;
 import data.RateOfChange;
 import data.SimpleData;
+import data.Stock;
 
-public class ROCHandler {
+public class ROCHandler implements AnalysisMethod {
 	
 	private DailyData[] dailyData;
 	private SimpleData[] rocList;
 	private Double[] maxScope;
 	private int period;
+	private Stock stock;
 	
 	public ROCHandler(PriorityQueue<DailyData> dailyData, int offset) {
 		if(dailyData == null) {
@@ -24,7 +27,7 @@ public class ROCHandler {
 			throw new IllegalArgumentException("Period > size of data");
 		} 
 		this.period = offset;
-		
+		this.stock = dailyData.peek().getStock();
 		this.dailyData = new DailyData[dailyData.size()];
 		this.dailyData = dailyData.toArray(this.dailyData);
 		rocList = new SimpleData[dailyData.size()-period];
@@ -50,29 +53,30 @@ public class ROCHandler {
 		}
 		Double[] scope;
 		Double maxRate;
+		SimpleData[] tempROC = Arrays.copyOf(this.rocList, this.rocList.length);
 		int i = ((int) (this.rocList.length*(boundPercent/100))-1);
 		i = i<0 ? 0:i; //We don't like index out of bounds :)
-		Arrays.sort(this.rocList,SimpleData.getValueComparator(true));
+		Arrays.sort(tempROC,SimpleData.getValueComparator(true));
 		
 		if(equilibrium) {
-			maxRate = this.rocList[i].getValue();
+			maxRate = tempROC[i].getValue();
 			scope = new Double[]{-Math.abs(maxRate),Math.abs(maxRate)};
 		} else { 
 			Double max = Double.NEGATIVE_INFINITY;
 			Double min = Double.POSITIVE_INFINITY;
-			for(int k = 0, nr = 0; k<this.rocList.length && nr<=i; k++ ) {
-				if(this.rocList[k].getValue() > max) {
+			for(int k = 0, nr = 0; k<tempROC.length && nr<=i; k++ ) {
+				if(tempROC[k].getValue() > max) {
 					if(nr!=(i-1) || min>=0) {
-						max = this.rocList[k].getValue();
-						if(this.rocList[k].getValue()>=0) {
+						max = tempROC[k].getValue();
+						if(tempROC[k].getValue()>=0) {
 							nr++;
 						}
 					}
 				}
-				if(this.rocList[k].getValue() < min) {
+				if(tempROC[k].getValue() < min) {
 					if(nr!=(i-1) || max>=0) {
-						min = this.rocList[k].getValue();
-						if(this.rocList[k].getValue()<0) {
+						min = tempROC[k].getValue();
+						if(tempROC[k].getValue()<0) {
 							nr++;
 						}
 					}
@@ -125,6 +129,40 @@ public class ROCHandler {
 			return null;
 		}
 		Double rate = 100*(dailyData[t].getClosePrice()-dailyData[t-n].getClosePrice())/dailyData[t-n].getClosePrice();
+		Calendar c = dailyData[t].getDate();
+		System.out.println(""+c.get(Calendar.DATE));
 		return new SimpleData(dailyData[t].getStock(),dailyData[t].getDate(),rate);
+	}
+
+	/**
+	 * @return a value between 0 and 100 that indicates if the stock is overbought or not. A high value indicates an 
+	 * overbought market. A value near 50% has stability
+	 */
+	@Override
+	public int value() {
+		Double[] maxScope = this.getMaxScope(false);
+		double pMax = maxScope[1]+Math.abs(maxScope[0]);
+		Double lastValue = this.rocList[this.rocList.length-1].getValue()+Math.abs(maxScope[0]);
+		return (int) ((lastValue*100)/pMax);
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		Curve[] curves = new Curve[3];
+		PriorityQueue<SimpleData> rocQueue = new PriorityQueue<SimpleData>();
+		PriorityQueue<SimpleData> maxBoundQueue = new PriorityQueue<SimpleData>();
+		PriorityQueue<SimpleData> minBoundQueue = new PriorityQueue<SimpleData>();
+		Double[] maxScope = this.getMaxScope(true);
+		for(SimpleData d:this.rocList) {
+			rocQueue.add(d);
+			maxBoundQueue.add(new SimpleData(d.getStock(), d.getDate(), maxScope[1]));
+			minBoundQueue.add(new SimpleData(d.getStock(), d.getDate(), maxScope[0]));
+		}
+		
+		curves[0] = new Curve(rocQueue,"Rate of change values in percent");
+		curves[1] = new Curve(minBoundQueue,"The minimum bound");
+		curves[2] = new Curve(maxBoundQueue,"THe maximum bound");
+		
+		return curves;
 	}
 }
