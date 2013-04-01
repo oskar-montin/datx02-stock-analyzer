@@ -46,6 +46,10 @@ public class Core{
 		observers.firePropertyChange("setMACD", null, null);
 	}
 	
+	public void setCMF() {
+		observers.firePropertyChange("setCMF", null, null);
+	}
+	
 	public boolean hasGraph(){
 		return hasGraph;
 	}
