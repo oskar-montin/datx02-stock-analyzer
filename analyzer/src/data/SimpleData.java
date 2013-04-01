@@ -39,6 +39,12 @@ public class SimpleData implements MarketItem, Comparable<SimpleData> {
 		this.value = dd.getClosePrice();
 	}
 	
+	public SimpleData(SimpleData dd) {
+		this.stock = dd.getStock();
+		this.date = dd.getDate();
+		this.value = dd.getValue();
+	}
+	
 
 	public Stock getStock() {
 		return stock;
