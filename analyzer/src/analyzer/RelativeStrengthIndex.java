@@ -1,8 +1,7 @@
 package analyzer;
 
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-
+import data.Curve;
 import data.DailyData;
 import data.SimpleData;
 import data.Stock;
@@ -13,12 +12,13 @@ import data.Stock;
  * @author Runa Gulliksson
  */
 
-public class RelativeStrengthIndex {
+public class RelativeStrengthIndex implements AnalysisMethod {
 
 	private PriorityQueue<DailyData> dailyDataQueue;
-	private LinkedList<SimpleData> RSI; // oldest first
+	private PriorityQueue<SimpleData> RSI; // oldest first
 	private double avgGain, avgLoss;
 	private Stock stock;
+	private int last=0;
 	
 
 	/**
@@ -32,19 +32,11 @@ public class RelativeStrengthIndex {
 		
 		dailyDataQueue = dailyData;
 		this.stock = stock;
+		RSI = new PriorityQueue<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
 		
 	}
-	
-	/**
-	 * Return RSI-valuelist
-	 * 
-	 * @return Linkedlist of RSI-values oldest first.
-	 */
-	
-	public LinkedList<SimpleData> getRSI(){
-		return RSI;
-	}
+
 
 	/**
 	 * Return stock connected with this instance.
@@ -63,7 +55,7 @@ public class RelativeStrengthIndex {
 	 * @return LinkedList with all RSI-values, oldest first.
 	 */
 	private void CalculateRSI(PriorityQueue<DailyData> dailyDataQueue, int offset){
-		RSI = new LinkedList<SimpleData>();
+
 		double sumGain = 0, sumLoss = 0, diff;
 		DailyData now = null, priv;
 		
@@ -105,8 +97,8 @@ public class RelativeStrengthIndex {
 				}
 				
 				RSI.add(new SimpleData(stock, now.getDate(), (100-100/(1+avgGain/avgLoss))));
-
 				priv=now;
+				last=(int)RSI.peek().getValue();
 			}
 
 		}
@@ -116,25 +108,30 @@ public class RelativeStrengthIndex {
 		
 	}
 	
-	/**
-	 * Add day to RSI. /// migth not be needed
-	 * 
-	 * @return symbol for stock.
-	 */
-	private void addDay(double avgGain, double avgLoss, DailyData old, DailyData newDay ){
+
+	@Override
+	public int value() {
+		return last;
+	}
+
 	
+	/**
+	 * Return RSI-valuelist
+	 * 
+	 * @return Linkedlist of RSI-values oldest first.
+	 */
+	
+	public Curve[] getGraph() {
+		Curve [] RSICurve = {new Curve(RSI, "Relative strength index values in percent")};
+		return RSICurve;
 	}
 	
 	/**
-	 * @param args
+	 * 
+	 * @return a string that specified what the method indicates in words.
 	 */
-	public static void main(String[] args) {
-//		-----For testing-----
-		RelativeStrengthIndex rsi = new RelativeStrengthIndex(DatabaseHandler.getStock("AAPL"), DatabaseHandler.getDailyData(DatabaseHandler.getStock("AAPL")) , 4);
-		LinkedList<SimpleData> rsList = rsi.getRSI();
-		while (!rsList.isEmpty()){
-			System.out.println(rsList.removeLast().getValue());
-		}
+	public String toString(){
+		return"RSI indicates if the stock is overbought or oversold. The mothod looks att price movement.";
 	}
 
 
