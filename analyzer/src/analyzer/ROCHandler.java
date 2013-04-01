@@ -19,6 +19,11 @@ public class ROCHandler implements AnalysisMethod {
 	private int period;
 	private Stock stock;
 	
+	/**
+	 * Creates a new ROCHandler that creates a curve with roc values that can be used to determine if thestock is under/overbought.
+	 * @param dailyData a queue containing all data collected for the given stock
+	 * @param offset the offset that should be used to create the roc list
+	 */
 	public ROCHandler(PriorityQueue<DailyData> dailyData, int offset) {
 		if(dailyData == null) {
 			throw new NullPointerException("dailyData == null");
@@ -113,22 +118,22 @@ public class ROCHandler implements AnalysisMethod {
 		}
 	}
 	
-	public static SimpleData getROC(PriorityQueue<DailyData> dailyData, Calendar t, int period) {
-		return getROC(dailyData,new DailyData(null, t, null, 0, 0, 0, 0, 0, 0, 0, 0, 0),period);
+	public static SimpleData getROC(PriorityQueue<? extends SimpleData> dailyData, Calendar t, int period) {
+		return getROC(dailyData,new SimpleData(null, t, 0),period);
 	}
 	
-	public static SimpleData getROC(PriorityQueue<DailyData> dailyData, DailyData t, int period) {
-		DailyData[] temp = new DailyData[dailyData.size()];
+	public static SimpleData getROC(PriorityQueue<? extends SimpleData> dailyData, SimpleData t, int period) {
+		SimpleData[] temp = new SimpleData[dailyData.size()];
 		temp = dailyData.toArray(temp);
-		int tIndex = Arrays.binarySearch(temp,t,DailyData.getDateComperator());
+		int tIndex = Arrays.binarySearch(temp,t,SimpleData.getDateComperator());
 		return getROC(temp,tIndex,period);
 	}	
 	
-	private static SimpleData getROC(DailyData[] dailyData, int t, int n) {
+	private static SimpleData getROC(SimpleData[] dailyData, int t, int n) {
 		if(t<n || t<0) {
 			return null;
 		}
-		Double rate = 100*(dailyData[t].getClosePrice()-dailyData[t-n].getClosePrice())/dailyData[t-n].getClosePrice();
+		Double rate = 100*(dailyData[t].getValue()-dailyData[t-n].getValue())/dailyData[t-n].getValue();
 		Calendar c = dailyData[t].getDate();
 		System.out.println(""+c.get(Calendar.DATE));
 		return new SimpleData(dailyData[t].getStock(),dailyData[t].getDate(),rate);
