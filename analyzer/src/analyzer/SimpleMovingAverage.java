@@ -1,5 +1,8 @@
 package analyzer;
 
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -48,7 +51,7 @@ public class SimpleMovingAverage {
 	}
 	
 	public LinkedList<SimpleData> getMovingAverage(){
-		Collections.reverse(movingAverageList);
+		
 		return movingAverageList;
 	}
 	
@@ -63,5 +66,55 @@ public class SimpleMovingAverage {
 			movingAverageList.add(new SimpleData(dailyDataList.get(i).getStock(), 
 								  dailyDataList.get(i).getDate(), total/offset));
 		}
+		Collections.reverse(movingAverageList);
+	}
+	
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param index the index of the day from wich the sma should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getSMA(Collection<? extends SimpleData> data, int index, int offset) {
+		SimpleData[] temp = new SimpleData[data.size()];
+		temp = data.toArray(temp);
+		return getSMA(temp,index,offset);
+	}
+	
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param index the index of the day from wich the sma should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getSMA(SimpleData[] data, int index, int offset) {
+		if(index<offset) {
+			throw new IllegalArgumentException("Offset larger than index");
+		}
+		if(index>=data.length) {
+			throw new IndexOutOfBoundsException("Index larger than the size of the collection");
+		}
+		
+		double total = 0;
+		for(int i = index-offset;i<index;i++) {
+			total += data[i].getValue();
+		}
+		return new SimpleData(data[index].getStock(), data[index].getDate(), total/offset);
+	}
+	
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param date the date from wich the avarage should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getSMA(PriorityQueue<? extends SimpleData> data, Calendar date, int offset) {
+		SimpleData[] temp = new SimpleData[data.size()];
+		temp = data.toArray(temp);
+		int index = Arrays.binarySearch(temp, new SimpleData(null, date, 0), SimpleData.getDateComperator());
+		return getSMA(temp,index,offset);
 	}
 }
