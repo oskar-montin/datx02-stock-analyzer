@@ -7,11 +7,10 @@ import java.util.PriorityQueue;
 
 import data.Curve;
 import data.DailyData;
-import data.RateOfChange;
 import data.SimpleData;
 import data.Stock;
 
-public class ROCHandler implements AnalysisMethod {
+public class RateOfChange implements AnalysisMethod {
 	
 	private DailyData[] dailyData;
 	private SimpleData[] rocList;
@@ -24,7 +23,7 @@ public class ROCHandler implements AnalysisMethod {
 	 * @param dailyData a queue containing all data collected for the given stock
 	 * @param offset the offset that should be used to create the roc list
 	 */
-	public ROCHandler(PriorityQueue<DailyData> dailyData, int offset) {
+	public RateOfChange(PriorityQueue<DailyData> dailyData, int offset) {
 		if(dailyData == null) {
 			throw new NullPointerException("dailyData == null");
 		}
@@ -169,5 +168,11 @@ public class ROCHandler implements AnalysisMethod {
 		curves[2] = new Curve(maxBoundQueue,"THe maximum bound");
 		
 		return curves;
+	}
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
