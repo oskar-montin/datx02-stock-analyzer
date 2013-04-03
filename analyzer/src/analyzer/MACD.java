@@ -14,17 +14,21 @@ public class MACD {
 	
 	
 	private PriorityQueue<SimpleData> MACDQueue;
-	private LinkedList<SimpleData> signalList;
+	private PriorityQueue<SimpleData> signalList;
 	
 	
 	public MACD(PriorityQueue<DailyData> queue, int first, int second, int signal){
+		List<? extends SimpleData> firstEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, first));
+		List<? extends SimpleData> secondEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, second));
 		
-		MACDQueue = createMACDList(new ExponentialMovingAverage(queue, first).getMovingAverage(),
-								  new ExponentialMovingAverage(queue, second).getMovingAverage());
+		System.out.println(firstEMA);
+		System.out.println(secondEMA);
 		
-		signalList = new ExponentialMovingAverage(MACDQueue, signal).getMovingAverage();
+		MACDQueue = createMACDList(firstEMA, secondEMA);
 		
-		System.out.println(MACDQueue);
+		signalList = MovingAverage.getEMA(MACDQueue, signal);
+		
+//		System.out.println(MACDQueue);
 	}
 	
 	private PriorityQueue<SimpleData> createMACDList(List<? extends SimpleData> first, List<? extends SimpleData> second){
@@ -35,14 +39,15 @@ public class MACD {
 		
 		ArrayList<Double> valueArray = new ArrayList<Double>();
 		
-		System.out.println("first: " + first);
-		
-		System.out.println("second: " + second);
+//		System.out.println("first: " + first);
+//		
+//		System.out.println("second: " + second);
 		
 		for(int i = second.size()-1; i >= 0; i--){
+			double value = first.get(i).getValue()-second.get(i).getValue();
 			compiledMACD.add(new SimpleData(second.get(i).getStock(), 				//Add the right stock
 							second.get(i).getDate(), 								//Add the right date
-							first.get(i).getValue()-second.get(i).getValue()));		//Add the right value
+							value));												//Add the right value
 		}
 		
 		
@@ -54,7 +59,7 @@ public class MACD {
 		return temp;
 	}
 	
-	public LinkedList<SimpleData> getSignal(){
+	public PriorityQueue<SimpleData> getSignal(){
 		return signalList;
 	}
 }

@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -159,7 +160,8 @@ public class GraphPanel extends JPanel {
 		return chartPanel;	
 	}
 
-	public void addMethod(LinkedList<? extends SimpleData> list, String method){
+	public void addMethod(Collection<? extends SimpleData> queue, String method){
+		LinkedList<? extends SimpleData> list = new LinkedList<SimpleData>(queue);
 		if(method.equals("SMA")){
 
 			Collections.reverse(list);
