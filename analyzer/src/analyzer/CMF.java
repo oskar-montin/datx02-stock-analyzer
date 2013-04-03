@@ -122,4 +122,11 @@ public class CMF implements AnalysisMethod{
 		return null;
 	}
 
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -78,4 +78,10 @@ public class BollingerBands implements AnalysisMethod{
 		curves[2] = new Curve(this.upper,"The upper bound curve");
 		return curves;
 	}
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
