@@ -7,7 +7,7 @@ public interface AnalysisMethod {
 	 * 
 	 * @return a string that specified what the method indicates in words.
 	 */
-	public String toString();
+	public String resultString();
 	/**
 	 * 
 	 * @return the value of the method on the specific stock. If it indicates wether the stock is oerbought or not its an 
