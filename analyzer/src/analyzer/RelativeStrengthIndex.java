@@ -130,9 +130,11 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 * 
 	 * @return a string that specified what the method indicates in words.
 	 */
-	public String toString(){
+	public String resultString(){
 		return"RSI indicates if the stock is overbought or oversold. The mothod looks att price movement.";
 	}
+
+
 
 
 }
