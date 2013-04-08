@@ -66,7 +66,7 @@ public class BollingerBands implements AnalysisMethod{
 	 * bands this should not occur. A high value represents an overbought market, low underbought.
 	 */
 	@Override
-	public int value() {
+	public double value() {
 		return this.value;
 	}
 
