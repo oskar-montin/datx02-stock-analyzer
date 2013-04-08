@@ -110,7 +110,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	
 
 	@Override
-	public int value() {
+	public double value() {
 		return last;
 	}
 

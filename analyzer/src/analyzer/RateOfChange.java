@@ -143,11 +143,11 @@ public class RateOfChange implements AnalysisMethod {
 	 * overbought market. A value near 50% has stability
 	 */
 	@Override
-	public int value() {
+	public double value() {
 		Double[] maxScope = this.getMaxScope(false);
 		double pMax = maxScope[1]+Math.abs(maxScope[0]);
 		Double lastValue = this.rocList[this.rocList.length-1].getValue()+Math.abs(maxScope[0]);
-		return (int) ((lastValue*100)/pMax);
+		return ((lastValue*100)/pMax);
 	}
 
 	@Override
