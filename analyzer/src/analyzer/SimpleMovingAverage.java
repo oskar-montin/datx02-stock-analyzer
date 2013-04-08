@@ -27,7 +27,7 @@ public class SimpleMovingAverage {
 	 * @param stock
 	 * @param offset - The number of days the SMA should be set to.
 	 */
-	public SimpleMovingAverage(PriorityQueue<? extends SimpleData> dailyData, int offset){
+	public SimpleMovingAverage(Collection<? extends SimpleData> dailyData, int offset){
 		if(offset < 1 || offset > dailyData.size()){
 			throw new IllegalArgumentException();
 		}

@@ -43,6 +43,7 @@ public class StochasticOscillator {
 	 * The list returned will be of 13+2(speed-1) shorter in length
 	 *  than amount of days that Stochastic Oscillator was run over.
 	 * This is due to the requirement of having 14 days to analyze and speed-days to smooth over.
+	 * The returned array will contain values from 0.00 to 1.00 for each analyzed day.
 	 */
 	public List<SimpleData> getK(){
 		
@@ -140,10 +141,10 @@ public class StochasticOscillator {
 		kList.clear();
 		
 		if (speed > 0){
-			//SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
-			//kList.addAll(sma.getMovingAverage());
-			//sma = new SimpleMovingAverage(kList, speed);
-			//dList.addAll(sma.getMovingAverage());
+			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
+			kList.addAll(sma.getMovingAverage());
+			sma = new SimpleMovingAverage(kList, speed);
+			dList.addAll(sma.getMovingAverage());
 			
 			for(int i = 0; i < speed-1; i++){
 				kList.remove(0);
