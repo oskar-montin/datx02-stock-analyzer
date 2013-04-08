@@ -3,6 +3,8 @@ package analyzer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+
+import data.Curve;
 import data.DailyData;
 import data.SimpleData;
 
@@ -14,12 +16,14 @@ import data.SimpleData;
  *
  */
 
-public class StochasticOscillator {
+public class StochasticOscillator implements AnalysisMethod {
 	
 	private int shortPeriod, midPeriod, longPeriod, speed;
 	private List<DailyData> dailyData;
 	private List<SimpleData> kList = new ArrayList<SimpleData>();
 	private List<SimpleData> dList = new ArrayList<SimpleData>();
+	private String resultString = "results";
+	private Curve[] curves;
 	
 	/*
 	 * Constructor automatically setting numerical settings to standard 5 9 and 14 day periods and speed 3.
@@ -63,9 +67,11 @@ public class StochasticOscillator {
 			s++;
 		}
 		if(!(kList.size() % speed == 0) || !(dList.size() % speed == 0)){
-			throw new IllegalArgumentException("**Ignore Exception type! However SO did not successfully finish.");
+			throw new IllegalArgumentException("**Ignore Exception type!" +
+									" However SO did not successfully finish.");
 		}
 		smooth();
+		curves();
 	}
 	
 	/*
@@ -164,5 +170,37 @@ public class StochasticOscillator {
 		this.speed = speed;
 		this.dailyData = new ArrayList<DailyData>(dailyData);
 		stochasticOscillator();
+	}
+	
+	private void curves() {
+		curves = new Curve[2];
+		PriorityQueue<SimpleData> kQ = new PriorityQueue<SimpleData>();
+		PriorityQueue<SimpleData> dQ = new PriorityQueue<SimpleData>();
+		for (int i = 0; i<kList.size(); i++){
+			kQ.add(kList.get(i));
+			dQ.add(dList.get(i));
+		}
+		Curve KCurve = new Curve(kQ, "%K");
+		Curve DCurve = new Curve(dQ, "%D");
+		curves[0] = KCurve;
+		curves[1] = DCurve;
+	}
+
+	@Override
+	public String resultString() {
+		
+		return resultString;
+	}
+
+	@Override
+	public double value() {
+		// last value of kList.
+		return kList.get(kList.size()-1).getValue();
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		
+		return curves;
 	}
 }
