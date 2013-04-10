@@ -82,7 +82,7 @@ public class MACD implements AnalysisMethod {
 	}
 
 	@Override
-	public int value() {
+	public double value() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
