@@ -6,27 +6,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import data.Curve;
 import data.DailyData;
 import data.SimpleData;
 
-public class MACD {
+public class MACD implements AnalysisMethod {
 	
 	
 	
 	private PriorityQueue<SimpleData> MACDQueue;
-	private PriorityQueue<SimpleData> signalList;
+	private PriorityQueue<SimpleData> signalQueue;
+	private PriorityQueue<SimpleData> histogramQueue;
 	
 	
 	public MACD(PriorityQueue<DailyData> queue, int first, int second, int signal){
 		List<? extends SimpleData> firstEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, first));
 		List<? extends SimpleData> secondEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, second));
 		
-		System.out.println(firstEMA);
-		System.out.println(secondEMA);
+//		System.out.println(firstEMA);
+//		System.out.println(secondEMA);
 		
 		MACDQueue = createMACDList(firstEMA, secondEMA);
 		
-		signalList = MovingAverage.getEMA(MACDQueue, signal);
+		signalQueue = MovingAverage.getEMA(MACDQueue, signal);
+		
+		List<? extends SimpleData> MACDList = new LinkedList<SimpleData>(MACDQueue);
+		List<? extends SimpleData> signalList = new LinkedList<SimpleData>(signalQueue);
+		
+		histogramQueue = createMACDList(MACDList, signalList);
+		
+		System.out.println(histogramQueue);
 		
 //		System.out.println(MACDQueue);
 	}
@@ -55,11 +64,35 @@ public class MACD {
 	}
 	
 	public PriorityQueue<SimpleData> getMACD(){
-		PriorityQueue<SimpleData> temp = new PriorityQueue<SimpleData>(MACDQueue);
-		return temp;
+		return MACDQueue;
 	}
 	
 	public PriorityQueue<SimpleData> getSignal(){
-		return signalList;
+		return signalQueue;
+	}
+	
+	public PriorityQueue<SimpleData> getHistogram(){
+		return histogramQueue;
+	}
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int value() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		Curve[] curves = new Curve[3];
+		curves[0] = new Curve(MACDQueue, "MACD-line");
+		curves[1] = new Curve(signalQueue, "Signal-line");
+		curves[2] = new Curve(histogramQueue, "MACD-histogram");
+		return curves;
 	}
 }
