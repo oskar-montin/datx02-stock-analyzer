@@ -7,6 +7,7 @@ import controller.DatabaseHandler;
 
 import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 import data.Stock;
 
@@ -125,6 +126,13 @@ public class CMF implements AnalysisMethod{
 
 	@Override
 	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Result getResult() {
 		// TODO Auto-generated method stub
 		return null;
 	}

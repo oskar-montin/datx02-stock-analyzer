@@ -8,6 +8,7 @@ import util.Util;
 
 import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 
 public class BollingerBands implements AnalysisMethod{
@@ -87,7 +88,7 @@ public class BollingerBands implements AnalysisMethod{
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

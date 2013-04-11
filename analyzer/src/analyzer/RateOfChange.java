@@ -7,6 +7,7 @@ import java.util.PriorityQueue;
 
 import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 import data.Stock;
 

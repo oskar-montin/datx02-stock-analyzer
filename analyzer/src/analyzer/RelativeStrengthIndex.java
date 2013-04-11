@@ -3,6 +3,7 @@ package analyzer;
 import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 import data.Stock;
 
@@ -132,6 +133,13 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 */
 	public String resultString(){
 		return"RSI indicates if the stock is overbought or oversold. The mothod looks att price movement.";
+	}
+
+
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
