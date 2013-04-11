@@ -2,23 +2,17 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+
+import javax.swing.JComboBox;
 
 
-import data.Stock;
-
-public class StockListener implements Listener {
+public class StockListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		execute();
-	}
-	
-	public void execute() {
-		Core.getInstance().setStock();
-	}
-
-
-	
+		@SuppressWarnings("unchecked")
+		JComboBox<String> box = (JComboBox<String>) e.getSource();
+		System.out.println(box.getSelectedItem().toString());
+		Core.getInstance().setStock(box.getSelectedItem().toString());
+	}	
 }
