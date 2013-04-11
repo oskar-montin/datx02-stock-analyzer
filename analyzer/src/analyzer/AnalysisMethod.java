@@ -19,4 +19,10 @@ public interface AnalysisMethod {
 	 * @return a set of curves that represents the graph of the method, some methods may use only one curve
 	 */
 	public Curve[] getGraph();
+	
+	/**
+	 * 
+	 * @return the result object for this analysis method, to see what the value in the result means see the method value()
+	 */
+	public Result getResult();
 }

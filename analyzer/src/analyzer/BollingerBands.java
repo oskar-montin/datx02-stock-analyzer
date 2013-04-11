@@ -84,4 +84,10 @@ public class BollingerBands implements AnalysisMethod{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
