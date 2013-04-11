@@ -98,7 +98,6 @@ public class MovingAverage {
 			}
 		}
 		
-		
 		/*
 		 * Insert the calculated values into the movingAverageList
 		 */
