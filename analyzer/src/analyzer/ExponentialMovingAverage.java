@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 import data.Stock;
 
@@ -16,7 +18,7 @@ import data.Stock;
  * 
  * @author oskarnylen
  */
-public class ExponentialMovingAverage {
+public class ExponentialMovingAverage implements AnalysisMethod{
 
 	private LinkedList<SimpleData> dailyDataList;
 
@@ -93,5 +95,29 @@ public class ExponentialMovingAverage {
 
 	public LinkedList<SimpleData> getMovingAverage(){
 		return movingAverageList;
+	}
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double value() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

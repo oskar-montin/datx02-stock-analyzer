@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 import data.Stock;
 
@@ -16,7 +18,7 @@ import data.Stock;
  * 
  * @author oskarnylen
  */
-public class SimpleMovingAverage {
+public class SimpleMovingAverage implements AnalysisMethod{
 
 	private LinkedList<SimpleData> dailyDataList;
 	private LinkedList<SimpleData> movingAverageList;
@@ -116,5 +118,29 @@ public class SimpleMovingAverage {
 		temp = data.toArray(temp);
 		int index = Arrays.binarySearch(temp, new SimpleData(null, date, 0), SimpleData.getDateComperator());
 		return getSMA(temp,index,offset);
+	}
+
+	@Override
+	public String resultString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double value() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
