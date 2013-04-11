@@ -1,6 +1,7 @@
 package analyzer;
 
 import data.Curve;
+import data.Result;
 
 public interface AnalysisMethod {
 	/**
