@@ -1,25 +1,21 @@
 package analyzer;
 
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import util.Util;
 
 import data.Curve;
-import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 
 public class BollingerBands implements AnalysisMethod{
 	private SimpleData[] data;
 	private int offset;
-	private PriorityQueue<SimpleData> close,upper, middle, lower;
+	private PriorityQueue<SimpleData> upper, middle, lower;
 	int value;
 	
 	public BollingerBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
-		this.close = new PriorityQueue<SimpleData>(data);
 		this.data = new SimpleData[data.size()];
 		this.data = data.toArray(this.data);
 		this.upper = new PriorityQueue<SimpleData>();
@@ -83,12 +79,20 @@ public class BollingerBands implements AnalysisMethod{
 	@Override
 	public String resultString() {
 		// TODO Auto-generated method stub
-		return null;
+		return "Bollinger bands";
 	}
 
 	@Override
 	public Result getResult() {
-		
-		return null;
+		Double value = this.value();
+		Signal signal;
+		if(value>80) {
+			signal = Signal.BUY;
+		} else if(value<20) {
+			signal = Signal.SELL;
+		} else {
+			signal = Signal.NONE;
+		}
+		return new Result("Rate of change", value, this.resultString(), this.getGraph(), signal);
 	}
 }
