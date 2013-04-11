@@ -1,8 +1,12 @@
 package analyzer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+
+import controller.DatabaseHandler;
 
 import data.Curve;
 import data.DailyData;
@@ -79,19 +83,21 @@ public class StochasticOscillator implements AnalysisMethod {
 	 */
 	private void periods(){
 		
-		int s = longPeriod-1, j = 0;
-		double lowestLow = 0, highestHigh = 0;
+		int j = 0;
+		double lowestLow = 100000000, highestHigh = 0;
 		DailyData currentDailyData;
 		
-		while (j < longPeriod){
+		while (j < (dailyData.size()-longPeriod)){
 			int k = 0;
-			s -= longPeriod-1;
+			int s = j;
 			currentDailyData = dailyData.get(s);
-			SimpleData sd = new SimpleData(currentDailyData.getStock(), currentDailyData.getDate(),
-							currentDailyData.getClosePrice());
+			SimpleData sd = new SimpleData(currentDailyData.getStock(), 
+					currentDailyData.getDate(),
+					currentDailyData.getClosePrice());
 			while(k < longPeriod){
 				currentDailyData = dailyData.get(s);
-				if(currentDailyData.getLow() < lowestLow){
+				
+				if(0 < currentDailyData.getLow() && currentDailyData.getLow() < lowestLow){
 					lowestLow = currentDailyData.getLow();
 				}
 				else if(currentDailyData.getHigh() > highestHigh){
@@ -118,7 +124,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * entries represent %K for the three different periods, together forming %K for one day.
 	 */
 	private void computeK (double lowestLow, double highestHigh, SimpleData simpleData){
-		
+		System.out.println("hej low " + lowestLow + " high " + highestHigh + "value " + simpleData.getValue());
 		double value = 100*((simpleData.getValue() - lowestLow) / (highestHigh - lowestLow));
 		SimpleData sd = new SimpleData(simpleData.getStock(), simpleData.getDate(), value);
 		kList.add(sd);
@@ -169,6 +175,7 @@ public class StochasticOscillator implements AnalysisMethod {
 		this.longPeriod = longPeriod;
 		this.speed = speed;
 		this.dailyData = new ArrayList<DailyData>(dailyData);
+		Collections.reverse(this.dailyData);
 		stochasticOscillator();
 	}
 	
@@ -202,5 +209,17 @@ public class StochasticOscillator implements AnalysisMethod {
 	public Curve[] getGraph() {
 		
 		return curves;
+	}
+	
+	public static void main(String[] args) {
+		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("KO")));
+		List<SimpleData> SOListK = SO.getK();
+		List<SimpleData> SOListD = SO.getK();
+		for (SimpleData s:SOListK){
+			System.out.println(s.getValue() + " ");
+		}
+		for (SimpleData s:SOListD){
+			System.out.println(s.getValue() + " ");
+		}
 	}
 }
