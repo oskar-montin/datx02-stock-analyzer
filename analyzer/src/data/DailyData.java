@@ -1,7 +1,6 @@
 package data;
 
 import java.util.Calendar;
-import java.util.Comparator;
 
 /**
  * Datatype of the closing price (daily) keys and values.

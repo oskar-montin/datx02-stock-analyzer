@@ -12,12 +12,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.PriorityQueue;
-
-import data.Stock;
 
 public class Settings implements Serializable {
 
