@@ -39,14 +39,14 @@ public class Controller {
 		data = DatabaseHandler.getDailyData(stock);
 	}
 	
-	public Collection<Result> getAnalyticsData() {
+	public List<Result> getAnalyticsData() {
 		List<Result> results = new LinkedList<Result>();
 		results.add(this.getClosePriceResult());
 		results.addAll(getStandardMethodResults());
 		return results;
 	}
 	
-	private Collection<Result> getStandardMethodResults() {
+	private List<Result> getStandardMethodResults() {
 		Settings settings = Settings.getSettings();
 		List<Result> results = new LinkedList<Result>();
 		SimpleMovingAverage sma = new SimpleMovingAverage(data, settings.getSMAOffset());
@@ -63,12 +63,14 @@ public class Controller {
 		results.add(roc.getResult());
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
 		results.add(rsi.getResult());
+		/* can't be used yet
 		StochasticOscillator so = new StochasticOscillator(data, 
 														   settings.getSOShortOffset(), 
 														   settings.getSOMidOffset(), 
 														   settings.getSOLongOffset(),
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
+		*/
 		return results;
 	}
 

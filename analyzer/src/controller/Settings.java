@@ -37,9 +37,14 @@ public class Settings implements Serializable {
 	private int SOMidOffset = 9;
 	private int SOLongOffset = 14;
 	private int SOSpeedOffset = 3;
+	/* Correct values
 	private int MACDShortOffset = 12;
 	private int MACDLongOffset = 26;
 	private int MACDSignalOffset = 9;
+	*/
+	private int MACDShortOffset = 4;
+	private int MACDLongOffset = 5;
+	private int MACDSignalOffset = 3;
 	
 	private Settings() {
 		try {

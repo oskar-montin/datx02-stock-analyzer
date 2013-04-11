@@ -1,14 +1,19 @@
 package frontend;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import controller.Controller;
 import controller.Core;
 import controller.DatabaseHandler;
+import data.Result;
 
 
 import analyzer.ExponentialMovingAverage;
@@ -30,6 +35,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		setJMenuBar(menuPanel);
 		
 		mainPanel = new JPanel();
+		mainPanel.setLayout(new GridLayout(3,3));
 		toolbar = new ToolbarPanel(DatabaseHandler.getAllStocks());
 
 		setLayout(new BorderLayout());
@@ -46,15 +52,15 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		
 		if(evt.getPropertyName().equals("setStock")){
-			if(graphPanel != null){
-				mainPanel.remove(graphPanel.getGraphPanel());
+			mainPanel.removeAll();
+			List<Result> results = Controller.getInstance().getAnalyticsData();
+			for(Result result:results) {
+				if(result!=null) {
+					GraphPanel p = new GraphPanel(result);
+					mainPanel.add(p.getGraphPanel());
+				}
 			}
-			String symbol = toolbar.getSelectedStock();
-			graphPanel = new GraphPanel(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)));
-			statusbar.setStock(DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol)).poll());
-			mainPanel.add(graphPanel.getGraphPanel());
 			validate();
 			repaint();
 		}

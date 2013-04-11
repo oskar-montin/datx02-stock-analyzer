@@ -23,7 +23,9 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 
 
@@ -59,9 +61,24 @@ public class GraphPanel extends JPanel {
 		chartPanel.setPreferredSize(new Dimension(600, 400));
 	}
 
-	private XYSeries createSeries(List<? extends SimpleData> list, String name){
-		final XYSeries series = new XYSeries(name);
+	public GraphPanel(Result result) {
+		System.out.println(result.getName());
+		this.title = result.getName();
+		Curve[] curves = result.getCurves();
+		curves[0].getQueue();
+		for(Curve c: curves) {
+			stockSerie = createSeries(c.getQueue(), c.getName());
+			dataset.addSeries(stockSerie);
+		}
+		final JFreeChart chart = createChart(dataset);
 
+		chartPanel = new ChartPanel(chart);
+		chartPanel.setPreferredSize(new Dimension(600, 400));
+	}
+
+	private XYSeries createSeries(Collection<? extends SimpleData> collection, String name){
+		final XYSeries series = new XYSeries(name);
+		List<SimpleData> list = new LinkedList<SimpleData>(collection);
 		for(int i = list.size()-1; i>0; i--){
 
 			series.add(i, list.get(i).getValue());
