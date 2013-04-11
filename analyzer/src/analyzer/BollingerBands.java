@@ -93,6 +93,6 @@ public class BollingerBands implements AnalysisMethod{
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("Rate of change", value, this.resultString(), this.getGraph(), signal);
+		return new Result("Bollinger Bands", value, this.resultString(), this.getGraph(), signal);
 	}
 }
