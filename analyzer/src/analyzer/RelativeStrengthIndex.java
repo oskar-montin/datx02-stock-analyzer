@@ -4,6 +4,7 @@ import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 import data.Stock;
 
@@ -138,8 +139,16 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		Double value = this.value();
+		Signal signal;
+		if(value>80) {
+			signal = Signal.BUY;
+		} else if(value<20) {
+			signal = Signal.SELL;
+		} else {
+			signal = Signal.NONE;
+		}
+		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), signal);
 	}
 
 
