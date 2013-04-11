@@ -1,6 +1,5 @@
 package analyzer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.PriorityQueue;
@@ -8,8 +7,8 @@ import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
-import data.Stock;
 
 public class RateOfChange implements AnalysisMethod {
 	
@@ -17,7 +16,6 @@ public class RateOfChange implements AnalysisMethod {
 	private SimpleData[] rocList;
 	private Double[] maxScope;
 	private int period;
-	private Stock stock;
 	
 	/**
 	 * Creates a new ROCHandler that creates a curve with roc values that can be used to determine if thestock is under/overbought.
@@ -32,7 +30,6 @@ public class RateOfChange implements AnalysisMethod {
 			throw new IllegalArgumentException("Period > size of data");
 		} 
 		this.period = offset;
-		this.stock = dailyData.peek().getStock();
 		this.dailyData = new DailyData[dailyData.size()];
 		this.dailyData = dailyData.toArray(this.dailyData);
 		rocList = new SimpleData[dailyData.size()-period];
@@ -174,12 +171,20 @@ public class RateOfChange implements AnalysisMethod {
 	@Override
 	public String resultString() {
 		// TODO Auto-generated method stub
-		return null;
+		return "ROC";
 	}
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		Double value = this.value();
+		Signal signal;
+		if(value>80) {
+			signal = Signal.BUY;
+		} else if(value<20) {
+			signal = Signal.SELL;
+		} else {
+			signal = Signal.NONE;
+		}
+		return new Result("Rate of change", value, this.resultString(), this.getGraph(), signal);
 	}
 }
