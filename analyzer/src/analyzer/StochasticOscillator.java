@@ -10,6 +10,7 @@ import controller.DatabaseHandler;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 
 /**
@@ -28,6 +29,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	private List<SimpleData> dList = new ArrayList<SimpleData>();
 	private String resultString = "results";
 	private Curve[] curves;
+	private Result results;
 	
 	/*
 	 * Constructor automatically setting numerical settings to standard 5 9 and 14 day periods and speed 3.
@@ -81,14 +83,13 @@ public class StochasticOscillator implements AnalysisMethod {
 	
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return results;
 	}
 	
 	private void stochasticOscillator(){
 		
 		periods();
-		
 		if(!(kList.size() % speed == 0) || !(dList.size() % speed == 0)){
 			throw new IllegalArgumentException("**Ignore Exception type!" +
 									" However SO did not successfully finish.");
@@ -96,6 +97,7 @@ public class StochasticOscillator implements AnalysisMethod {
 		smooth();
 		reverseLists();
 		curves();
+		results = new Result(kList.get(0).getStock().getName(), value(), resultString, getGraph(), signal());
 	}
 	
 	/*
@@ -135,6 +137,8 @@ public class StochasticOscillator implements AnalysisMethod {
 				k++;
 				s++;
 			}
+			highestHigh = 0;
+			lowestLow = 10000000;
 			j++;
 		}
 	}
@@ -193,6 +197,21 @@ public class StochasticOscillator implements AnalysisMethod {
 				kList.remove(0);
 			}
 		}
+	}
+	private Signal signal(){
+		
+		double firstD = dList.get(dList.size()-2).getValue();
+		double secondD = dList.get(dList.size()-1).getValue();
+		double firstK = kList.get(kList.size()-2).getValue();
+		double secondK = kList.get(kList.size()-1).getValue();
+		
+		if(firstD > firstK && secondD < secondK){
+			return Signal.BUY;
+		}
+		else if(firstD < firstK && secondD > secondK){
+			return Signal.SELL;
+		}
+		return Signal.NONE;
 	}
 	
 	/*
