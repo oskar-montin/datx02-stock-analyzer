@@ -11,10 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import controller.BBListener;
-import controller.EMAListener;
-import controller.MACDListener;
-import controller.SMAListener;
 import controller.StockListener;
 
 import data.Stock;

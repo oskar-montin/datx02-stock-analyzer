@@ -28,24 +28,4 @@ public class Core{
 		Controller.getInstance().setStock(symbol);
 		observers.firePropertyChange("setStock", null, null);
 	}
-
-	public void setSMA() {
-		observers.firePropertyChange("setSMA", null, null);
-	}
-
-	public void setBB() {
-		observers.firePropertyChange("setBB", null, null);
-	}
-
-	public void setEMA() {
-		observers.firePropertyChange("setEMA", null, null);
-	}
-
-	public void setMACD() {
-		observers.firePropertyChange("setMACD", null, null);
-	}
-	
-	public void setCMF() {
-		observers.firePropertyChange("setCMF", null, null);
-	}
 }
