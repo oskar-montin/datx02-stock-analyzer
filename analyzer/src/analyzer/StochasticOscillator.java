@@ -2,7 +2,6 @@ package analyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -10,6 +9,7 @@ import controller.DatabaseHandler;
 
 import data.Curve;
 import data.DailyData;
+import data.Result;
 import data.SimpleData;
 
 /**
@@ -53,28 +53,48 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * This is due to the requirement of having 14 days to analyze and speed-days to smooth over.
 	 * The returned array will contain values from 0.00 to 1.00 for each analyzed day.
 	 */
-	public List<SimpleData> getK(){
+	private List<SimpleData> getK(){
 		
 		return kList;
 	}
-	public List<SimpleData> getD(){
+	private List<SimpleData> getD(){
 		
 		return dList;
+	}
+	@Override
+	public String resultString() {
+		
+		return resultString;
+	}
+
+	@Override
+	public double value() {
+		// last value of kList.
+		return kList.get(kList.size()-1).getValue();
+	}
+
+	@Override
+	public Curve[] getGraph() {
+		
+		return curves;
+	}
+	
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	private void stochasticOscillator(){
 		
-		while(dailyData.size() >= longPeriod){
-			int s = 0;
-			periods();
-			dailyData.remove(s);
-			s++;
-		}
+		periods();
+		
 		if(!(kList.size() % speed == 0) || !(dList.size() % speed == 0)){
 			throw new IllegalArgumentException("**Ignore Exception type!" +
 									" However SO did not successfully finish.");
 		}
 		smooth();
+		reverseLists();
 		curves();
 	}
 	
@@ -86,7 +106,7 @@ public class StochasticOscillator implements AnalysisMethod {
 		int j = 0;
 		double lowestLow = 100000000, highestHigh = 0;
 		DailyData currentDailyData;
-		
+		System.out.println("Length of data is " + dailyData.size());
 		while (j < (dailyData.size()-longPeriod)){
 			int k = 0;
 			int s = j;
@@ -124,7 +144,6 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * entries represent %K for the three different periods, together forming %K for one day.
 	 */
 	private void computeK (double lowestLow, double highestHigh, SimpleData simpleData){
-		System.out.println("hej low " + lowestLow + " high " + highestHigh + "value " + simpleData.getValue());
 		double value = 100*((simpleData.getValue() - lowestLow) / (highestHigh - lowestLow));
 		SimpleData sd = new SimpleData(simpleData.getStock(), simpleData.getDate(), value);
 		kList.add(sd);
@@ -153,10 +172,22 @@ public class StochasticOscillator implements AnalysisMethod {
 		kList.clear();
 		
 		if (speed > 0){
+		/*	for (SimpleData s : k){
+				System.out.println(s.getValue());
+			}
+			System.out.println("END OF K VALUES");*/
 			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
 			kList.addAll(sma.getMovingAverage());
+			/*for (SimpleData s : kList){
+				System.out.println(s.getValue());
+			}
+			System.out.println("END OF KLIST AFTER SMA");*/
 			sma = new SimpleMovingAverage(kList, speed);
 			dList.addAll(sma.getMovingAverage());
+		/*	for (SimpleData s : dList){
+				System.out.println(s.getValue());
+			}
+			System.out.println("END OF D LIST AFTER SMA OF K SMA");*/
 			
 			for(int i = 0; i < speed-1; i++){
 				kList.remove(0);
@@ -192,32 +223,20 @@ public class StochasticOscillator implements AnalysisMethod {
 		curves[0] = KCurve;
 		curves[1] = DCurve;
 	}
-
-	@Override
-	public String resultString() {
-		
-		return resultString;
-	}
-
-	@Override
-	public double value() {
-		// last value of kList.
-		return kList.get(kList.size()-1).getValue();
-	}
-
-	@Override
-	public Curve[] getGraph() {
-		
-		return curves;
+	
+	private void reverseLists(){
+		Collections.reverse(kList);
+		Collections.reverse(dList);
 	}
 	
 	public static void main(String[] args) {
-		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("KO")));
+		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("GOOG")));
 		List<SimpleData> SOListK = SO.getK();
-		List<SimpleData> SOListD = SO.getK();
+		List<SimpleData> SOListD = SO.getD();
 		for (SimpleData s:SOListK){
 			System.out.println(s.getValue() + " ");
 		}
+		System.out.println("END OF K VALUES");
 		for (SimpleData s:SOListD){
 			System.out.println(s.getValue() + " ");
 		}

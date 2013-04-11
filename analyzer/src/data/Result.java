@@ -5,14 +5,15 @@ public class Result {
 	double value;
 	String returnString;
 	String name;
-	Curve curves;
+	Curve[] curves;
 	Signal signal;
 	
-	public Result(String name, double value, String returnString, Curve curves, Signal signal){
+	public Result(String name, double value, String returnString, Curve[] curves, Signal signal){
 		this.name = name;
 		this.value = value;
 		this.returnString = returnString;
-		this.curves = curves;
+		this.curves = new Curve[curves.length];
+		System.arraycopy(curves, 0, this.curves, 0, curves.length);
 		this.signal = signal;
 	}
 	
@@ -28,7 +29,7 @@ public class Result {
 		return name;
 	}
 
-	public Curve getCurves() {
+	public Curve[] getCurves() {
 		return curves;
 	}
 
