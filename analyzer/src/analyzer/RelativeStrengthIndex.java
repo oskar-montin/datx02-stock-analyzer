@@ -32,7 +32,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 */
 	public RelativeStrengthIndex(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
 		
-		dailyDataQueue = dailyData;
+		dailyDataQueue = new PriorityQueue<DailyData>(dailyData);
 		this.stock = stock;
 		RSI = new PriorityQueue<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);

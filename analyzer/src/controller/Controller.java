@@ -63,14 +63,14 @@ public class Controller {
 		results.add(roc.getResult());
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
 		results.add(rsi.getResult());
-		/* can't be used yet
+		
 		StochasticOscillator so = new StochasticOscillator(data, 
 														   settings.getSOShortOffset(), 
 														   settings.getSOMidOffset(), 
 														   settings.getSOLongOffset(),
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
-		*/
+		
 		return results;
 	}
 
