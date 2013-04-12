@@ -3,8 +3,6 @@ package analyzer;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import controller.DatabaseHandler;
-
 import data.Curve;
 import data.DailyData;
 import data.Result;
@@ -47,33 +45,13 @@ public class CMF implements AnalysisMethod{
 		return stock;
 	}
 	
+
 	/**
-	 *  
-	 * @param priority queue with dailyData.
-	 * @param periodtime for CMF calc.
-	 * @return linked list with CMF values.
+	 * Calculates the Chaikin Money Flow value over the given period(offset).
+	 * 
+	 * @param periodSet
+	 * @return cmfValue
 	 */
-	
-	private void CMFCalc(PriorityQueue<DailyData> dailyQueue, int offset){
-		dailyData = new LinkedList<SimpleData>();
-		DailyData [] dataArray = new DailyData[dailyQueue.size()];
-		
-		dataArray = dailyQueue.toArray(dataArray);
-		
-		
-		for(int i = offset; i<dataArray.length; i++){
-			
-			DailyData [] periodSet = new DailyData [offset+1];
-			for(int j = 0; j<=offset; j++){
-//				System.out.println("J:"+j+" i-offset+j="+(i-offset+j)+" Size:"+dataArray.length);
-				periodSet[j] = dataArray[i-offset+j];
-			}
-			
-			double CMF = getCMF(periodSet);
-			dailyData.add(new SimpleData(stock, dataArray[i].getDate(), CMF));
-		}
-			
-	}
 	
 	private double getCMF(DailyData[] periodSet) {
 		double multiplier = 0, lowValue = 0, highValue = 0, closeValue = 0, MFV = 0, sumMFV = 0;
@@ -93,47 +71,60 @@ public class CMF implements AnalysisMethod{
 			return cmfValue;
 		}
 
-
-//-----------------		TEST	--------------------------
+	/**
+	 *  
+	 * @param priority queue with dailyData.
+	 * @param periodtime for CMF calculation.
+	 * @return linked list with CMF values.
+	 */
 	
-	public static void main(String[] args) {
-		CMF cmf = new CMF(DatabaseHandler.getStock("KO"), DatabaseHandler.getDailyData(DatabaseHandler.getStock("KO")), 6);
-		LinkedList<SimpleData> cmfList = cmf.getCmfList();
-		for (SimpleData cmfPrint:cmfList){
-			System.out.println(cmfPrint.getValue());
+	private void CMFCalc(PriorityQueue<DailyData> dailyQueue, int offset){
+		dailyData = new LinkedList<SimpleData>();
+		DailyData [] dataArray = new DailyData[dailyQueue.size()];
+		
+		dataArray = dailyQueue.toArray(dataArray);
+		
+		
+		for(int i = offset; i<dataArray.length; i++){
+			
+			DailyData [] periodSet = new DailyData [offset+1];
+			for(int j = 0; j<=offset; j++){
+				periodSet[j] = dataArray[i-offset+j];
+			}
+			
+			double CMF = getCMF(periodSet);
+			dailyData.add(new SimpleData(stock, dataArray[i].getDate(), CMF));
 		}
-
-	}
-
-	private LinkedList<SimpleData> getCmfList() {
-		return dailyData;
-	}
+	}		
 
 
 	@Override
-	public double value() {
-		// TODO Auto-generated method stub
+	public double value() { //Testing in progress, needs to be updated. Decide what format
 		return 0;
 	}
 
 
 	@Override
 	public Curve[] getGraph() {
-		// TODO Auto-generated method stub
-		return null;
+		Curve [] CMFCurve = new Curve[1];
+		PriorityQueue<SimpleData> cmfQueue= new PriorityQueue<SimpleData>();
+		
+		for (int i=0; i<dailyData.size(); i++)
+			cmfQueue.add(dailyData.get(i));
+		
+		CMFCurve[0] = new Curve(cmfQueue, "Chaikin Money Flow values");
+		return CMFCurve;
 	}
 
 
 	@Override
 	public String resultString() {
-		// TODO Auto-generated method stub
-		return null;
+		return"CMF measures buying and selling pressure over a set period (offset) of time.";
 	}
 
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
