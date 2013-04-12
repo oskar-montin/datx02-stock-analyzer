@@ -175,22 +175,10 @@ public class StochasticOscillator implements AnalysisMethod {
 		kList.clear();
 		
 		if (speed > 0){
-		/*	for (SimpleData s : k){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF K VALUES");*/
 			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
 			kList.addAll(sma.getMovingAverage());
-			/*for (SimpleData s : kList){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF KLIST AFTER SMA");*/
 			sma = new SimpleMovingAverage(kList, speed);
 			dList.addAll(sma.getMovingAverage());
-		/*	for (SimpleData s : dList){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF D LIST AFTER SMA OF K SMA");*/
 			
 			for(int i = 0; i < speed-1; i++){
 				kList.remove(0);
@@ -246,17 +234,4 @@ public class StochasticOscillator implements AnalysisMethod {
 		Collections.reverse(kList);
 		Collections.reverse(dList);
 	}
-	
-	/*public static void main(String[] args) {
-		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("AAPL")));
-		List<SimpleData> SOListK = SO.getK();
-		List<SimpleData> SOListD = SO.getD();
-		for (SimpleData s:SOListK){
-			System.out.println(s.getValue() + " ");
-		}
-		System.out.println("END OF K VALUES");
-		for (SimpleData s:SOListD){
-			System.out.println(s.getValue() + " ");
-		}
-	}*/
 }
