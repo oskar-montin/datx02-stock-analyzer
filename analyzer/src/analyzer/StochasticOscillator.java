@@ -27,7 +27,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	private List<DailyData> dailyData;
 	private List<SimpleData> kList = new ArrayList<SimpleData>();
 	private List<SimpleData> dList = new ArrayList<SimpleData>();
-	private String resultString = "results";
+	private String resultString = "Indicates overbought if value>70 or oversold if value<30. Triggers buy or sell signal if %K,%D cross.";
 	private Curve[] curves;
 	private Result results;
 	
@@ -108,7 +108,6 @@ public class StochasticOscillator implements AnalysisMethod {
 		int j = 0;
 		double lowestLow = 100000000, highestHigh = 0;
 		DailyData currentDailyData;
-		System.out.println("Length of data is " + dailyData.size());
 		while (j < (dailyData.size()-longPeriod)){
 			int k = 0;
 			int s = j;
@@ -248,8 +247,8 @@ public class StochasticOscillator implements AnalysisMethod {
 		Collections.reverse(dList);
 	}
 	
-	public static void main(String[] args) {
-		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("GOOG")));
+	/*public static void main(String[] args) {
+		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("AAPL")));
 		List<SimpleData> SOListK = SO.getK();
 		List<SimpleData> SOListD = SO.getD();
 		for (SimpleData s:SOListK){
@@ -259,5 +258,5 @@ public class StochasticOscillator implements AnalysisMethod {
 		for (SimpleData s:SOListD){
 			System.out.println(s.getValue() + " ");
 		}
-	}
+	}*/
 }
