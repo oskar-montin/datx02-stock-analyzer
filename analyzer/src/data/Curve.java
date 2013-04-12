@@ -3,6 +3,7 @@ package data;
 import java.util.PriorityQueue;
 
 public class Curve {
+
 	private final PriorityQueue<SimpleData> queue;
 	private final String name;
 	
@@ -17,5 +18,10 @@ public class Curve {
 
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String toString() {
+		return "Curve [queue=" + queue + ", name=" + name + "]";
 	}
 }
