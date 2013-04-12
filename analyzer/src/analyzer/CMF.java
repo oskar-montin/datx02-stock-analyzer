@@ -30,7 +30,7 @@ public class CMF implements AnalysisMethod{
 	
 	public CMF(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
 		
-		dailyQueue = dailyData;
+		dailyQueue = new PriorityQueue<DailyData>(dailyData);
 		this.stock = stock;
 		this.CMFCalc(dailyQueue, offset);
 		
