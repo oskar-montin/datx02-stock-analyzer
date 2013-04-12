@@ -1,20 +1,28 @@
 package data;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 public class Result {
 
-	double value;
-	String returnString;
-	String name;
-	Curve[] curves;
-	Signal signal;
+	private double value;
+	private String returnString;
+	private String name;
+	private LinkedList<Curve> curves;
+	private Signal signal;
 	
 	public Result(String name, double value, String returnString, Curve[] curves, Signal signal){
+		this.curves = new LinkedList<Curve>();
 		this.name = name;
 		this.value = value;
 		this.returnString = returnString;
-		this.curves = new Curve[curves.length];
-		System.arraycopy(curves, 0, this.curves, 0, curves.length);
+		this.curves.addAll(Arrays.asList(curves));
+//		System.arraycopy(curves, 0, this.curves, 0, curves.length);
 		this.signal = signal;
+	}
+	
+	public void addCurve(Curve curve){
+		curves.add(curve);
 	}
 	
 	public double getValue() {
@@ -29,7 +37,7 @@ public class Result {
 		return name;
 	}
 
-	public Curve[] getCurves() {
+	public LinkedList<Curve> getCurves() {
 		return curves;
 	}
 

@@ -27,7 +27,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	private List<DailyData> dailyData;
 	private List<SimpleData> kList = new ArrayList<SimpleData>();
 	private List<SimpleData> dList = new ArrayList<SimpleData>();
-	private String resultString = "results";
+	private String resultString = "Indicates overbought if value>70 or oversold if value<30. Triggers buy or sell signal if %K,%D cross.";
 	private Curve[] curves;
 	private Result results;
 	
@@ -108,7 +108,6 @@ public class StochasticOscillator implements AnalysisMethod {
 		int j = 0;
 		double lowestLow = 100000000, highestHigh = 0;
 		DailyData currentDailyData;
-		System.out.println("Length of data is " + dailyData.size());
 		while (j < (dailyData.size()-longPeriod)){
 			int k = 0;
 			int s = j;
@@ -176,22 +175,10 @@ public class StochasticOscillator implements AnalysisMethod {
 		kList.clear();
 		
 		if (speed > 0){
-		/*	for (SimpleData s : k){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF K VALUES");*/
 			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
 			kList.addAll(sma.getMovingAverage());
-			/*for (SimpleData s : kList){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF KLIST AFTER SMA");*/
 			sma = new SimpleMovingAverage(kList, speed);
 			dList.addAll(sma.getMovingAverage());
-		/*	for (SimpleData s : dList){
-				System.out.println(s.getValue());
-			}
-			System.out.println("END OF D LIST AFTER SMA OF K SMA");*/
 			
 			for(int i = 0; i < speed-1; i++){
 				kList.remove(0);
@@ -246,18 +233,5 @@ public class StochasticOscillator implements AnalysisMethod {
 	private void reverseLists(){
 		Collections.reverse(kList);
 		Collections.reverse(dList);
-	}
-	
-	public static void main(String[] args) {
-		StochasticOscillator SO = new StochasticOscillator(DatabaseHandler.getDailyData(DatabaseHandler.getStock("GOOG")));
-		List<SimpleData> SOListK = SO.getK();
-		List<SimpleData> SOListD = SO.getD();
-		for (SimpleData s:SOListK){
-			System.out.println(s.getValue() + " ");
-		}
-		System.out.println("END OF K VALUES");
-		for (SimpleData s:SOListD){
-			System.out.println(s.getValue() + " ");
-		}
 	}
 }

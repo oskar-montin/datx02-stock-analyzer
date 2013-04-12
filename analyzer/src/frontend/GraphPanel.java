@@ -64,8 +64,8 @@ public class GraphPanel extends JPanel {
 	public GraphPanel(Result result) {
 		System.out.println(result.getName());
 		this.title = result.getName();
-		Curve[] curves = result.getCurves();
-		curves[0].getQueue();
+		LinkedList<Curve> curves = result.getCurves();
+		curves.getFirst().getQueue();
 		for(Curve c: curves) {
 			stockSerie = createSeries(c.getQueue(), c.getName());
 			dataset.addSeries(stockSerie);
@@ -80,7 +80,6 @@ public class GraphPanel extends JPanel {
 		final XYSeries series = new XYSeries(name);
 		List<SimpleData> list = new LinkedList<SimpleData>(collection);
 		for(int i = list.size()-1; i>0; i--){
-
 			series.add(i, list.get(i).getValue());
 		}
 
@@ -137,9 +136,15 @@ public class GraphPanel extends JPanel {
 		plot.setRangeZeroBaselineVisible(false);
 
 		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-		renderer.setSeriesLinesVisible(1, false);
+		
+		renderer.setSeriesLinesVisible(0, true);
 		renderer.setSeriesShapesVisible(0, false);
-
+		
+		for(int i = 0; i<dataset.getSeriesCount(); i++){
+			renderer.setSeriesLinesVisible(i, true);
+			renderer.setSeriesShapesVisible(i, false);
+		}
+		
 		plot.setRenderer(renderer);
 
 		// change the auto tick unit selection to integer units only...
