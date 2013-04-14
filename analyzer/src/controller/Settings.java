@@ -31,6 +31,7 @@ public class Settings implements Serializable {
 	private int SOMidOffset = 9;
 	private int SOLongOffset = 14;
 	private int SOSpeedOffset = 3;
+	private int FibOffset = 5;
 	/* Correct values
 	private int MACDShortOffset = 12;
 	private int MACDLongOffset = 26;
@@ -39,6 +40,7 @@ public class Settings implements Serializable {
 	private int MACDShortOffset = 4;
 	private int MACDLongOffset = 5;
 	private int MACDSignalOffset = 3;
+	
 	
 	private Settings() {
 		try {
@@ -49,6 +51,7 @@ public class Settings implements Serializable {
 			SMAOffset = s.getSMAOffset();
 			RSIOffset = s.getRSIOffset();
 			ROCOffset = s.getROCOffset();
+			FibOffset = s.getFibOffset();
 			SOShortOffset = s.getSOShortOffset();
 			SOMidOffset = s.getSOMidOffset();
 			SOLongOffset = s.getSOLongOffset();
@@ -221,4 +224,12 @@ public class Settings implements Serializable {
 		MACDSignalOffset = mACDSignalOffset;
 	}
 
+	public void setFibOffset(int FibOffset) {
+		this.FibOffset = FibOffset;
+	}
+
+	public int getFibOffset(){
+		return FibOffset;
+		
+	}
 }

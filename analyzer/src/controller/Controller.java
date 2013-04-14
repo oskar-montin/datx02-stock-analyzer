@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import analyzer.BollingerBands;
 import analyzer.CMF;
 import analyzer.ExponentialMovingAverage;
+import analyzer.Fibonacci;
 import analyzer.MACD;
 import analyzer.RateOfChange;
 import analyzer.RelativeStrengthIndex;
@@ -63,6 +64,10 @@ public class Controller {
 		results.add(roc.getResult());
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
 		results.add(rsi.getResult());
+
+		Fibonacci fib = new Fibonacci(data, settings.getFibOffset());
+		results.add(fib.getResult());
+
 		
 		StochasticOscillator so = new StochasticOscillator(data, 
 														   settings.getSOShortOffset(), 
