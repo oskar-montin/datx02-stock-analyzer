@@ -50,18 +50,25 @@ public class Controller {
 	private List<Result> getStandardMethodResults() {
 		Settings settings = Settings.getSettings();
 		List<Result> results = new LinkedList<Result>();
+		
 		SimpleMovingAverage sma = new SimpleMovingAverage(data, settings.getSMAOffset());
 		results.add(sma.getResult());
+		
 		ExponentialMovingAverage ema = new ExponentialMovingAverage(data,settings.getEMAOffset());
 		results.add(ema.getResult());
+		
 		BollingerBands bb = new BollingerBands(data, settings.getBBOffset());
 		results.add(bb.getResult());
+		
 		CMF cmf = new CMF(this.stock,data,settings.getCMFOffset());
 		results.add(cmf.getResult());
+		
 		MACD macd = new MACD(data,settings.getMACDShortOffset(),settings.getMACDLongOffset(),settings.getMACDSignalOffset());
 		results.add(macd.getResult());
+		
 		RateOfChange roc = new RateOfChange(data, settings.getROCOffset());
 		results.add(roc.getResult());
+		
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
 		results.add(rsi.getResult());
 

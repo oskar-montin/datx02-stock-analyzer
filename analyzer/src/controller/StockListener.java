@@ -12,7 +12,6 @@ public class StockListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		@SuppressWarnings("unchecked")
 		JComboBox<String> box = (JComboBox<String>) e.getSource();
-		System.out.println(box.getSelectedItem().toString());
 		Core.getInstance().setStock(box.getSelectedItem().toString());
 	}	
 }

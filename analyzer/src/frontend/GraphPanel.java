@@ -62,7 +62,6 @@ public class GraphPanel extends JPanel {
 	}
 
 	public GraphPanel(Result result) {
-		System.out.println(result.getName());
 		this.title = result.getName();
 		LinkedList<Curve> curves = result.getCurves();
 		curves.getFirst().getQueue();
@@ -103,8 +102,6 @@ public class GraphPanel extends JPanel {
 		double low = getLowestLow(dataset);
 		double high = getHighestHigh(dataset);
 
-		System.out.println("LOW: " + low);
-		System.out.println("HIGH: " + high);
 		
 		chart.getXYPlot().getRangeAxis().setRange(low*0.99, high*1.01);
 		
@@ -165,7 +162,6 @@ public class GraphPanel extends JPanel {
 			for(int j = 1; j < dataset.getItemCount(i); j++){
 				if(dataset.getYValue(i,j) < lowest){
 					lowest = dataset.getYValue(i,j);
-					System.out.println("LÄGSTA: " + lowest);
 				}
 			}
 		}
@@ -180,7 +176,6 @@ public class GraphPanel extends JPanel {
 			for(int j = 1; j < dataset.getItemCount(i); j++){
 				if(dataset.getYValue(i,j) > highest){
 					highest = dataset.getYValue(i,j);
-					System.out.println("HÖGSTA: " + highest);
 				}
 			}
 		}
