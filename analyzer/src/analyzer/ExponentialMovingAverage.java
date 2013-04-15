@@ -1,5 +1,8 @@
 package analyzer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,14 +18,12 @@ import data.Stock;
 /**
  * A class that represents an exponential moving average.
  * 
- * 
- * 
  * @author oskarnylen
  */
-public class ExponentialMovingAverage implements AnalysisMethod{
+public class ExponentialMovingAverage implements AnalysisMethod {
 
-	PriorityQueue<SimpleData> movingAverageQueue = new PriorityQueue<SimpleData>();
-	PriorityQueue<SimpleData> priceQueue;
+	private PriorityQueue<SimpleData> movingAverageQueue;
+	private PriorityQueue<SimpleData> priceQueue;
 
 	/**
 	 * 
@@ -31,6 +32,32 @@ public class ExponentialMovingAverage implements AnalysisMethod{
 	 */
 	public ExponentialMovingAverage(PriorityQueue<? extends SimpleData> dataQueue, int offset){
 		priceQueue = new PriorityQueue<SimpleData>(dataQueue);
+		movingAverageQueue = getEMA(dataQueue, offset);
+	}
+
+	/**
+	 * 
+	 * @param todaysPrice
+	 * @param numberOfDays
+	 * @param EMAYesterday
+	 * @return
+	 */
+	private static double calculateEMA(double todaysPrice, double numberOfDays, double EMAYesterday){
+		double k = 2 / (numberOfDays + 1);
+		return ((todaysPrice*k) + (EMAYesterday*(1-k)));
+	}
+
+	/**
+	 * 
+	 * @param dataQueue
+	 * @param offset
+	 * @return
+	 */
+	private static PriorityQueue<SimpleData> getEMA(PriorityQueue<? extends SimpleData> dataQueue, int offset){
+		PriorityQueue<SimpleData> priceQueue = new PriorityQueue<SimpleData>(dataQueue);
+		
+		PriorityQueue<SimpleData> resultQueue = new PriorityQueue<SimpleData>();
+		
 		LinkedList<SimpleData> dataList = new LinkedList<SimpleData>(dataQueue);
 		
 
@@ -68,20 +95,71 @@ public class ExponentialMovingAverage implements AnalysisMethod{
 		 * Insert the calculated values into the movingAverageList
 		 */
 		for(int i = 0; i < priceList.size(); i++){
-			movingAverageQueue.add(new SimpleData(dataList.get(i).getStock(), dataList.get(i).getDate(),
+			resultQueue.add(new SimpleData(dataList.get(i).getStock(), dataList.get(i).getDate(),
 					priceList.get(i)));
 		}
+		return resultQueue;
 	}
-
-	private double calculateEMA(double todaysPrice, double numberOfDays, double EMAYesterday){
-		double k = 2 / (numberOfDays + 1);
-		return ((todaysPrice*k) + (EMAYesterday*(1-k)));
-	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public PriorityQueue<SimpleData> getMovingAverage(){
 		return movingAverageQueue;
 	}
 
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param index the index of the day from wich the sma should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getEMA(SimpleData[] data, int index, int offset) {
+		if(index<offset) {
+			throw new IllegalArgumentException("Offset larger than index");
+		}
+		if(index>=data.length) {
+			throw new IndexOutOfBoundsException("Index larger than the size of the collection");
+		}
+		
+		PriorityQueue<SimpleData> queue = new PriorityQueue<SimpleData>(Arrays.asList(data));
+		ArrayList<SimpleData> emaList = new ArrayList<SimpleData>(getEMA(queue, offset));
+		
+		return new SimpleData(data[index].getStock(), data[index].getDate(), emaList.get(index).getValue());
+	}
+	
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param index the index of the day from wich the sma should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getEMA(Collection<? extends SimpleData> data, int index, int offset) {
+		SimpleData[] temp = new SimpleData[data.size()];
+		temp = data.toArray(temp);
+		return getEMA(temp,index,offset);
+	}
+	
+
+	
+	/**
+	 * 
+	 * @param data the set of dayly data that will be used
+	 * @param date the date from wich the avarage should be calculated
+	 * @param offset the offest over how long period the avarage should be calculated
+	 * @return the simple moving avarage for one specific date at the specified index of the collection
+	 */
+	public static SimpleData getEMA(PriorityQueue<? extends SimpleData> data, Calendar date, int offset) {
+		SimpleData[] temp = new SimpleData[data.size()];
+		temp = data.toArray(temp);
+		int index = Arrays.binarySearch(temp, new SimpleData(null, date, 0), SimpleData.getDateComperator());
+		return getEMA(temp,index,offset);
+	}
+	
+	
 	@Override
 	public String resultString() {
 		// TODO Auto-generated method stub

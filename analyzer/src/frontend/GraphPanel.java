@@ -72,7 +72,7 @@ public class GraphPanel extends JPanel {
 		final JFreeChart chart = createChart(dataset);
 
 		chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(600, 400));
+		chartPanel.setPreferredSize(new Dimension(700, 500));
 	}
 
 	private XYSeries createSeries(Collection<? extends SimpleData> collection, String name){

@@ -50,7 +50,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener {
 		add(statusbar, BorderLayout.SOUTH);
 
 		setTitle("StockOracle");
-		setSize(new Dimension(800, 600));
+		setSize(new Dimension(1000, 800));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		core.addObserver(this);
