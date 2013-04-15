@@ -48,7 +48,7 @@ public class GraphPanel extends JPanel {
 		chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new Dimension(600, 400));
 	}
-	
+
 	public GraphPanel(PriorityQueue<? extends SimpleData> dailyDataQueue, String title){
 		ddList = new ArrayList<SimpleData>(dailyDataQueue);
 		this.title = title;
@@ -86,8 +86,6 @@ public class GraphPanel extends JPanel {
 		return series;
 	}
 
-
-
 	private JFreeChart createChart(final XYDataset dataset){
 
 		final JFreeChart chart = ChartFactory.createXYLineChart(
@@ -105,7 +103,11 @@ public class GraphPanel extends JPanel {
 		double low = getLowestLow(dataset);
 		double high = getHighestHigh(dataset);
 
+		System.out.println("LOW: " + low);
+		System.out.println("HIGH: " + high);
+		
 		chart.getXYPlot().getRangeAxis().setRange(low*0.99, high*1.01);
+		
 
 		if((high - low) < 1){
 			NumberAxis range = (NumberAxis)chart.getXYPlot().getRangeAxis();
@@ -136,15 +138,15 @@ public class GraphPanel extends JPanel {
 		plot.setRangeZeroBaselineVisible(false);
 
 		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-		
+
 		renderer.setSeriesLinesVisible(0, true);
 		renderer.setSeriesShapesVisible(0, false);
-		
+
 		for(int i = 0; i<dataset.getSeriesCount(); i++){
 			renderer.setSeriesLinesVisible(i, true);
 			renderer.setSeriesShapesVisible(i, false);
 		}
-		
+
 		plot.setRenderer(renderer);
 
 		// change the auto tick unit selection to integer units only...
@@ -158,9 +160,13 @@ public class GraphPanel extends JPanel {
 
 	private double getLowestLow(XYDataset dataset){
 		double lowest = dataset.getYValue(0, 0);
-		for(int i=1;i<dataset.getItemCount(0);i++){
-			if(dataset.getYValue(0,i) < lowest){
-				lowest = dataset.getYValue(0,i);
+
+		for(int i = 0; i < dataset.getSeriesCount(); i++){
+			for(int j = 1; j < dataset.getItemCount(i); j++){
+				if(dataset.getYValue(i,j) < lowest){
+					lowest = dataset.getYValue(i,j);
+					System.out.println("LÄGSTA: " + lowest);
+				}
 			}
 		}
 
@@ -168,11 +174,14 @@ public class GraphPanel extends JPanel {
 	}
 
 	private double getHighestHigh(XYDataset dataset){
-		double highest;
-		highest = dataset.getYValue(0,0);
-		for(int i=1;i<dataset.getItemCount(0);i++){
-			if(dataset.getYValue(0,i) > highest){
-				highest = dataset.getYValue(0,i);
+		double highest = dataset.getYValue(0,0);
+
+		for(int i = 0; i < dataset.getSeriesCount(); i++){
+			for(int j = 1; j < dataset.getItemCount(i); j++){
+				if(dataset.getYValue(i,j) > highest){
+					highest = dataset.getYValue(i,j);
+					System.out.println("HÖGSTA: " + highest);
+				}
 			}
 		}
 		return highest;
@@ -200,7 +209,7 @@ public class GraphPanel extends JPanel {
 		}
 		if(method.equals("MACD")){
 			XYSeries series = createSeries(list, "Signal Line");
-			
+
 			dataset.addSeries(series);
 			createChart(dataset);
 		}

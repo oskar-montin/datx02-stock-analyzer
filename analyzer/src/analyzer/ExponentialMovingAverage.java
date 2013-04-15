@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 import data.Stock;
 
@@ -20,56 +21,40 @@ import data.Stock;
  */
 public class ExponentialMovingAverage implements AnalysisMethod{
 
-	private LinkedList<SimpleData> dailyDataList;
-
-	private LinkedList<SimpleData> simpleMovingAverageList;
-	
-	private LinkedList<SimpleData> movingAverageList;
+	PriorityQueue<SimpleData> movingAverageQueue = new PriorityQueue<SimpleData>();
+	PriorityQueue<SimpleData> priceQueue;
 
 	/**
 	 * 
 	 * @param stock
 	 * @param offset
 	 */
-	public ExponentialMovingAverage(PriorityQueue<? extends SimpleData> MACDQueue, int offset){
-		if(offset < 1 || offset > MACDQueue.size()){
-			throw new IllegalArgumentException();
-		}
+	public ExponentialMovingAverage(PriorityQueue<? extends SimpleData> dataQueue, int offset){
+		priceQueue = new PriorityQueue<SimpleData>(dataQueue);
+		LinkedList<SimpleData> dataList = new LinkedList<SimpleData>(dataQueue);
 		
-		dailyDataList = new LinkedList<SimpleData>(MACDQueue);
-		Collections.reverse(dailyDataList);
 
-		simpleMovingAverageList = new SimpleMovingAverage(MACDQueue, offset).getMovingAverage();
-		
-		movingAverageList = new LinkedList<SimpleData>();
-
-		
 		/*
 		 * Make sure that the dailyDataList has the same number of entries (with the same dates) as movingAverageList
 		 */
 		for(int i = offset-1; i > 0; i--){
-			dailyDataList.removeLast().getValue();
+			dataList.removeFirst();
 		}
-		
-		Collections.reverse(simpleMovingAverageList);
-
 		
 		/*
 		 * Make sure that the first EMA is the same as the SMA for the same period
 		 */
-		double yesterdayEMA = simpleMovingAverageList.getFirst().getValue();
+		double yesterdayEMA = SimpleMovingAverage.getSMA(dataQueue, offset, offset).getValue();
 
-
+		
 		LinkedList<Double> priceList = new LinkedList<Double>();
-
-		Collections.reverse(dailyDataList);
-
-		for(int i = 0; i < dailyDataList.size(); i++){
+		
+		for(int i = 0; i < dataList.size(); i++){
 			if(i == 0){
 				priceList.add(yesterdayEMA);
 			} else {
 				
-				SimpleData sd = dailyDataList.get(i);
+				SimpleData sd = dataList.get(i);
 				//call the EMA calculation
 				double EMA = calculateEMA(sd.getValue(), offset, yesterdayEMA);
 				//put the calculated EMA in a list
@@ -83,7 +68,7 @@ public class ExponentialMovingAverage implements AnalysisMethod{
 		 * Insert the calculated values into the movingAverageList
 		 */
 		for(int i = 0; i < priceList.size(); i++){
-			movingAverageList.add(new SimpleData(dailyDataList.get(i).getStock(), dailyDataList.get(i).getDate(),
+			movingAverageQueue.add(new SimpleData(dataList.get(i).getStock(), dataList.get(i).getDate(),
 					priceList.get(i)));
 		}
 	}
@@ -93,8 +78,8 @@ public class ExponentialMovingAverage implements AnalysisMethod{
 		return ((todaysPrice*k) + (EMAYesterday*(1-k)));
 	}
 
-	public LinkedList<SimpleData> getMovingAverage(){
-		return movingAverageList;
+	public PriorityQueue<SimpleData> getMovingAverage(){
+		return movingAverageQueue;
 	}
 
 	@Override
@@ -111,13 +96,17 @@ public class ExponentialMovingAverage implements AnalysisMethod{
 
 	@Override
 	public Curve[] getGraph() {
-		// TODO Auto-generated method stub
-		return null;
+		Curve[] curves = new Curve[2];
+		curves[0] = new Curve(this.priceQueue, "Index");
+		curves[1] = new Curve(this.getMovingAverage(), "EMA");
+		return curves;
 	}
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		Double value = this.value();
+		Signal signal = Signal.NONE;
+		
+		return new Result("EMA", value, this.resultString(), this.getGraph(), signal);
 	}
 }

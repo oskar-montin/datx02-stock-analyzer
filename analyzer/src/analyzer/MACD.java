@@ -9,6 +9,7 @@ import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 
 /**
@@ -163,7 +164,7 @@ public class MACD implements AnalysisMethod {
 	 */
 	@Override
 	public Curve[] getGraph() {
-		Curve[] curves = new Curve[3];
+		Curve[] curves = new Curve[4];
 		curves[0] = new Curve(MACDQueue, "MACD-line");
 		curves[1] = new Curve(signalQueue, "Signal-line");
 		curves[2] = new Curve(histogramQueue, "MACD-histogram");
@@ -173,7 +174,15 @@ public class MACD implements AnalysisMethod {
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		Double value = this.value();
+		Signal signal;
+		if(value < 0) {
+			signal = Signal.SELL;
+		} else if(value > 0) {
+			signal = Signal.BUY;
+		} else {
+			signal = Signal.NONE;
+		}
+		return new Result("MACD", value, this.resultString(), this.getGraph(), signal);
 	}
 }
