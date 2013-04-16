@@ -25,7 +25,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	private List<DailyData> dailyData;
 	private List<SimpleData> kList = new ArrayList<SimpleData>();
 	private List<SimpleData> dList = new ArrayList<SimpleData>();
-	private String resultString = "Indicates overbought if value>70 or oversold if value<30. Triggers buy or sell signal if %K,%D cross.";
+	private final String resultString = "Indicates overbought if value>70 or oversold if value<30. Triggers buy or sell signal if %K,%D cross.";
 	private Curve[] curves;
 	private Result results;
 	
@@ -165,8 +165,9 @@ public class StochasticOscillator implements AnalysisMethod {
 		kList.clear();
 		
 		if (speed > 0){
-			kList.addAll(k);
-			SimpleMovingAverage sma = new SimpleMovingAverage(kList, speed);
+			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
+			kList.addAll(sma.getMovingAverage());
+			sma = new SimpleMovingAverage(kList, 3);
 			dList.addAll(sma.getMovingAverage());
 			
 			for(int i = 0; i < speed-1; i++){
