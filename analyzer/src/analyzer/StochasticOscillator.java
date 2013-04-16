@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import controller.DatabaseHandler;
-
 import data.Curve;
 import data.DailyData;
 import data.Result;
@@ -55,14 +53,6 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * This is due to the requirement of having 14 days to analyze and speed-days to smooth over.
 	 * The returned array will contain values from 0.00 to 1.00 for each analyzed day.
 	 */
-	private List<SimpleData> getK(){
-		
-		return kList;
-	}
-	private List<SimpleData> getD(){
-		
-		return dList;
-	}
 	@Override
 	public String resultString() {
 		
@@ -97,7 +87,7 @@ public class StochasticOscillator implements AnalysisMethod {
 		smooth();
 		reverseLists();
 		curves();
-		results = new Result(kList.get(0).getStock().getName(), value(), resultString, getGraph(), signal());
+		results = new Result("Stochastic Oscillator", value(), resultString, getGraph(), signal());
 	}
 	
 	/*
