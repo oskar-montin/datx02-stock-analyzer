@@ -165,9 +165,8 @@ public class StochasticOscillator implements AnalysisMethod {
 		kList.clear();
 		
 		if (speed > 0){
-			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
-			kList.addAll(sma.getMovingAverage());
-			sma = new SimpleMovingAverage(kList, speed);
+			kList.addAll(k);
+			SimpleMovingAverage sma = new SimpleMovingAverage(kList, speed);
 			dList.addAll(sma.getMovingAverage());
 			
 			for(int i = 0; i < speed-1; i++){
