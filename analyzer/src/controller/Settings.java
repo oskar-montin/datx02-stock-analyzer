@@ -23,7 +23,7 @@ public class Settings implements Serializable {
 	private static Settings instance;
 	private int BBOffset = 5;
 	private int CMFOffset = 5;
-	private int EMAOffset = 5;
+	private int EMAOffset = 10;
 	private int SMAOffset = 5;
 	private int RSIOffset = 5;
 	private int ROCOffset = 5;
