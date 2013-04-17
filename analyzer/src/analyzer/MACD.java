@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import util.Util;
+
 import data.Curve;
 import data.DailyData;
 import data.Result;
@@ -24,6 +26,11 @@ public class MACD implements AnalysisMethod {
 	private PriorityQueue<SimpleData> signalQueue;
 	private PriorityQueue<SimpleData> histogramQueue;
 	private PriorityQueue<SimpleData> MACDFilteredQueue;
+	
+	
+	private int firstOffset;
+	private int secondOffset;
+	private int signalOffset;
 
 	private boolean filterOn;
 
@@ -38,6 +45,10 @@ public class MACD implements AnalysisMethod {
 		List<? extends SimpleData> firstEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, first));
 		List<? extends SimpleData> secondEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, second));
 
+		firstOffset = first;
+		secondOffset = second;
+		signalOffset = signal;
+		
 		MACDQueue = createCompiledQueue(firstEMA, secondEMA, true);
 
 		signalQueue = MovingAverage.getEMA(MACDQueue, signal);
@@ -50,26 +61,33 @@ public class MACD implements AnalysisMethod {
 		List<? extends SimpleData> histogramList = new LinkedList<SimpleData>(histogramQueue);
 
 		MACDFilteredQueue = createCompiledQueue(MACDList, histogramList, false);
+		
+		System.out.println("MACDQUEUE: " + MACDQueue);
+		System.out.println("SIGNAL: " + signalQueue);
+		System.out.println("MACDHISTOGRAM: " + histogramQueue);
+		System.out.println("FILTERED: " + MACDFilteredQueue);
 	}
 
 	private PriorityQueue<SimpleData> createCompiledQueue(List<? extends SimpleData> first, List<? extends SimpleData> second, boolean subtract){
-		Collections.reverse(first);
-		Collections.reverse(second);
+		ArrayList<SimpleData> firstList = new ArrayList<SimpleData>(first);
+		ArrayList<SimpleData> secondList = new ArrayList<SimpleData>(second);
+		Collections.reverse(firstList);
+		Collections.reverse(secondList);
 
 		PriorityQueue<SimpleData> compiledQueue = new PriorityQueue<SimpleData>();
 
 		if(subtract == true){
-			for(int i = second.size()-1; i >= 0; i--){
-				double value = first.get(i).getValue()-second.get(i).getValue();	//SUBTRACTION
-				compiledQueue.add(new SimpleData(second.get(i).getStock(), 				//Add the right stock
-						second.get(i).getDate(), 								//Add the right date
+			for(int i = secondList.size()-1; i >= 0; i--){
+				double value = firstList.get(i).getValue()-secondList.get(i).getValue();	//SUBTRACTION
+				compiledQueue.add(new SimpleData(secondList.get(i).getStock(), 				//Add the right stock
+						secondList.get(i).getDate(), 								//Add the right date
 						value));												//Add the right value
 			}
 		}else{
-			for(int i = second.size()-1; i >= 0; i--){
-				double value = first.get(i).getValue()+second.get(i).getValue();	//ADDITION
-				compiledQueue.add(new SimpleData(second.get(i).getStock(), 				//Add the right stock
-						second.get(i).getDate(), 								//Add the right date
+			for(int i = secondList.size()-1; i >= 0; i--){
+				double value = firstList.get(i).getValue()+secondList.get(i).getValue();	//ADDITION
+				compiledQueue.add(new SimpleData(secondList.get(i).getStock(), 				//Add the right stock
+						secondList.get(i).getDate(), 								//Add the right date
 						value));												//Add the right value
 			}
 		}
@@ -164,11 +182,19 @@ public class MACD implements AnalysisMethod {
 	 */
 	@Override
 	public Curve[] getGraph() {
+
+		PriorityQueue<SimpleData> trimmedSignal = Util.trimQueue(signalQueue, signalOffset);
+
+		PriorityQueue<SimpleData> trimmedHistogram = Util.trimQueue(histogramQueue, signalOffset);
+
+		PriorityQueue<SimpleData> trimmedMACDFiltered = Util.trimQueue(MACDFilteredQueue, signalOffset);
+		
+		
 		Curve[] curves = new Curve[4];
 		curves[0] = new Curve(MACDQueue, "MACD-line");
-		curves[1] = new Curve(signalQueue, "Signal-line");
-		curves[2] = new Curve(histogramQueue, "MACD-histogram");
-		curves[3] = new Curve(MACDFilteredQueue, "MACD-filtered");
+		curves[1] = new Curve(trimmedSignal, "Signal-line");
+		curves[2] = new Curve(trimmedHistogram, "MACD-histogram");
+		curves[3] = new Curve(trimmedMACDFiltered, "MACD-filtered");
 		return curves;
 	}
 

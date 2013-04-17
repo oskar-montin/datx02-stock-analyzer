@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
+import util.Util;
 
 import data.Curve;
 import data.DailyData;
@@ -24,6 +27,7 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 
 	private PriorityQueue<SimpleData> movingAverageQueue;
 	private PriorityQueue<SimpleData> priceQueue;
+	private int offset;
 
 	/**
 	 * 
@@ -31,6 +35,7 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 	 * @param offset
 	 */
 	public ExponentialMovingAverage(PriorityQueue<? extends SimpleData> dataQueue, int offset){
+		this.offset = offset;
 		priceQueue = new PriorityQueue<SimpleData>(dataQueue);
 		movingAverageQueue = getEMA(dataQueue, offset);
 	}
@@ -174,12 +179,17 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 
 	@Override
 	public Curve[] getGraph() {
+		PriorityQueue<SimpleData> trimmedQueue = Util.trimQueue(movingAverageQueue, this.offset);
+		
+		//System.out.println(trimmedQueue);
+		
 		Curve[] curves = new Curve[2];
 		curves[0] = new Curve(this.priceQueue, "Index");
-		curves[1] = new Curve(this.getMovingAverage(), "EMA");
+		curves[1] = new Curve(trimmedQueue, "EMA");
 		return curves;
 	}
-
+	
+	
 	@Override
 	public Result getResult() {
 		Double value = this.value();

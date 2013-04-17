@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -12,11 +13,12 @@ import data.DailyData;
 import data.LargeDouble;
 import data.MarketItem;
 import data.QuarterlyData;
+import data.SimpleData;
 import data.Stock;
 
 public class Util {
-	
-	
+
+
 	/**
 	 * A static method that returns the mean values of the business sector of the input stock. Only the daily values
 	 * are processed.
@@ -26,13 +28,13 @@ public class Util {
 	 * 		   business equal to the business sector of the input. The exchange is set to MeanExchange.
 	 */
 	public static DailyData dailyDataMean(Stock stock){
-		
+
 		PriorityQueue<DailyData> businessDailyData = new PriorityQueue<DailyData>();
-		
+
 		businessDailyData = DatabaseHandler.getBusinessDailyData(stock);
 
 		LinkedList<DailyData> ddLinkedList = new LinkedList<DailyData>(businessDailyData);
-		
+
 		DailyData dailyData;
 
 		LargeDouble marketCap = new LargeDouble("0");
@@ -46,11 +48,11 @@ public class Util {
 		double high = 0;
 		double low = 0;
 		long volume = 0;
-	
+
 		Stock returnStock = new Stock(stock.getBusiness(), stock.getBusiness(), 
 				stock.getBusiness(), "MeanExchange");
 
-		
+
 		int marketCapCounter = 0;
 		LargeDouble totalMarketCap = new LargeDouble("");
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -71,7 +73,7 @@ public class Util {
 			}
 		}
 		dividentYield = totalDividentYield/dividentYieldCounter;
-		
+
 
 		int PECounter = 0;
 		double totalPE = 0;
@@ -83,7 +85,7 @@ public class Util {
 		}
 		PE = totalPE/PECounter;
 
-		
+
 		int PSCounter = 0;
 		double totalPS = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -94,7 +96,7 @@ public class Util {
 		}
 		PS = totalPS/PSCounter;
 
-		
+
 		int PEGCounter = 0;
 		double totalPEG = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -104,8 +106,8 @@ public class Util {
 			}
 		}
 		PEG = totalPEG/PEGCounter;
-		
-		
+
+
 		int openPriceCounter = 0;
 		double totalOpenPrice = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -116,7 +118,7 @@ public class Util {
 		}
 		openPrice = totalOpenPrice/openPriceCounter;
 
-		
+
 		int closePriceCounter = 0;
 		double totalClosePrice = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -126,8 +128,8 @@ public class Util {
 			}
 		}
 		closePrice = totalClosePrice/closePriceCounter;
-		
-		
+
+
 		int highCounter = 0;
 		double totalHigh = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -138,7 +140,7 @@ public class Util {
 		}
 		high = totalHigh/highCounter;
 
-		
+
 		int lowCounter = 0;
 		double totalLow = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -148,8 +150,8 @@ public class Util {
 			}
 		}
 		low = totalLow/lowCounter;
-		
-		
+
+
 		int volumeCounter = 0;
 		long totalVolume = 0;
 		for(int i = ddLinkedList.size()-1; i >= 0; i--){
@@ -181,7 +183,7 @@ public class Util {
 		return dailyData;
 
 	}
-	
+
 	/**
 	 * A static method that returns the mean values of the business sector of the input stock. Only the quarterly
 	 * values are processed.
@@ -191,13 +193,13 @@ public class Util {
 	 * 		   business equal to the business sector of the input. The exchange is set to MeanExchange.
 	 */
 	public static QuarterlyData quarterlyDataMean(Stock stock){
-		
+
 		PriorityQueue<QuarterlyData> businessQuarterlyData = new PriorityQueue<QuarterlyData>();
-		
+
 		businessQuarterlyData = DatabaseHandler.getBusinessQuarterlyData(stock);
-		
+
 		LinkedList<QuarterlyData> qdLinkedList = new LinkedList<QuarterlyData>(businessQuarterlyData);
-		
+
 		QuarterlyData quarterlyData;
 
 		LargeDouble NAV;	
@@ -211,11 +213,11 @@ public class Util {
 		double acidTestRatio;							// (current assets - inventory) / current liabilities
 		double balanceLiquidity;						// current assets / current liabilities
 		LargeDouble workingCapital;						// current assets - current liabilities
-	
+
 		Stock returnStock = new Stock(stock.getBusiness(), stock.getBusiness(), 
 				stock.getBusiness(), "MeanExchange");
 
-		
+
 		int NAVCounter = 0;
 		LargeDouble totalNAV = new LargeDouble("");
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -225,7 +227,7 @@ public class Util {
 			}
 		}
 		NAV = totalNAV.div(new LargeDouble(NAVCounter+""), 5);
-		
+
 
 		int solidityCounter = 0;
 		double totalSolidity = 0;
@@ -237,7 +239,7 @@ public class Util {
 		}
 		solidity = totalSolidity/solidityCounter;
 
-		
+
 		int dividentPerShareCounter = 0;
 		double totalDividentPerShare = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -248,7 +250,7 @@ public class Util {
 		}
 		dividentPerShare = totalDividentPerShare/dividentPerShareCounter;
 
-		
+
 		int ROECounter = 0;
 		double totalROE = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -258,8 +260,8 @@ public class Util {
 			}
 		}
 		ROE = totalROE/ROECounter;
-		
-		
+
+
 		int EPSCounter = 0;
 		double totalEPS = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -270,7 +272,7 @@ public class Util {
 		}
 		EPS = totalEPS/EPSCounter;
 
-		
+
 		int NAVPSCounter = 0;
 		double totalNAVPS = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -280,8 +282,8 @@ public class Util {
 			}
 		}
 		NAVPS = totalNAVPS/NAVPSCounter;
-		
-		
+
+
 		int pricePerNAVPSCounter = 0;
 		double totalPricePerNAVPS = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -292,7 +294,7 @@ public class Util {
 		}
 		pricePerNAVPS = totalPricePerNAVPS/pricePerNAVPSCounter;
 
-		
+
 		int acidTestRatioCounter = 0;
 		double totalAcidTestRatio = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -302,8 +304,8 @@ public class Util {
 			}
 		}
 		acidTestRatio = totalAcidTestRatio/acidTestRatioCounter;
-		
-		
+
+
 		int balanceLiquidityCounter = 0;
 		double totalBalanceLiquidity = 0;
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -313,8 +315,8 @@ public class Util {
 			}
 		}
 		balanceLiquidity = totalBalanceLiquidity/balanceLiquidityCounter;
-		
-		
+
+
 		int workingCapitalCounter = 0;
 		LargeDouble totalWorkingCapital = new LargeDouble("");
 		for(int i = qdLinkedList.size()-1; i >= 0; i--){
@@ -325,7 +327,7 @@ public class Util {
 		}
 		workingCapital = totalWorkingCapital.div(new LargeDouble(workingCapitalCounter+""), 5);
 
-		
+
 		/**
 		 * 
 		 * @param stock
@@ -346,7 +348,7 @@ public class Util {
 
 		return quarterlyData;
 	}
-	
+
 
 	/**
 	 * A simple method made just to fetch the latest daily data from a PriorityQueue.
@@ -363,5 +365,38 @@ public class Util {
 			}
 		}
 		return returnData;
+	}
+
+	public static PriorityQueue<SimpleData> trimQueue(Collection<? extends SimpleData> methodQueue, int offset){
+		LinkedList<SimpleData> methodData = new LinkedList<SimpleData>(methodQueue);
+		LinkedList<SimpleData> nullData = new LinkedList<SimpleData>();
+		
+		
+		for(int i = 0; i < offset-1; i++){
+			methodData.get(0).getDate();
+			Calendar newDate = Calendar.getInstance();
+			newDate.set(Calendar.YEAR, i);
+			nullData.add(new SimpleData(methodData.get(0).getStock(), newDate, methodData.get(0).getValue()));
+		}
+////		
+//		System.out.println("NULLDATA: " + nullData);
+//		System.out.println("METHODDATA AFTER: " + methodData);
+
+		nullData.addAll(methodData);
+
+//		System.out.println("EHHEHEE: " + nullData);
+
+
+		//for(int i = 0; i < originalSize-priceData.size(); i++){
+		//priceData.add(methodData.getFirst());
+		//}
+
+
+
+		PriorityQueue<SimpleData> returnQueue = new PriorityQueue<SimpleData>(nullData);
+
+//		System.out.println(returnQueue);
+		
+		return returnQueue;
 	}
 }

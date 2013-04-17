@@ -10,12 +10,14 @@ import data.SimpleData;
 
 public class BollingerBands implements AnalysisMethod{
 	private SimpleData[] data;
+	private PriorityQueue<SimpleData> closePriceRef;
 	private int offset;
 	private PriorityQueue<SimpleData> upper, middle, lower;
 	int value;
 	
 	public BollingerBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
+		this.closePriceRef = (PriorityQueue<SimpleData>) data;
 		this.data = new SimpleData[data.size()];
 		this.data = data.toArray(this.data);
 		this.upper = new PriorityQueue<SimpleData>();
@@ -69,11 +71,25 @@ public class BollingerBands implements AnalysisMethod{
 
 	@Override
 	public Curve[] getGraph() {
-		Curve[] curves = new Curve[3];
-		curves[0] = new Curve(this.lower,"The lower bound curve");
-		curves[1] = new Curve(this.middle,"The simple moving avarage curve");
-		curves[2] = new Curve(this.upper,"The upper bound curve");
+		Curve[] curves = new Curve[4];
+		curves[0] = new Curve(this.closePriceRef,"Close price");
+		
+		curves[1] = new Curve(getLaggAdjusted(this.lower, this.closePriceRef),"The lower bound curve");
+		curves[2] = new Curve(getLaggAdjusted(this.middle, this.closePriceRef),"The simple moving avarage curve");
+		curves[3] = new Curve(getLaggAdjusted(this.upper, this.closePriceRef),"The upper bound curve");
 		return curves;
+	}
+	
+	private PriorityQueue<SimpleData> getLaggAdjusted(PriorityQueue<SimpleData> queue, PriorityQueue<SimpleData> goalPattern) {
+		PriorityQueue<SimpleData> temp = new PriorityQueue<SimpleData>(goalPattern);
+		PriorityQueue<SimpleData> returnQueue = new PriorityQueue<SimpleData>();
+		while(queue.size()<temp.size()) {
+			returnQueue.add(temp.poll());
+		}
+		for(SimpleData s:queue) {
+			returnQueue.add(s);
+		}
+		return returnQueue;	
 	}
 
 	@Override
@@ -86,9 +102,9 @@ public class BollingerBands implements AnalysisMethod{
 	public Result getResult() {
 		Double value = this.value();
 		Signal signal;
-		if(value>80) {
+		if(value>=100) {
 			signal = Signal.BUY;
-		} else if(value<20) {
+		} else if(value<=0) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;
