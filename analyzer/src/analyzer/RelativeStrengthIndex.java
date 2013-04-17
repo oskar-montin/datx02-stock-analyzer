@@ -151,7 +151,4 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), signal);
 	}
 
-
-
-
 }
