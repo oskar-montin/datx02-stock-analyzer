@@ -62,10 +62,6 @@ public class MACD implements AnalysisMethod {
 
 		MACDFilteredQueue = createCompiledQueue(MACDList, histogramList, false);
 		
-		System.out.println("MACDQUEUE: " + MACDQueue);
-		System.out.println("SIGNAL: " + signalQueue);
-		System.out.println("MACDHISTOGRAM: " + histogramQueue);
-		System.out.println("FILTERED: " + MACDFilteredQueue);
 	}
 
 	private PriorityQueue<SimpleData> createCompiledQueue(List<? extends SimpleData> first, List<? extends SimpleData> second, boolean subtract){

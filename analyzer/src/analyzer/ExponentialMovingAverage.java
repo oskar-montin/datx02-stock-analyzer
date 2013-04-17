@@ -171,17 +171,22 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 		return null;
 	}
 
+	/**
+	 * Returns the k-value of the last two data points in the moving average.
+	 */
 	@Override
 	public double value() {
-		// TODO Auto-generated method stub
-		return 0;
+		LinkedList<SimpleData> tempList = new LinkedList<SimpleData>(this.getMovingAverage());
+		double firstValue = tempList.pollLast().getValue();
+		double secondValue = tempList.pollLast().getValue();
+		
+		double value = secondValue-firstValue;
+		return value;
 	}
 
 	@Override
 	public Curve[] getGraph() {
-		PriorityQueue<SimpleData> trimmedQueue = Util.trimQueue(movingAverageQueue, this.offset);
-		
-		//System.out.println(trimmedQueue);
+		PriorityQueue<SimpleData> trimmedQueue = Util.trimQueue(this.getMovingAverage(), this.offset);
 		
 		Curve[] curves = new Curve[2];
 		curves[0] = new Curve(this.priceQueue, "Index");
