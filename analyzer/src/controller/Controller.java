@@ -13,6 +13,7 @@ import analyzer.MACD;
 import analyzer.RateOfChange;
 import analyzer.RelativeStrengthIndex;
 import analyzer.SimpleMovingAverage;
+import analyzer.StochRSI;
 import analyzer.StochasticOscillator;
 
 import data.Curve;
@@ -71,6 +72,9 @@ public class Controller {
 		
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
 		results.add(rsi.getResult());
+		
+		StochRSI stochrsi = new StochRSI(this.stock, data, settings.getRSIOffset());
+		results.add(stochrsi.getResult());
 
 		Fibonacci fib = new Fibonacci(data, settings.getFibOffset());
 		results.add(fib.getResult());
