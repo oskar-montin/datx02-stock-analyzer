@@ -84,7 +84,7 @@ public class CMF implements AnalysisMethod{
 		dailyData = new PriorityQueue<SimpleData>();
 		LinkedList<DailyData> dataList = new LinkedList<DailyData>(dailyQueue);
 		System.out.println("DATALIST: " + dataList);
-	
+		double CMF = 0;
 		for(int i = offset; i<dataList.size(); i++){
 			
 			DailyData [] periodSet = new DailyData [offset+1];
@@ -92,14 +92,14 @@ public class CMF implements AnalysisMethod{
 				periodSet[j] = dataList.get(i-offset+j);
 			}
 			
-			double CMF = getCMF(periodSet);
+			CMF = getCMF(periodSet);
 			if(Double.isInfinite(CMF)) { // In case of infinite values (for erroneous daily data) 
 				CMF = 0.0;
 			}
 			dailyData.add(new SimpleData(stock, dataList.get(i).getDate(), CMF));
 			
 		}
-		current=dataList.getLast().getValue();
+		current=CMF;
 	}	
 
 	
