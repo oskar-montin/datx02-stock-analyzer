@@ -85,7 +85,6 @@ public class CMF implements AnalysisMethod{
 	private void CMFCalc(PriorityQueue<DailyData> dailyQueue, int offset){
 		dailyData = new PriorityQueue<SimpleData>();
 		LinkedList<DailyData> dataList = new LinkedList<DailyData>(dailyQueue);
-		System.out.println("DATALIST: " + dataList);
 		double CMF = 0;
 		for(int i = offset; i<dataList.size(); i++){
 			

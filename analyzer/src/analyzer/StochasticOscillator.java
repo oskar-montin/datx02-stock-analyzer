@@ -1,6 +1,7 @@
 package analyzer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -42,7 +43,9 @@ public class StochasticOscillator implements AnalysisMethod {
 	 */
 	public StochasticOscillator(PriorityQueue<DailyData> dailyData, int shortPeriod,
 								int midPeriod, int longPeriod, int speed){
-		
+		if(speed <= 0) {
+			throw new IllegalArgumentException("SO will not work with speed < 1");
+		}
 		setParameters(dailyData, shortPeriod, midPeriod, longPeriod, speed);
 	}
 	
@@ -80,12 +83,11 @@ public class StochasticOscillator implements AnalysisMethod {
 	private void stochasticOscillator(){
 		
 		periods();
-		if(!(kList.size() % speed == 0) || !(dList.size() % speed == 0)){
+		if(!(kList.size() % 3 == 0) || !(dList.size() % 3 == 0)){
 			throw new IllegalArgumentException("**Ignore Exception type!" +
 									" However SO did not successfully finish.");
 		}
 		smooth();
-		reverseLists();
 		curves();
 		results = new Result("Stochastic Oscillator", value(), resultString, getGraph(), signal());
 	}
@@ -111,7 +113,7 @@ public class StochasticOscillator implements AnalysisMethod {
 				if(0 < currentDailyData.getLow() && currentDailyData.getLow() < lowestLow){
 					lowestLow = currentDailyData.getLow();
 				}
-				else if(currentDailyData.getHigh() > highestHigh){
+				if(currentDailyData.getHigh() > highestHigh){
 					highestHigh = currentDailyData.getHigh();
 				}
 				if(k == shortPeriod-1){
@@ -137,7 +139,11 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * entries represent %K for the three different periods, together forming %K for one day.
 	 */
 	private void computeK (double lowestLow, double highestHigh, SimpleData simpleData){
+		System.out.print("DAy " + simpleData.getDate().get(Calendar.DAY_OF_YEAR));
+		System.out.println("high " + highestHigh + "low " + lowestLow);
+		System.out.println("close: " + simpleData.getValue());
 		double value = 100*((simpleData.getValue() - lowestLow) / (highestHigh - lowestLow));
+		System.out.println("value " + value);
 		SimpleData sd = new SimpleData(simpleData.getStock(), simpleData.getDate(), value);
 		kList.add(sd);
 	}
@@ -154,6 +160,7 @@ public class StochasticOscillator implements AnalysisMethod {
 			list.add(sd);
 		}
 		return list;
+		
 	}
 	/*
 	 * Smoothes the lists by using SMA.
@@ -162,17 +169,15 @@ public class StochasticOscillator implements AnalysisMethod {
 	private void smooth(){
 		
 		List<SimpleData> k = new ArrayList<SimpleData>(trimList(kList));
+		Collections.reverse(k);
 		kList.clear();
-		
-		if (speed > 0){
-			SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
-			kList.addAll(sma.getMovingAverage());
-			sma = new SimpleMovingAverage(kList, 3);
-			dList.addAll(sma.getMovingAverage());
+		SimpleMovingAverage sma = new SimpleMovingAverage(k, speed);
+		kList.addAll(sma.getMovingAverage());
+		sma = new SimpleMovingAverage(kList, 3);
+		dList.addAll(sma.getMovingAverage());
 			
-			for(int i = 0; i < speed-1; i++){
-				kList.remove(0);
-			}
+		for(int i = 0; i < 2; i++){
+			kList.remove(0);
 		}
 	}
 	private Signal signal(){
@@ -218,10 +223,5 @@ public class StochasticOscillator implements AnalysisMethod {
 		Curve DCurve = new Curve(dQ, "%D");
 		curves[0] = KCurve;
 		curves[1] = DCurve;
-	}
-	
-	private void reverseLists(){
-		Collections.reverse(kList);
-		Collections.reverse(dList);
 	}
 }

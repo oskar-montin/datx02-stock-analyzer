@@ -145,11 +145,17 @@ public class GraphPanel extends JPanel {
         plot.setRenderer(0, renderer);
         
         NumberAxis numberAxis = (NumberAxis)plot.getRangeAxis();        
-        numberAxis.setRange(new Range(low*0.99,high*1.01)); 
+        numberAxis.setRange(new Range(low*0.99,high*1.01));
         
+		renderer.setSeriesLinesVisible(0, true);
+		renderer.setSeriesShapesVisible(0, false);
+ 
+		
         for(int i = 1;i<datasets.length;i++) {
         	plot.setDataset(i, datasets[i]);
             LineAndShapeRenderer tempRenderer = new LineAndShapeRenderer();
+        	tempRenderer.setSeriesLinesVisible(0, true);
+    		tempRenderer.setSeriesShapesVisible(0, false);
             renderer.setBaseLinesVisible(true);
             plot.setRenderer(i, tempRenderer);
         }
