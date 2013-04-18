@@ -7,9 +7,12 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import util.Util;
+
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 import data.Stock;
 
@@ -20,6 +23,8 @@ import data.Stock;
  */
 public class SimpleMovingAverage implements AnalysisMethod{
 
+	private PriorityQueue<SimpleData> priceQueue;
+	
 	private LinkedList<SimpleData> dailyDataList;
 	private LinkedList<SimpleData> movingAverageList;
 	private int offset;
@@ -33,6 +38,7 @@ public class SimpleMovingAverage implements AnalysisMethod{
 		if(offset < 1 || offset > dailyData.size()){
 			throw new IllegalArgumentException();
 		}
+		priceQueue = new PriorityQueue<SimpleData>(dailyData);
 		
 		this.offset = offset;
 		dailyDataList = new LinkedList<SimpleData>(dailyData);
@@ -126,21 +132,34 @@ public class SimpleMovingAverage implements AnalysisMethod{
 		return null;
 	}
 
+	/**
+	 * Returns the k-value of the last two data points in the moving average.
+	 */
 	@Override
 	public double value() {
-		// TODO Auto-generated method stub
-		return 0;
+		LinkedList<SimpleData> tempList = new LinkedList<SimpleData>(this.getMovingAverage());
+		double firstValue = tempList.pollLast().getValue();
+		double secondValue = tempList.pollLast().getValue();
+		
+		double value = secondValue-firstValue;
+		return value;
 	}
 
 	@Override
 	public Curve[] getGraph() {
-		// TODO Auto-generated method stub
-		return null;
+		PriorityQueue<SimpleData> trimmedQueue = Util.trimQueue(this.getMovingAverage(), this.offset);
+		
+		Curve[] curves = new Curve[2];
+		curves[0] = new Curve(this.priceQueue, "Index");
+		curves[1] = new Curve(trimmedQueue, "SMA");
+		return curves;
 	}
 
 	@Override
 	public Result getResult() {
-		// TODO Auto-generated method stub
-		return null;
+		Double value = this.value();
+		Signal signal = Signal.NONE;
+		
+		return new Result("SMA", value, this.resultString(), this.getGraph(), signal);
 	}
 }

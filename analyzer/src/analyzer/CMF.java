@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
 import data.Result;
+import data.Signal;
 import data.SimpleData;
 import data.Stock;
 
@@ -18,9 +19,11 @@ import data.Stock;
 public class CMF implements AnalysisMethod{
 
 	private PriorityQueue<DailyData> dailyQueue;
-	private LinkedList<SimpleData> dailyData;
+	private PriorityQueue<SimpleData> dailyData;
 	private double cmfValue;
+	private double current=0;
 	private Stock stock;
+	
 	
 	/**
 	 *  
@@ -33,7 +36,6 @@ public class CMF implements AnalysisMethod{
 		dailyQueue = new PriorityQueue<DailyData>(dailyData);
 		this.stock = stock;
 		this.CMFCalc(dailyQueue, offset);
-		
 	}
 	
 
@@ -68,8 +70,8 @@ public class CMF implements AnalysisMethod{
 			sumMFV += MFV;
 		}
 		cmfValue = (sumMFV/sumVol);
-			return cmfValue;
-		}
+		return cmfValue;
+	}
 
 	/**
 	 *  
@@ -79,53 +81,56 @@ public class CMF implements AnalysisMethod{
 	 */
 	
 	private void CMFCalc(PriorityQueue<DailyData> dailyQueue, int offset){
-		dailyData = new LinkedList<SimpleData>();
-		DailyData [] dataArray = new DailyData[dailyQueue.size()];
-		
-		dataArray = dailyQueue.toArray(dataArray);
-		
-		
-		for(int i = offset; i<dataArray.length; i++){
+		dailyData = new PriorityQueue<SimpleData>();
+		LinkedList<DailyData> dataList = new LinkedList<DailyData>(dailyQueue);
+		System.out.println("DATALIST: " + dataList);
+	
+		for(int i = offset; i<dataList.size(); i++){
 			
 			DailyData [] periodSet = new DailyData [offset+1];
 			for(int j = 0; j<=offset; j++){
-				periodSet[j] = dataArray[i-offset+j];
+				periodSet[j] = dataList.get(i-offset+j);
 			}
 			
 			double CMF = getCMF(periodSet);
-			dailyData.add(new SimpleData(stock, dataArray[i].getDate(), CMF));
+			if(Double.isInfinite(CMF)) { // In case of infinite values (for erroneous daily data) 
+				CMF = 0.0;
+			}
+			dailyData.add(new SimpleData(stock, dataList.get(i).getDate(), CMF));
+			
 		}
-	}		
+		current=dataList.getLast().getValue();
+	}	
 
-
+	
 	@Override
-	public double value() { //Testing in progress, needs to be updated. Decide what format
-		return 0;
+	public double value() {
+		return current;
 	}
-
 
 	@Override
 	public Curve[] getGraph() {
-		Curve [] CMFCurve = new Curve[1];
-		PriorityQueue<SimpleData> cmfQueue= new PriorityQueue<SimpleData>();
-		
-		for (int i=0; i<dailyData.size(); i++)
-			cmfQueue.add(dailyData.get(i));
-		
-		CMFCurve[0] = new Curve(cmfQueue, "Chaikin Money Flow values");
+		Curve [] CMFCurve = {new Curve(dailyData, "Chaikin money values")};
 		return CMFCurve;
 	}
 
-
 	@Override
 	public String resultString() {
-		return"CMF measures buying and selling pressure over a set period (offset) of time.";
+		return"CMF measures buying and selling pressure over a set period of time.";
 	}
 
 
 	@Override
 	public Result getResult() {
-		return null;
+		Double value = this.value();
+		Signal signal;
+		if(value < 0) {
+			signal = Signal.SELL;
+		} else if(value > 0) {
+			signal = Signal.BUY;
+		} else {
+			signal = Signal.NONE;
+		}
+		return new Result("Chaikin Money Flow", value, this.resultString(), this.getGraph(), signal);
 	}
-
 }

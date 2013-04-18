@@ -16,11 +16,11 @@ import data.Stock;
 
 public class RelativeStrengthIndex implements AnalysisMethod {
 
-	private PriorityQueue<DailyData> dailyDataQueue;
-	private PriorityQueue<SimpleData> RSI; // oldest first
-	private double avgGain, avgLoss;
-	private Stock stock;
-	private int last=0;
+	protected PriorityQueue<DailyData> dailyDataQueue;
+	protected PriorityQueue<SimpleData> RSI; // oldest first
+	protected double avgGain, avgLoss;
+	protected Stock stock;
+	protected double last=0;
 	
 
 	/**
@@ -100,7 +100,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 				
 				RSI.add(new SimpleData(stock, now.getDate(), (100-100/(1+avgGain/avgLoss))));
 				priv=now;
-				last=(int)RSI.peek().getValue();
+				last=RSI.peek().getValue();
 			}
 
 		}
@@ -124,7 +124,20 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 */
 	
 	public Curve[] getGraph() {
-		Curve [] RSICurve = {new Curve(RSI, "Relative strength index values in percent")};
+
+		PriorityQueue<SimpleData> topLine = new PriorityQueue<SimpleData>();
+		PriorityQueue<SimpleData> bottLine = new PriorityQueue<SimpleData>();
+		Curve [] RSICurve = new Curve[3];
+			
+		RSICurve[0] = new Curve(RSI, "Relative strength index values in percent") ;
+		
+		for(SimpleData d:this.RSI){
+			topLine.add(new SimpleData(d.getStock(), d.getDate(),70));
+			bottLine.add(new SimpleData(d.getStock(), d.getDate(),30));
+		}
+		RSICurve[1]=new Curve(topLine, "Limit for overbought");
+		RSICurve[2]=new Curve(bottLine, "Limit for oversold");
+		
 		return RSICurve;
 	}
 	
@@ -150,8 +163,5 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 		}
 		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), signal);
 	}
-
-
-
 
 }
