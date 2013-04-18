@@ -132,7 +132,7 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 		PriorityQueue<SimpleData> queue = new PriorityQueue<SimpleData>(Arrays.asList(data));
 		ArrayList<SimpleData> emaList = new ArrayList<SimpleData>(getEMA(queue, offset));
 		
-		return new SimpleData(data[index].getStock(), data[index].getDate(), emaList.get(index).getValue());
+		return new SimpleData(data[index].getStock(), data[index].getDate(), emaList.get(index-offset).getValue());
 	}
 	
 	/**
