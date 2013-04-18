@@ -28,19 +28,23 @@ public class BollingerBands implements AnalysisMethod{
 	
 	private void createBounds() {
 		SimpleData sma = null;
+		double deviationMultiplier = 2;
 		double standardDeviation = 0.0;
+		if(offset == 10) {
+			deviationMultiplier = 1.9;
+		}
 		for(int i = offset;i<this.data.length;i++) {
 			sma = SimpleMovingAverage.getSMA(data, i, offset);
 			this.middle.add(sma);
 			standardDeviation = standardDeviation(this.data, i, offset).getValue();
-			this.upper.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()+2*standardDeviation));
-			this.lower.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()-2*standardDeviation));
+			this.upper.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()+deviationMultiplier*standardDeviation));
+			this.lower.add(new SimpleData(data[i].getStock(),data[i].getDate(),sma.getValue()-deviationMultiplier*standardDeviation));
 		}
 		if(sma==null) {
 			value = 50;
 		} else {
 			double spann = 4*standardDeviation;
-			double lastValue = data[data.length-1].getValue()-sma.getValue()+2*standardDeviation;
+			double lastValue = data[data.length-1].getValue()-sma.getValue()+deviationMultiplier*standardDeviation;
 			value = (int) (lastValue*100/spann);
 		}
 	}
