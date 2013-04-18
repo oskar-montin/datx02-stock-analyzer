@@ -21,7 +21,7 @@ public class Settings implements Serializable {
 	private static final long serialVersionUID = 5292410139602565332L;
 	
 	private static Settings instance;
-	private int BBOffset = 5;
+	private int BBOffset = 10;
 	private int CMFOffset = 5;
 	private int EMAOffset = 10;
 	private int SMAOffset = 5;
