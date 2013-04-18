@@ -9,7 +9,6 @@ import data.Result;
 import data.Signal;
 import data.SimpleData;
 import data.Stock;
-
 /**
  * Class calculates Chaikin Money Flow values
  * 
@@ -64,15 +63,18 @@ public class CMF implements AnalysisMethod{
 			highValue = currentValues.getHigh();
 			closeValue = currentValues.getClosePrice();
 			volume = currentValues.getVolume();
-			sumVol += volume;
+			
 			multiplier = ((closeValue-lowValue)-(highValue-closeValue))/(highValue-lowValue);
 			MFV = (volume*multiplier);
-			sumMFV += MFV;
+			if(!Double.isInfinite(multiplier) && !Double.isNaN(MFV)) { // In case of infinite values (for erroneous daily data) 
+				sumMFV += MFV;
+				sumVol += volume;
+			}
 		}
 		cmfValue = (sumMFV/sumVol);
 		return cmfValue;
 	}
-
+	
 	/**
 	 *  
 	 * @param priority queue with dailyData.
@@ -92,17 +94,13 @@ public class CMF implements AnalysisMethod{
 				periodSet[j] = dataList.get(i-offset+j);
 			}
 			
-			CMF = getCMF(periodSet);
-			if(Double.isInfinite(CMF)) { // In case of infinite values (for erroneous daily data) 
-				CMF = 0.0;
-			}
+			CMF = getCMF(periodSet);			
 			dailyData.add(new SimpleData(stock, dataList.get(i).getDate(), CMF));
 			
 		}
 		current=CMF;
 	}	
 
-	
 	@Override
 	public double value() {
 		return current;
