@@ -16,11 +16,11 @@ import data.Stock;
 
 public class RelativeStrengthIndex implements AnalysisMethod {
 
-	private PriorityQueue<DailyData> dailyDataQueue;
-	private PriorityQueue<SimpleData> RSI; // oldest first
-	private double avgGain, avgLoss;
-	private Stock stock;
-	private double last=0;
+	protected PriorityQueue<DailyData> dailyDataQueue;
+	protected PriorityQueue<SimpleData> RSI; // oldest first
+	protected double avgGain, avgLoss;
+	protected Stock stock;
+	protected double last=0;
 	
 
 	/**
