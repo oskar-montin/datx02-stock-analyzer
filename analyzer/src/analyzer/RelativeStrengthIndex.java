@@ -16,7 +16,7 @@ import data.Stock;
 
 public class RelativeStrengthIndex implements AnalysisMethod {
 
-	protected PriorityQueue<DailyData> dailyDataQueue;
+	protected PriorityQueue<SimpleData> dailyDataQueue;
 	protected PriorityQueue<SimpleData> RSI; // oldest first
 	protected double avgGain, avgLoss;
 	protected Stock stock;
@@ -30,9 +30,9 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 * @param stock
 	 * @param offset - The number of days used for the RSI.
 	 */
-	public RelativeStrengthIndex(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
+	public RelativeStrengthIndex(Stock stock, PriorityQueue<? extends SimpleData> dailyData, int offset) {
 		
-		dailyDataQueue = new PriorityQueue<DailyData>(dailyData);
+		dailyDataQueue = new PriorityQueue<SimpleData>(dailyData);
 		this.stock = stock;
 		RSI = new PriorityQueue<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
@@ -56,10 +56,10 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 * @param Number of periods for RSI calculation
 	 * @return LinkedList with all RSI-values, oldest first.
 	 */
-	private void CalculateRSI(PriorityQueue<DailyData> dailyDataQueue, int offset){
+	private void CalculateRSI(PriorityQueue<SimpleData> dailyDataQueue, int offset){
 
 		double sumGain = 0, sumLoss = 0, diff;
-		DailyData now = null, priv;
+		SimpleData now = null, priv;
 		
 		if (dailyDataQueue.size()>=offset+1){
 			
@@ -68,7 +68,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 			for(int i=0; i<offset; i++){
 				
 				now=dailyDataQueue.poll();
-				diff=now.getClosePrice()-priv.getClosePrice();
+				diff=now.getValue()-priv.getValue();
 				
 				if(diff>0){
 					sumGain = sumGain + diff;
@@ -86,7 +86,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 			while(!dailyDataQueue.isEmpty()){
 				
 				now=dailyDataQueue.poll();
-				diff=now.getClosePrice()-priv.getClosePrice();
+				diff=now.getValue()-priv.getValue();
 				
 				if(diff>0){
 					avgGain=(avgGain*(offset-1)+diff)/offset;
