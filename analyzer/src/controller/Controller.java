@@ -9,6 +9,7 @@ import analyzer.BollingerBands;
 import analyzer.CMF;
 import analyzer.ExponentialMovingAverage;
 import analyzer.Fibonacci;
+import analyzer.FundamentalAnalysis;
 import analyzer.MACD;
 import analyzer.RateOfChange;
 import analyzer.RelativeStrengthIndex;
@@ -19,6 +20,7 @@ import analyzer.VolatilityBands;
 
 import data.Curve;
 import data.DailyData;
+import data.QuarterlyData;
 import data.Result;
 import data.Signal;
 import data.SimpleData;
@@ -29,7 +31,8 @@ public class Controller {
 
 	private static Controller instance = null;
 	private Stock stock = null;
-	private PriorityQueue<DailyData> data;
+	private PriorityQueue<DailyData> dailyData;
+	private QuarterlyData quarterlyData;
 	public static Controller getInstance(){
 		if(instance == null){
 			instance = new Controller();
@@ -39,7 +42,8 @@ public class Controller {
 
 	public void setStock(String symbol) {
 		this.stock = DatabaseHandler.getStock(symbol);
-		data = DatabaseHandler.getDailyData(stock);
+		dailyData = DatabaseHandler.getDailyData(stock);
+		quarterlyData = DatabaseHandler.getQuarterlyData(stock);
 	}
 	
 	public List<Result> getAnalyticsData() {
@@ -53,52 +57,55 @@ public class Controller {
 		Settings settings = Settings.getSettings();
 		List<Result> results = new LinkedList<Result>();
 		
-		SimpleMovingAverage sma = new SimpleMovingAverage(data, settings.getSMAOffset());
+		SimpleMovingAverage sma = new SimpleMovingAverage(dailyData, settings.getSMAOffset());
 		results.add(sma.getResult());
 		
-		ExponentialMovingAverage ema = new ExponentialMovingAverage(data,settings.getEMAOffset());
+		ExponentialMovingAverage ema = new ExponentialMovingAverage(dailyData,settings.getEMAOffset());
 		results.add(ema.getResult());
 		
-		BollingerBands bb = new BollingerBands(data, settings.getBBOffset());
+		BollingerBands bb = new BollingerBands(dailyData, settings.getBBOffset());
 		results.add(bb.getResult());
 		
-		VolatilityBands vb = new VolatilityBands(data, settings.getBBOffset());
+		VolatilityBands vb = new VolatilityBands(dailyData, settings.getBBOffset());
 		results.add(vb.getResult());
 		
-		CMF cmf = new CMF(this.stock,data,settings.getCMFOffset());
+		CMF cmf = new CMF(this.stock,dailyData,settings.getCMFOffset());
 		results.add(cmf.getResult());
 		
-		MACD macd = new MACD(data,settings.getMACDShortOffset(),settings.getMACDLongOffset(),settings.getMACDSignalOffset());
+		MACD macd = new MACD(dailyData,settings.getMACDShortOffset(),settings.getMACDLongOffset(),settings.getMACDSignalOffset());
 		results.add(macd.getResult());
 		
-		RateOfChange roc = new RateOfChange(data, settings.getROCOffset());
+		RateOfChange roc = new RateOfChange(dailyData, settings.getROCOffset());
 		results.add(roc.getResult());
 		
-		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, data, settings.getRSIOffset());
+		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, dailyData, settings.getRSIOffset());
 		results.add(rsi.getResult());
 		
-		StochRSI stochrsi = new StochRSI(this.stock, data, settings.getRSIOffset());
+		StochRSI stochrsi = new StochRSI(this.stock, dailyData, settings.getRSIOffset());
 		results.add(stochrsi.getResult());
 
-		Fibonacci fib = new Fibonacci(data, settings.getFibOffset());
+		Fibonacci fib = new Fibonacci(dailyData, settings.getFibOffset());
 		results.add(fib.getResult());
 
 		
-		StochasticOscillator so = new StochasticOscillator(data, 
+		StochasticOscillator so = new StochasticOscillator(dailyData, 
 														   settings.getSOShortOffset(), 
 														   settings.getSOMidOffset(), 
 														   settings.getSOLongOffset(),
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
 		
+		FundamentalAnalysis fa = new FundamentalAnalysis(quarterlyData, dailyData);
+		results.add(fa.getResult());
+		
 		return results;
 	}
 
 	private Result getClosePriceResult() {
 		PriorityQueue<SimpleData> tempQueue = new PriorityQueue<SimpleData>();
-		LinkedList<DailyData> temp = new LinkedList<DailyData>(data);
+		LinkedList<DailyData> temp = new LinkedList<DailyData>(dailyData);
 		Curve[] curves = new Curve[1];
-		for(DailyData dd:data) {
+		for(DailyData dd:dailyData) {
 			tempQueue.add(new SimpleData(dd));
 		}
 		curves[0] = new Curve(tempQueue,"Close price curve");

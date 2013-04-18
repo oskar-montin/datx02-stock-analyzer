@@ -14,6 +14,8 @@ public class FundamentalData implements MarketItem, Comparable<FundamentalData> 
 
 
 
+
+
 	private Stock stock;
 	private Calendar dateCollected;
 	private double dividendYield;
@@ -63,7 +65,33 @@ public class FundamentalData implements MarketItem, Comparable<FundamentalData> 
 		PEG = dd.getPEG();
 	}
 	
-	
+	public FundamentalData(Stock stock, Calendar dateCollected,
+			double dividendYield, double solidity, LargeDouble nAV,
+			double dividentPerShare, double rOE, double ePS, double nAVPS,
+			double pricePerNAVPS, double acidTestRatio,
+			double balanceLiquidity, LargeDouble workingCapital,
+			LargeDouble marketCap, double dividentYield, double pE, double pS,
+			double pEG) {
+		super();
+		this.stock = stock;
+		this.dateCollected = dateCollected;
+		this.dividendYield = dividendYield;
+		this.solidity = solidity;
+		NAV = nAV;
+		this.dividentPerShare = dividentPerShare;
+		ROE = rOE;
+		EPS = ePS;
+		NAVPS = nAVPS;
+		this.pricePerNAVPS = pricePerNAVPS;
+		this.acidTestRatio = acidTestRatio;
+		this.balanceLiquidity = balanceLiquidity;
+		this.workingCapital = workingCapital;
+		this.marketCap = marketCap;
+		this.dividentYield = dividentYield;
+		PE = pE;
+		PS = pS;
+		PEG = pEG;
+	}
 	
 	public Stock getStock() {
 		return stock;
