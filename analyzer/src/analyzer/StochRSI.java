@@ -13,7 +13,7 @@ public class StochRSI extends RelativeStrengthIndex{
 	private PriorityQueue<SimpleData> stochRSI;
 	private int offset;
 	private double todaysValue;
-	public StochRSI(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
+	public StochRSI(Stock stock, PriorityQueue<? extends SimpleData> dailyData, int offset) {
 		super(stock, dailyData, offset);
 		stochRSI = new PriorityQueue<SimpleData>();
 		this.offset = offset;
