@@ -82,11 +82,11 @@ public class GraphPanel extends JPanel {
 
 	public GraphPanel(Result result) {
 		System.out.println(result.getName());
-		this.title = result.getName();
+		this.title = result.getName()+" - Signal: "+result.getSignal().getString();
 		LinkedList<Curve> curves = result.getCurves();
 		curves.getFirst().getQueue();
 		
-		final JFreeChart chart = this.createChart(curves, result.getName());
+		final JFreeChart chart = this.createChart(curves, this.title);
 		chartPanel = new ChartPanel(chart);
 		chartPanel.setPreferredSize(new Dimension(600, 400));
 		
