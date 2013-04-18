@@ -15,6 +15,7 @@ import analyzer.RelativeStrengthIndex;
 import analyzer.SimpleMovingAverage;
 import analyzer.StochRSI;
 import analyzer.StochasticOscillator;
+import analyzer.VolatilityBands;
 
 import data.Curve;
 import data.DailyData;
@@ -60,6 +61,9 @@ public class Controller {
 		
 		BollingerBands bb = new BollingerBands(data, settings.getBBOffset());
 		results.add(bb.getResult());
+		
+		VolatilityBands vb = new VolatilityBands(data, settings.getBBOffset());
+		results.add(vb.getResult());
 		
 		CMF cmf = new CMF(this.stock,data,settings.getCMFOffset());
 		results.add(cmf.getResult());
