@@ -139,11 +139,7 @@ public class StochasticOscillator implements AnalysisMethod {
 	 * entries represent %K for the three different periods, together forming %K for one day.
 	 */
 	private void computeK (double lowestLow, double highestHigh, SimpleData simpleData){
-		System.out.print("DAy " + simpleData.getDate().get(Calendar.DAY_OF_YEAR));
-		System.out.println("high " + highestHigh + "low " + lowestLow);
-		System.out.println("close: " + simpleData.getValue());
 		double value = 100*((simpleData.getValue() - lowestLow) / (highestHigh - lowestLow));
-		System.out.println("value " + value);
 		SimpleData sd = new SimpleData(simpleData.getStock(), simpleData.getDate(), value);
 		kList.add(sd);
 	}
