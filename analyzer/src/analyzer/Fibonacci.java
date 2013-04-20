@@ -25,13 +25,13 @@ public class Fibonacci implements AnalysisMethod{
 	final double L2 = 0.382;
 	final double L3 = 0.500;
 	final double L4 = 0.618;
+	final double L5 = 0.854;
 	final double MAX = 1.0;
 			
 			
 	int value;
 	private SimpleData[] data;
 	private int offset;
-	private PriorityQueue<SimpleData> r0,r1,r2,r3,r4,r5;
 	private double max;
 	private double min;
 	
@@ -40,16 +40,11 @@ public class Fibonacci implements AnalysisMethod{
 		this.offset = offset;
 		this.data = new SimpleData[data.size()];
 		this.data = data.toArray(this.data);
-		r0 = new PriorityQueue<SimpleData>();
-		r1 = new PriorityQueue<SimpleData>();
-		r2 = new PriorityQueue<SimpleData>();
-		r3 = new PriorityQueue<SimpleData>();
-		r4 = new PriorityQueue<SimpleData>();
-		r5 = new PriorityQueue<SimpleData>();
-		createRetracements();
 		max = findMax().getValue();
 		min = findMin().getValue();
+		createRetracements();
 	}
+	
 	//method that returns the maximum stock price for a stock chart
 	private SimpleData findMax(){
 		double max = 0;
@@ -93,9 +88,6 @@ public class Fibonacci implements AnalysisMethod{
 		System.out.println("Minvärdet ar: " + findMin().getValue());
 		System.out.println("Maxvärdet är: " + findMax().getValue());
 		System.out.println("Trending? " + isTrending());
-		
-		r1.add(new SimpleData(findMin()));
-		r1.add(new SimpleData(findMax()));
 	}
 
 	//check if curve is trending
@@ -118,25 +110,23 @@ public class Fibonacci implements AnalysisMethod{
 		return min + (max - min)*l;
 		
 	}
-	
-	
+		
 	@Override
 	public double value() {
 		return this.value;
 	}
 
-	
-	
 	@Override
 	public Curve[] getGraph() {
-		Curve[] curves = new Curve[7];
+		Curve[] curves = new Curve[8];
 		curves[0] = new Curve(data, "Price");
-		curves[1] = new Curve(createRetracementLine(findMax().getValue()),"100");
-		curves[2] = new Curve(createRetracementLine(findMin().getValue()),"0");
-		curves[3] = new Curve(createRetracementLine(findLevel(L4, max, min)),"61.8");
-		curves[4] = new Curve(createRetracementLine(findLevel(L3, max, min)),"50");
-		curves[5] = new Curve(createRetracementLine(findLevel (L2, max, min)),"38.2");
-		curves[6] = new Curve(createRetracementLine(findLevel (L1, max, min)),"23.6");
+		curves[1] = new Curve(createRetracementLine(max),"100");
+		curves[2] = new Curve(createRetracementLine(min),"0");
+		curves[3] = new Curve(createRetracementLine(findLevel(L5, max, min)),"85.4");
+		curves[4] = new Curve(createRetracementLine(findLevel(L4, max, min)),"61.8");
+		curves[5] = new Curve(createRetracementLine(findLevel(L3, max, min)),"50");
+		curves[6] = new Curve(createRetracementLine(findLevel (L2, max, min)),"38.2");
+		curves[7] = new Curve(createRetracementLine(findLevel (L1, max, min)),"23.6");
 		return curves;
 	}
 
