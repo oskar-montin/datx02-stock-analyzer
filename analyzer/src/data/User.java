@@ -11,7 +11,7 @@ import java.util.TreeMap;
 public class User {
 	private String name;
 	private double balance, depositedAmount; //depositedAmount exist so that we can compare current value with deposited value
-	private TreeMap <Stock, Integer> ownedStocks;
+	private TreeMap <SimpleData, Integer> ownedStocks;
 	private LinkedList<Transaction> historicalTransactions;
 
 	/**
@@ -22,21 +22,22 @@ public class User {
 		this.name = name;
 		balance = 0;
 		depositedAmount = 0;
-		ownedStocks = new TreeMap<Stock, Integer>();
+		ownedStocks = new TreeMap<SimpleData, Integer>();
 		historicalTransactions = new LinkedList<Transaction>();
 	}
 	
 	/**
 	 * @return Returns current balance
 	 */
-	private double getBalance(){
+	public double getBalance(){
 		return balance;	
 	}
 	
 	/**
 	 * @return Returns user name
 	 */
-	private String getName(){
+	
+	public String getName(){
 		return name;
 	}
 	
@@ -44,7 +45,8 @@ public class User {
 	 * 
 	 * @return Returns a list of previous transactions.
 	 */
-	private LinkedList<Transaction>getTransactionHistory(){
+	
+	public LinkedList<Transaction>getTransactionHistory(){
 		return historicalTransactions;
 	}
 	
@@ -52,7 +54,8 @@ public class User {
 	 * 
 	 * @return Returns a specification of the current stocks in the portfolio.
 	 */
-	private TreeMap getOwnedStocks(){
+	
+	public TreeMap<SimpleData, Integer> getOwnedStocks(){
 		return ownedStocks;
 	}
 
@@ -62,7 +65,8 @@ public class User {
 	 * @param stock
 	 * @return Returns true if a stock is in the portfolio, false otherwise.
 	 */
-	private boolean ownStock(Stock stock){
+	
+	public boolean ownStock(Stock stock){
 		 return ownedStocks.containsKey(stock);
 	}
 	
@@ -71,7 +75,8 @@ public class User {
 	 * @param amount
 	 * @return
 	 */
-	private boolean withdraw(double amount){
+	
+	public boolean withdraw(double amount){
 		if(amount <= balance){
 			balance -= amount;
 			depositedAmount -= amount;
@@ -84,7 +89,8 @@ public class User {
 	 * Calculates the value of the portfolio plus the balance.
 	 * @return
 	 */
-	private double getTotalAssets(){
+	
+	public double getTotalAssets(){
 		double assets = balance;
 		for (Integer value: ownedStocks.values())
 				assets += value;
@@ -96,7 +102,8 @@ public class User {
 	 * Updates balance and deposited amount after a deposit
 	 * @param amount
 	 */
-	private void deposit(double amount){
+	
+	public void deposit(double amount){
 			balance += amount;
 			depositedAmount += amount;
 	}
@@ -107,7 +114,8 @@ public class User {
 	 * @param transaction the transaction that is being performed.
 	 * @return true if transaction is successful
 	 */
-	private boolean performTransaction(Transaction transaction){
+	
+	public boolean performTransaction(Transaction transaction){
 		int currentNrOfStocks = ownedStocks.get(transaction.getData());
 		double price = transaction.getData().getValue()*transaction.getAmount();
 		
@@ -117,7 +125,7 @@ public class User {
 			
 			else {
 				currentNrOfStocks += transaction.getAmount();
-				ownedStocks.put(transaction.getData().getStock(), new Integer(currentNrOfStocks));
+				ownedStocks.put(transaction.getData(), new Integer(currentNrOfStocks));
 				historicalTransactions.add(transaction);
 				return true;
 			}	
@@ -128,7 +136,7 @@ public class User {
 				ownedStocks.remove(transaction.getData().getStock());
 			}
 			else if(currentNrOfStocks > 0){
-				ownedStocks.put(transaction.getData().getStock(), new Integer(currentNrOfStocks));
+				ownedStocks.put(transaction.getData(), new Integer(currentNrOfStocks));
 				balance += Math.abs(price);
 			}
 			else return false;
