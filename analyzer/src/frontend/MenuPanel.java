@@ -17,7 +17,7 @@ import javax.swing.KeyStroke;
  */
 
 @SuppressWarnings("serial")
-public class MenuPanel extends JMenuBar implements ActionListener{
+public class MenuPanel extends JMenuBar{
 	private JMenu file = new JMenu("File");
 	private JMenu edit = new JMenu("Edit");
 	private JMenu help = new JMenu("Help");
@@ -27,21 +27,23 @@ public class MenuPanel extends JMenuBar implements ActionListener{
 	private JMenuItem about = new JMenuItem("About");
 
 
+
 	public MenuPanel(){
 
 		add(file);
 		file.add(exit);
 
-
 		add(edit);
-
 
 		add(help);
 		help.add(about);
+		
+		exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.exit(0);
+            }
+        });
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
+
 }
