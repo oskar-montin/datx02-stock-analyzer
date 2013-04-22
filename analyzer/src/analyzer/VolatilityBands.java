@@ -1,27 +1,32 @@
 package analyzer;
 
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
+import util.Util;
+
 import data.Curve;
+import data.DailyData;
 import data.Result;
 import data.Signal;
 import data.SimpleData;
 
 public class VolatilityBands implements AnalysisMethod{
-	private SimpleData[] data;
+	private Signal signal = Signal.NONE;
+	private DailyData[] data;
 	private PriorityQueue<SimpleData> closePriceRef;
 	private int offset;
-	private PriorityQueue<SimpleData> upper, middle, lower;
+	private ArrayList<SimpleData> upper, middle, lower;
 	int value;
 	
 	public VolatilityBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
 		this.closePriceRef = (PriorityQueue<SimpleData>) data;
-		this.data = new SimpleData[data.size()];
+		this.data = new DailyData[data.size()];
 		this.data = data.toArray(this.data);
-		this.upper = new PriorityQueue<SimpleData>();
-		this.middle = new PriorityQueue<SimpleData>();
-		this.lower = new PriorityQueue<SimpleData>();
+		this.upper = new ArrayList<SimpleData>();
+		this.middle = new ArrayList<SimpleData>();
+		this.lower = new ArrayList<SimpleData>();
 		createBounds();
 	}
 	
@@ -29,7 +34,7 @@ public class VolatilityBands implements AnalysisMethod{
 		SimpleData ema = null;
 		double deviationMultiplier = 2;
 		double standardDeviation = 0.0;
-		if(offset == 10) {
+		if(offset <= 10) {
 			deviationMultiplier = 1.9;
 		}
 		for(int i = offset;i<this.data.length;i++) {
@@ -45,6 +50,7 @@ public class VolatilityBands implements AnalysisMethod{
 			double spann = 4*standardDeviation;
 			double lastValue = data[data.length-1].getValue()-ema.getValue()+deviationMultiplier*standardDeviation;
 			value = (int) (lastValue*100/spann);
+			
 		}
 	}
 	
@@ -58,6 +64,14 @@ public class VolatilityBands implements AnalysisMethod{
 			total += Math.pow(sd[i].getValue()-ema,2);
 		}
 		return new SimpleData(sd[index].getStock(),sd[index].getDate(),Math.sqrt(total/offset));
+	}
+	
+	public ArrayList<SimpleData>[] getBands() {
+		ArrayList<SimpleData>[] lists = new ArrayList[3];
+		lists[0] = this.lower;
+		lists[1] = this.middle;
+		lists[2] = this.upper;
+		return lists;
 	}
 
 	/**
@@ -83,7 +97,7 @@ public class VolatilityBands implements AnalysisMethod{
 		return curves;
 	}
 	
-	private PriorityQueue<SimpleData> getLaggAdjusted(PriorityQueue<SimpleData> queue, PriorityQueue<SimpleData> goalPattern) {
+	private PriorityQueue<SimpleData> getLaggAdjusted(ArrayList<SimpleData> queue, PriorityQueue<SimpleData> goalPattern) {
 		PriorityQueue<SimpleData> temp = new PriorityQueue<SimpleData>(goalPattern);
 		PriorityQueue<SimpleData> returnQueue = new PriorityQueue<SimpleData>();
 		while(queue.size()<temp.size()) {
@@ -100,9 +114,8 @@ public class VolatilityBands implements AnalysisMethod{
 		// TODO Auto-generated method stub
 		return "Volatility bands";
 	}
-
-	@Override
-	public Result getResult() {
+	
+	public Signal getSignal() {
 		Double value = this.value();
 		Signal signal;
 		if(value>=100) {
@@ -112,6 +125,13 @@ public class VolatilityBands implements AnalysisMethod{
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("Volatility Bands", value, this.resultString(), this.getGraph(), signal);
+		return signal;
+	}
+
+	@Override
+	public Result getResult() {
+		Double value = this.value();
+		
+		return new Result("Volatility Bands", value, this.resultString(), this.getGraph(), getSignal());
 	}
 }

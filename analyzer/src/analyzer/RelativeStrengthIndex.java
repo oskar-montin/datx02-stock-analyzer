@@ -148,20 +148,23 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	public String resultString(){
 		return"RSI indicates if the stock is overbought or oversold. The mothod looks att price movement.";
 	}
+	
+	public Signal getSignal() {
+		Double value = this.value();
+		if(value>70) {
+			return Signal.BUY;
+		} else if(value<30) {
+			return Signal.SELL;
+		} else {
+			return Signal.NONE;
+		}
+	}
 
 
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		Signal signal;
-		if(value>80) {
-			signal = Signal.BUY;
-		} else if(value<20) {
-			signal = Signal.SELL;
-		} else {
-			signal = Signal.NONE;
-		}
-		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), signal);
+		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), getSignal());
 	}
 
 }

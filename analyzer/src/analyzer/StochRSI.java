@@ -69,18 +69,23 @@ public class StochRSI extends RelativeStrengthIndex{
 	public String resultString(){
 		return"stochRSI indicates if the stock is overbought or oversold. The mothod looks att price movement.";
 	}
-
-
-	@Override
-	public Result getResult() {
+	
+	public Signal getSignal() {
 		Signal signal;
-		if(todaysValue>80) {
+		if(todaysValue==1.0) {
 			signal = Signal.BUY;
-		} else if(todaysValue<20) {
+		} else if(todaysValue==0.0) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("StochRSI", this.todaysValue, this.resultString(), this.getGraph(), signal);
+		return signal;
+	}
+
+
+	@Override
+	public Result getResult() {
+		
+		return new Result("StochRSI", this.todaysValue, this.resultString(), this.getGraph(), getSignal());
 	}
 }
