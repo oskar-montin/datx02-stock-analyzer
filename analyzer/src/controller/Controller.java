@@ -69,7 +69,7 @@ public class Controller {
 		VolatilityBands vb = new VolatilityBands(dailyData, settings.getBBOffset());
 		results.add(vb.getResult());
 		
-		CMF cmf = new CMF(this.stock,dailyData,settings.getCMFOffset());
+		CMF cmf = new CMF(dailyData, settings.getCMFOffset());
 		results.add(cmf.getResult());
 		
 		MACD macd = new MACD(dailyData,settings.getMACDShortOffset(),settings.getMACDLongOffset(),settings.getMACDSignalOffset());
@@ -78,7 +78,7 @@ public class Controller {
 		RateOfChange roc = new RateOfChange(dailyData, settings.getROCOffset());
 		results.add(roc.getResult());
 		
-		RelativeStrengthIndex rsi = new RelativeStrengthIndex(this.stock, dailyData, settings.getRSIOffset());
+		RelativeStrengthIndex rsi = new RelativeStrengthIndex(dailyData, settings.getRSIOffset());
 		results.add(rsi.getResult());
 		
 		StochRSI stochrsi = new StochRSI(this.stock, dailyData, settings.getRSIOffset());

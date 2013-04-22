@@ -34,7 +34,7 @@ public class BBRSI implements AnalysisMethod {
 		dailyData = data.toArray(dailyData);
 		vb = new VolatilityBands(data, offset);
 		bb = new BollingerBands(data, offset);
-		rsi = new RelativeStrengthIndex(data.peek().getStock(), data, offset);
+		rsi = new RelativeStrengthIndex(data, offset);
 		stochRSI = new StochRSI(data.peek().getStock(), data, offset);
 		
 	}

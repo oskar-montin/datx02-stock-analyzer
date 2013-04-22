@@ -1,6 +1,7 @@
 package analyzer;
 
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -31,10 +32,10 @@ public class CMF implements AnalysisMethod{
 	 * @param offset
 	 */
 	
-	public CMF(Stock stock, PriorityQueue<DailyData> dailyData, int offset) {
+	public CMF(Collection<DailyData> dailyData, int offset) {
 		
 		dailyQueue = new PriorityQueue<DailyData>(dailyData);
-		this.stock = stock;
+		this.stock = dailyQueue.peek().getStock();
 		this.CMFCalc(dailyQueue, offset);
 	}
 	

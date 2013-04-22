@@ -1,5 +1,6 @@
 package analyzer;
 
+import java.util.Collection;
 import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
@@ -30,10 +31,10 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	 * @param stock
 	 * @param offset - The number of days used for the RSI.
 	 */
-	public RelativeStrengthIndex(Stock stock, PriorityQueue<? extends SimpleData> dailyData, int offset) {
+	public RelativeStrengthIndex(Collection<? extends SimpleData> dailyData, int offset) {
 		
 		dailyDataQueue = new PriorityQueue<SimpleData>(dailyData);
-		this.stock = stock;
+		this.stock = dailyDataQueue.peek().getStock();
 		RSI = new PriorityQueue<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
 		
