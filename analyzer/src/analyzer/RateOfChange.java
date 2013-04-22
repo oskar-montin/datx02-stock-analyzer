@@ -22,7 +22,7 @@ public class RateOfChange implements AnalysisMethod {
 	 * @param dailyData a queue containing all data collected for the given stock
 	 * @param offset the offset that should be used to create the roc list
 	 */
-	public RateOfChange(PriorityQueue<DailyData> dailyData, int offset) {
+	public RateOfChange(PriorityQueue<? extends SimpleData> dailyData, int offset) {
 		if(dailyData == null) {
 			throw new NullPointerException("dailyData == null");
 		}
@@ -184,9 +184,9 @@ public class RateOfChange implements AnalysisMethod {
 	public Signal getSignal() {
 		Double value = this.value();
 		Signal signal;
-		if(value>80) {
+		if(value<80) {
 			signal = Signal.BUY;
-		} else if(value<20) {
+		} else if(value>20) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;
