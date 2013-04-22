@@ -1,5 +1,6 @@
 package analyzer;
 
+
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -95,11 +96,10 @@ public class CMF implements AnalysisMethod{
 			
 			CMF = getCMF(periodSet);			
 			dailyData.add(new SimpleData(stock, dataList.get(i).getDate(), CMF));
-			
 		}
 		current=CMF;
 	}	
-
+	
 	@Override
 	public double value() {
 		return current;
@@ -116,10 +116,10 @@ public class CMF implements AnalysisMethod{
 		return"CMF measures buying and selling pressure over a set period of time.";
 	}
 
-
 	@Override
 	public Result getResult() {
 		Double value = this.value();
+
 		Signal signal;
 		if(value < 0) {
 			signal = Signal.SELL;
