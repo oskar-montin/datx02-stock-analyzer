@@ -18,7 +18,10 @@ import data.Stock;
 
 public class Util {
 
-
+	public static boolean isUpDay(DailyData data) {
+		return data.getOpenPrice()<data.getClosePrice();
+	}
+	
 	/**
 	 * A static method that returns the mean values of the business sector of the input stock. Only the daily values
 	 * are processed.
