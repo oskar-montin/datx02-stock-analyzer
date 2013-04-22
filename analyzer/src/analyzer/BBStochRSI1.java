@@ -9,6 +9,13 @@ import data.Result;
 import data.Signal;
 import data.SimpleData;
 
+/**
+ * This combination of stochRSI and volatility bands looks at two days, today and yesterday. 
+ * If yesterday was an upday without volatility bands buy signal and today both rsi and volatility bands says buy, buy.
+ * Sell if both vb and rsi says sell.
+ * @author Guribur
+ *
+ */
 public class BBStochRSI1 extends BBRSI {
 
 	public BBStochRSI1(PriorityQueue<? extends SimpleData> data, int offset) {

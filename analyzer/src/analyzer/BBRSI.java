@@ -14,6 +14,12 @@ import data.Signal;
 import data.SimpleData;
 import data.Stock;
 
+/**
+ * This Combinationmethod is a simple combination of Volatilitybands and standard rsi. 
+ * If the signals of volatilitybands and rsi are the same, send that signal.
+ * @author Guribur
+ *
+ */
 public class BBRSI implements AnalysisMethod {
 	
 	protected DailyData[] dailyData;
@@ -42,10 +48,10 @@ public class BBRSI implements AnalysisMethod {
 
 	@Override
 	public double value() {
-		if(signal == Signal.NONE) {
+		if(getSignal() == Signal.NONE) {
 			return 0;
 		}
-		return signal==Signal.BUY?1:-1;
+		return getSignal()==Signal.BUY?1:-1;
 	}
 
 	@Override
