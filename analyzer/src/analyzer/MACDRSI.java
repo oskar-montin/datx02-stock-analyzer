@@ -57,10 +57,10 @@ public class MACDRSI implements AnalysisMethod {
 
 	@Override
 	public double value() {
-		if(signal == Signal.NONE) {
+		if(getSignal() == Signal.NONE) {
 			return 0;
 		}
-		return signal==Signal.BUY?1:-1;
+		return getSignal()==Signal.BUY?1:-1;
 	}
 
 	@Override
@@ -70,6 +70,12 @@ public class MACDRSI implements AnalysisMethod {
 
 	@Override
 	public Result getResult() {
-		return new Result("MACDRSI", value(), resultString(), getGraph(), Signal.NONE);
+		return new Result("MACDRSI", value(), resultString(), getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

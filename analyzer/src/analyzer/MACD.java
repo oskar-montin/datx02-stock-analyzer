@@ -126,7 +126,7 @@ public class MACD implements AnalysisMethod {
 		return MACDQueue;
 	}
 
-	public PriorityQueue<SimpleData> getSignal(){
+	public PriorityQueue<SimpleData> getSignals(){
 		return signalQueue;
 	}
 
@@ -198,6 +198,12 @@ public class MACD implements AnalysisMethod {
 	@Override
 	public Result getResult() {
 		Double value = this.value();
+		return new Result("MACD", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		Double value = this.value();
 		Signal signal;
 		if(value < 0) {
 			signal = Signal.SELL;
@@ -206,6 +212,6 @@ public class MACD implements AnalysisMethod {
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("MACD", value, this.resultString(), this.getGraph(), signal);
+		return signal;
 	}
 }

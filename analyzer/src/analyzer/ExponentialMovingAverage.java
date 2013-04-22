@@ -198,8 +198,12 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		Signal signal = Signal.NONE;
 		
-		return new Result("EMA", value, this.resultString(), this.getGraph(), signal);
+		return new Result("EMA", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		return Signal.NONE;
 	}
 }

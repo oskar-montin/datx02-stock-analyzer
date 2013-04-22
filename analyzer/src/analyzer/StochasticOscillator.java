@@ -89,7 +89,7 @@ public class StochasticOscillator implements AnalysisMethod {
 		}
 		smooth();
 		curves();
-		results = new Result("Stochastic Oscillator", value(), resultString, getGraph(), signal());
+		results = new Result("Stochastic Oscillator", value(), resultString, getGraph(), getSignal());
 	}
 	
 	/*
@@ -176,7 +176,9 @@ public class StochasticOscillator implements AnalysisMethod {
 			kList.remove(0);
 		}
 	}
-	private Signal signal(){
+	
+	@Override
+	public Signal getSignal(){
 		
 		double firstD = dList.get(dList.size()-2).getValue();
 		double secondD = dList.get(dList.size()-1).getValue();

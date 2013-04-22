@@ -2,6 +2,7 @@ package analyzer;
 
 import data.Curve;
 import data.Result;
+import data.Signal;
 
 public interface AnalysisMethod {
 	/**
@@ -26,4 +27,10 @@ public interface AnalysisMethod {
 	 * @return the result object for this analysis method, to see what the value in the result means see the method value()
 	 */
 	public Result getResult();
+	
+	/**
+	 * 
+	 * @return the signal of the analysismethod
+	 */
+	public Signal getSignal();
 }

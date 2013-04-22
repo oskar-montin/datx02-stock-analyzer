@@ -139,8 +139,13 @@ public class Fibonacci implements AnalysisMethod{
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		Signal signal = Signal.NONE;
-		return new Result("Fibonacci retracements", value, this.resultString(), this.getGraph(), signal);
+		return new Result("Fibonacci retracements", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		// TODO Auto-generated method stub
+		return Signal.NONE;
 	}
 }
 	

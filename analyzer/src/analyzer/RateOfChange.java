@@ -177,6 +177,12 @@ public class RateOfChange implements AnalysisMethod {
 	@Override
 	public Result getResult() {
 		Double value = this.value();
+		return new Result("Rate of change", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		Double value = this.value();
 		Signal signal;
 		if(value>80) {
 			signal = Signal.BUY;
@@ -185,6 +191,6 @@ public class RateOfChange implements AnalysisMethod {
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("Rate of change", value, this.resultString(), this.getGraph(), signal);
+		return signal;
 	}
 }

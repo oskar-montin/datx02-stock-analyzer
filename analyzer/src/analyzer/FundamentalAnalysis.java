@@ -117,7 +117,12 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		Signal signal;
-		return new Result("Fundamental Analysis", value, this.resultString(), this.getGraph(), Signal.NONE);
+		return new Result("Fundamental Analysis", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		// TODO Auto-generated method stub
+		return Signal.NONE;
 	}
 }

@@ -158,8 +158,11 @@ public class SimpleMovingAverage implements AnalysisMethod{
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		Signal signal = Signal.NONE;
-		
-		return new Result("SMA", value, this.resultString(), this.getGraph(), signal);
+		return new Result("SMA", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+	@Override
+	public Signal getSignal() {
+		return Signal.NONE;
 	}
 }

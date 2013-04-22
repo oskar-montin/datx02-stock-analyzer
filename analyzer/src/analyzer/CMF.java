@@ -119,6 +119,13 @@ public class CMF implements AnalysisMethod{
 	@Override
 	public Result getResult() {
 		Double value = this.value();
+		return new Result("Chaikin Money Flow", value, this.resultString(), this.getGraph(), getSignal());
+	}
+
+
+	@Override
+	public Signal getSignal() {
+		Double value = this.value();
 
 		Signal signal;
 		if(value < 0) {
@@ -128,6 +135,6 @@ public class CMF implements AnalysisMethod{
 		} else {
 			signal = Signal.NONE;
 		}
-		return new Result("Chaikin Money Flow", value, this.resultString(), this.getGraph(), signal);
+		return signal;
 	}
 }
