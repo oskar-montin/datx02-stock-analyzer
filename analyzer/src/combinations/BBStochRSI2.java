@@ -1,4 +1,4 @@
-package analyzer;
+package combinations;
 
 import java.util.PriorityQueue;
 

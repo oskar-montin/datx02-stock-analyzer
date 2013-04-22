@@ -1,6 +1,10 @@
-package analyzer;
+package combinations;
 
 import java.util.PriorityQueue;
+
+import analyzer.AnalysisMethod;
+import analyzer.RateOfChange;
+import analyzer.VolatilityBands;
 
 import data.Curve;
 import data.DailyData;

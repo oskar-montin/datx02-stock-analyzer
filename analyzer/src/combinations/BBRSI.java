@@ -1,7 +1,13 @@
-package analyzer;
+package combinations;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+
+import analyzer.AnalysisMethod;
+import analyzer.BollingerBands;
+import analyzer.RelativeStrengthIndex;
+import analyzer.StochRSI;
+import analyzer.VolatilityBands;
 
 import util.Util;
 
