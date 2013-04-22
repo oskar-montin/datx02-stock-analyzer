@@ -1,6 +1,7 @@
 package analyzer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class MACD implements AnalysisMethod {
 	 * @param second - the offset of the slow EMA
 	 * @param signal - the offset of the signal-line
 	 */
-	public MACD(PriorityQueue<DailyData> queue, int first, int second, int signal){
+	public MACD(Collection<? extends SimpleData> queue, int first, int second, int signal){
 		List<? extends SimpleData> firstEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, first));
 		List<? extends SimpleData> secondEMA = new LinkedList<SimpleData>(MovingAverage.getEMA(queue, second));
 
