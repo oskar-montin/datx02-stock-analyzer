@@ -81,7 +81,7 @@ public class Controller {
 		RelativeStrengthIndex rsi = new RelativeStrengthIndex(dailyData, settings.getRSIOffset());
 		results.add(rsi.getResult());
 		
-		StochRSI stochrsi = new StochRSI(this.stock, dailyData, settings.getRSIOffset());
+		StochRSI stochrsi = new StochRSI(dailyData, settings.getRSIOffset());
 		results.add(stochrsi.getResult());
 
 		Fibonacci fib = new Fibonacci(dailyData, settings.getFibOffset());
