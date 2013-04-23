@@ -13,12 +13,12 @@ import data.Signal;
 import data.SimpleData;
 
 /**
- * Simple MACD and RSI combination, which only signals if both methods signal.
+ * Simple MACD histogram and RSI combination, which only signals if both methods signal.
  * 
  * @author oskarnylen
  */
 
-public class MACDRSI implements AnalysisMethod {
+public class MACDHistogramRSI implements AnalysisMethod {
 
 	private PriorityQueue<? extends SimpleData> dataQueue;
 	
@@ -26,11 +26,13 @@ public class MACDRSI implements AnalysisMethod {
 	private RelativeStrengthIndex rsi;
 
 
-	public MACDRSI(Collection<? extends SimpleData> queue, 
+	public MACDHistogramRSI(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
 		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
 
 		macd = new MACD(dataQueue, firstMACD, secondMACD, signalMACD);
+		macd.setHistogram(true);
+		
 		rsi = new RelativeStrengthIndex(dataQueue, offsetRSI);
 
 	}

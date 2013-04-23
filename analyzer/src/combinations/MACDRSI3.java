@@ -1,6 +1,7 @@
 package combinations;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import analyzer.AnalysisMethod;
@@ -12,26 +13,36 @@ import data.Result;
 import data.Signal;
 import data.SimpleData;
 
+
 /**
- * Simple MACD and RSI combination, which only signals if both methods signal.
+ * Simple MACD and RSI combination, that signals if yesterdays RSI and todays MACD signals additionally. This one uses
+ * a filtered version of MACD.
  * 
  * @author oskarnylen
  */
 
-public class MACDRSI implements AnalysisMethod {
+public class MACDRSI3 implements AnalysisMethod {
 
 	private PriorityQueue<? extends SimpleData> dataQueue;
 	
 	private MACD macd;
+	
 	private RelativeStrengthIndex rsi;
+	private RelativeStrengthIndex yesterdayRSI;
 
-
-	public MACDRSI(Collection<? extends SimpleData> queue, 
+	public MACDRSI3(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
 		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
 
+		
+		LinkedList<? extends SimpleData> dataList = new LinkedList<SimpleData>(queue);
+		dataList.removeLast();
+		
 		macd = new MACD(dataQueue, firstMACD, secondMACD, signalMACD);
+		macd.setFilter(true);
+		
 		rsi = new RelativeStrengthIndex(dataQueue, offsetRSI);
+		yesterdayRSI = new RelativeStrengthIndex(dataList, offsetRSI);
 
 	}
 
@@ -51,7 +62,7 @@ public class MACDRSI implements AnalysisMethod {
 	}
 
 	public Signal getSignal() {
-		if(macd.getSignal() == rsi.getSignal())
+		if(macd.getSignal() == rsi.getSignal() || macd.getSignal() == yesterdayRSI.getSignal())
 			return macd.getSignal();
 		else
 			return Signal.NONE;

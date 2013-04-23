@@ -34,6 +34,7 @@ public class MACD implements AnalysisMethod {
 	private int signalOffset;
 
 	private boolean filterOn;
+	private boolean histogramOn;
 
 	/**
 	 * 
@@ -122,6 +123,19 @@ public class MACD implements AnalysisMethod {
 		}
 	}
 
+	/**
+	 * Sets if the returnValue should return the histogram crossings
+	 * 
+	 * @param flag - true if the Histogram signal value should be returned.
+	 */
+	public void setHistogram(boolean flag){
+		if(flag == true){
+			histogramOn = true;
+		}else{
+			histogramOn = false;
+		}
+	}
+	
 	public PriorityQueue<SimpleData> getMACD(){
 		return MACDQueue;
 	}
@@ -146,7 +160,7 @@ public class MACD implements AnalysisMethod {
 	@Override
 	public double value() {
 		double returnValue = 0;
-		if(filterOn == false){
+		if(filterOn == false && histogramOn == false){
 			PriorityQueue<SimpleData> tempMACD = new PriorityQueue<SimpleData>(MACDQueue);
 
 			double today = tempMACD.poll().getValue();
@@ -159,7 +173,7 @@ public class MACD implements AnalysisMethod {
 				returnValue = -100;
 			}
 
-		} else {
+		} else if(filterOn == true && histogramOn == false){
 			PriorityQueue<SimpleData> tempFilteredMACD = new PriorityQueue<SimpleData>(MACDFilteredQueue);
 			double todayFiltered = tempFilteredMACD.poll().getValue();
 			double yesterdayFiltered = tempFilteredMACD.poll().getValue();
@@ -170,9 +184,23 @@ public class MACD implements AnalysisMethod {
 			if(yesterdayFiltered > 0 && todayFiltered < 0){
 				returnValue = -100;
 			}
+			
+		} else {
+			PriorityQueue<SimpleData> tempHistogram = new PriorityQueue<SimpleData>(histogramQueue);
+			double todayFiltered = tempHistogram.poll().getValue();
+			double yesterdayFiltered = tempHistogram.poll().getValue();
+
+			if(yesterdayFiltered < 0 && todayFiltered > 0){
+				returnValue = 100;
+			}
+			if(yesterdayFiltered > 0 && todayFiltered < 0){
+				returnValue = -100;
+			}
 		}
 		return returnValue;
 	}
+	
+	
 
 	/**
 	 * @return Returns all the curves a MACD-object contains. That is a MACD-line, Signal-line, MACD-histogram and a filtered MACD-line.

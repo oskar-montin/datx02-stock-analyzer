@@ -13,12 +13,13 @@ import data.Signal;
 import data.SimpleData;
 
 /**
- * Simple MACD and RSI combination, which only signals if both methods signal.
+ * Simple MACD and RSI combination, which only signals if both methods signal. This combination uses a filtered version of
+ * MACD.
  * 
  * @author oskarnylen
  */
 
-public class MACDRSI implements AnalysisMethod {
+public class MACDRSI4 implements AnalysisMethod {
 
 	private PriorityQueue<? extends SimpleData> dataQueue;
 	
@@ -26,11 +27,13 @@ public class MACDRSI implements AnalysisMethod {
 	private RelativeStrengthIndex rsi;
 
 
-	public MACDRSI(Collection<? extends SimpleData> queue, 
+	public MACDRSI4(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
 		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
 
 		macd = new MACD(dataQueue, firstMACD, secondMACD, signalMACD);
+		macd.setFilter(true);
+		
 		rsi = new RelativeStrengthIndex(dataQueue, offsetRSI);
 
 	}
