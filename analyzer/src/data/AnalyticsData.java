@@ -30,7 +30,11 @@ public class AnalyticsData {
 			totalProfit+=pair.profit();
 		}
 		this.amountStillOwned = buyQueue.size();
-		this.successRate = this.timesSucceeded/sold.size();
+		if(sold.size()!=0) {
+			this.successRate = this.timesSucceeded/sold.size();
+		} else {
+			this.successRate = 1;
+		}
 		
 	}
 

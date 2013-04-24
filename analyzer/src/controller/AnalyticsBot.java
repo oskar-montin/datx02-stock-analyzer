@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
@@ -44,25 +45,34 @@ public class AnalyticsBot {
 	private PriorityQueue<SimpleData>[][] ownedStocks;
 	private AnalyticsData[][] result;
 	private Stock[] stocks;
+	private ArrayList<AnalysisMethod> analysisMethods;
 	
-	public AnalyticsBot(PriorityQueue<QuarterlyData>[] quarterlyData) {
-		numberOfStocks = quarterlyData[0].size();
+	public AnalyticsBot(Collection<Stock> inputStocks) {
+		numberOfStocks = inputStocks.size();
 		stocks = new Stock[numberOfStocks];
 		int i = 0;
-		for(QuarterlyData qd: quarterlyData[0]) {
-			stocks[i] = qd.getStock();
+		for(Stock s: inputStocks) {
+			stocks[i] = s;
 			i++;
 		}
 		boughtStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
 		soldStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
 		ownedStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
+		for(int n = 0; n<numberOfMethods;n++) {
+			for(int m = 0; m<numberOfStocks;m++) {
+				boughtStocks[n][m] = new PriorityQueue<SimpleData>();
+				soldStocks[n][m] = new PriorityQueue<SimpleData>();
+				ownedStocks[n][m] = new PriorityQueue<SimpleData>();
+			}
+		}
 		result = new AnalyticsData[numberOfMethods][numberOfStocks];
+		System.out.println("AnalyticsBot initiated");
 	}
 	
 	public void feed(LinkedList<DailyData>[] data, QuarterlyData[] quarterlyData) {
 		
 		for(int i = 0; i< data.length; i++) {
-			ArrayList<AnalysisMethod> analysisMethods = getMethods(data[i], quarterlyData[i]);
+			this.analysisMethods = getMethods(data[i], quarterlyData[i]);
 			for(int j = 0; j<analysisMethods.size();j++) {
 				if(analysisMethods.get(j).getSignal() == Signal.BUY) {
 					boughtStocks[j][i].add(data[i].getLast());
@@ -105,6 +115,7 @@ public class AnalyticsBot {
 		analysisMethods.add(new MACDRSI3(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI4(data, 4, 5, 3, 10));
 		analysisMethods.add(new VBROC(data, 10));
+		System.out.println("Analysis methods loaded");
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
@@ -113,7 +124,8 @@ public class AnalyticsBot {
 			for(int stockNr = 0; stockNr<numberOfStocks; stockNr++) {
 				result[methodNr][stockNr] = new AnalyticsData(boughtStocks[methodNr][stockNr], 
 															soldStocks[methodNr][stockNr], 
-															"insert_method_name", stocks[stockNr]);
+															this.analysisMethods.get(methodNr).getClass().getName(), 
+															stocks[stockNr]);
 			}
 		}
 		return result;
