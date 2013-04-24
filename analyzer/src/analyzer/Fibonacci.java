@@ -29,7 +29,7 @@ public class Fibonacci implements AnalysisMethod{
 	final double MAX = 1.0;
 			
 			
-	int value;
+	private int value;
 	private SimpleData[] data;
 	private int offset;
 	private double max;

@@ -16,6 +16,7 @@ import analyzer.RelativeStrengthIndex;
 import analyzer.SimpleMovingAverage;
 import analyzer.StochRSI;
 import analyzer.StochasticOscillator;
+import analyzer.TrendLine;
 import analyzer.VolatilityBands;
 
 import data.Curve;
@@ -87,6 +88,8 @@ public class Controller {
 		Fibonacci fib = new Fibonacci(dailyData, settings.getFibOffset());
 		results.add(fib.getResult());
 
+		TrendLine tlines = new TrendLine(dailyData, settings.getTrendOffset());
+		results.add(tlines.getResult());
 		
 		StochasticOscillator so = new StochasticOscillator(dailyData, 
 														   settings.getSOShortOffset(), 

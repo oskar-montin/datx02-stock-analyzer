@@ -13,8 +13,7 @@ public class SimpleData implements MarketItem, Comparable<SimpleData> {
 
 
 	protected Stock stock;
-	protected Calendar date;
-	
+	protected Calendar date;	
 	protected double value;
 
 	/**
