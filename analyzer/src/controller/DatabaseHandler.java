@@ -7,11 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+
 
 import data.DailyData;
 import data.LargeDouble;
@@ -88,7 +91,7 @@ public class DatabaseHandler {
 
 		String name = null, stockExchange = null, business = null;
 		try {
-
+			
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
 			rs = st.executeQuery("SELECT name, stockExchange, business FROM Stock WHERE symbol='"+symbol+"'");
@@ -568,5 +571,45 @@ public class DatabaseHandler {
 				}
 		}
 		return dataList;
+	}
+	
+	public static PriorityQueue<Calendar> getDates() {
+		PriorityQueue<Calendar> dates = new PriorityQueue<Calendar>();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			con = DriverManager.getConnection(url + userpass);
+			st = con.createStatement();
+			rs = st.executeQuery("SELECT * FROM Date");
+
+			while (rs.next()) {
+				Calendar date = Calendar.getInstance();
+				date.setTime(rs.getDate("date"));
+				date.set(Calendar.MONTH, (date.get(Calendar.MONTH)+1));
+				dates.add(date);
+			}
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (con != null) {
+					con.close();
+				}} catch (SQLException ex) {
+					System.out.println("error- while closing connection");
+				}
+		}
+		return dates;
 	}
 }
