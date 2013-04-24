@@ -28,7 +28,7 @@ public class MACDRSI implements AnalysisMethod {
 
 	public MACDRSI(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
-		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
+		dataQueue = new PriorityQueue<SimpleData>(queue);
 
 		macd = new MACD(dataQueue, firstMACD, secondMACD, signalMACD);
 		rsi = new RelativeStrengthIndex(dataQueue, offsetRSI);

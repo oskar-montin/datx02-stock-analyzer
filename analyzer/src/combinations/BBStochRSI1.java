@@ -34,7 +34,7 @@ public class BBStochRSI1 extends BBRSI {
 	}
 	
 	private void exit(ArrayList<SimpleData> upperBand) {
-		if(dailyData[dailyData.length-2].getValue()>upperBand.get(dailyData.length-2).getValue()) {
+		if(dailyData[dailyData.length-2].getValue()>upperBand.get(upperBand.size()-2).getValue()) {
 			signal = Signal.BUY;
 			
 		}
@@ -52,7 +52,7 @@ public class BBStochRSI1 extends BBRSI {
 	
 	private void entry(ArrayList<SimpleData> lowerBand) {
 		//If the day before was an up day and inside the bands
-		if(dailyData[dailyData.length-2].getValue()>lowerBand.get(dailyData.length-2).getValue()) {
+		if(dailyData[dailyData.length-2].getValue()>lowerBand.get(lowerBand.size()-2).getValue()) {
 			if(Util.isUpDay(dailyData[dailyData.length-1])) {
 				//If gone inside the bollingerbands again
 				signal = Signal.BUY;

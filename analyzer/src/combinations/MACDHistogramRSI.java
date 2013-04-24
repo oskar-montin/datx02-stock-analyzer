@@ -28,7 +28,7 @@ public class MACDHistogramRSI implements AnalysisMethod {
 
 	public MACDHistogramRSI(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
-		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
+		dataQueue = new PriorityQueue<SimpleData>(queue);
 
 		macd = new MACD(dataQueue, firstMACD, secondMACD, signalMACD);
 		macd.setHistogram(true);

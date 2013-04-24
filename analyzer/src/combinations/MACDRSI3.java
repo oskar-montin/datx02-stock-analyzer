@@ -32,7 +32,7 @@ public class MACDRSI3 implements AnalysisMethod {
 
 	public MACDRSI3(Collection<? extends SimpleData> queue, 
 				int firstMACD, int secondMACD, int signalMACD, int offsetRSI) {
-		dataQueue = new PriorityQueue<SimpleData>(dataQueue);
+		dataQueue = new PriorityQueue<SimpleData>(queue);
 
 		
 		LinkedList<? extends SimpleData> dataList = new LinkedList<SimpleData>(queue);
