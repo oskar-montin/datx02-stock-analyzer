@@ -42,7 +42,7 @@ public class Fibonacci implements AnalysisMethod{
 		this.data = data.toArray(this.data);
 		max = findMax().getValue();
 		min = findMin().getValue();
-		createRetracements();
+		//createRetracements();
 	}
 	
 	//method that returns the maximum stock price for a stock chart

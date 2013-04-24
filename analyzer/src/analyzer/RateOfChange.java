@@ -132,7 +132,6 @@ public class RateOfChange implements AnalysisMethod {
 		}
 		Double rate = 100*(dailyData[t].getValue()-dailyData[t-n].getValue())/dailyData[t-n].getValue();
 		Calendar c = dailyData[t].getDate();
-		System.out.println(""+c.get(Calendar.DATE));
 		return new SimpleData(dailyData[t].getStock(),dailyData[t].getDate(),rate);
 	}
 
