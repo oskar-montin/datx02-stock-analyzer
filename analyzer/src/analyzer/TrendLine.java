@@ -114,10 +114,12 @@ public class TrendLine implements AnalysisMethod{
 	 * Create upper and lower bounds
 	 */
 	private void createTrendChannels(){
-		int[] maxpos = new int[data.length / S];
-		int[] minpos = new int[data.length / S];
-		double[] maxy = new double[data.length / S];
-		double[] miny = new double[data.length / S];
+		//Jag la till +1 så att det inte blir indes out of bounds eller nullpointerexception...
+		// Den verkar dock inte bete sig som väntat på sista värdet så kan du kolla på det johanna?
+		int[] maxpos = new int[data.length / S +1];
+		int[] minpos = new int[data.length / S +1];
+		double[] maxy = new double[data.length / S +1];
+		double[] miny = new double[data.length / S +1];
 		
 		for (int i = 0; i < data.length/S; i++) {
 			maxy[i] = 0;
