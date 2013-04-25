@@ -72,9 +72,9 @@ public class StochRSI extends RelativeStrengthIndex{
 	
 	public Signal getSignal() {
 		Signal signal;
-		if(todaysValue==1.0) {
+		if(todaysValue==0.0) {
 			signal = Signal.BUY;
-		} else if(todaysValue==0.0) {
+		} else if(todaysValue==1.0) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;

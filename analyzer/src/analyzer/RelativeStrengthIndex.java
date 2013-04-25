@@ -153,9 +153,9 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	public Signal getSignal() {
 		Double value = this.value();
 		if(value>70) {
-			return Signal.BUY;
-		} else if(value<30) {
 			return Signal.SELL;
+		} else if(value<30) {
+			return Signal.BUY;
 		} else {
 			return Signal.NONE;
 		}
