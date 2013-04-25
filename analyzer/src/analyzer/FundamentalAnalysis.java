@@ -43,7 +43,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		marketCap = createValueQueue(sd, "marketCap");
 		dividentYield = createValueQueue(sd, "dividentYield");
 		
-		System.out.println("PEQUEUE: " + PEQueue);
+		//System.out.println("PEQUEUE: " + PEQueue);
 
 //		businessFundamentalData = new FundamentalData(Util.quarterlyDataMean(stock), Util.dailyDataMean(stock));
 	}
