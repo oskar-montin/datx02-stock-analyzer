@@ -65,6 +65,10 @@ public class AnalyticsData {
 	public double getTotalProfit() {
 		return totalProfit;
 	}
+	
+	public int amountOfPairs() {
+		return pairs.size();
+	}
 
 	public int getAmountStillOwned() {
 		return amountStillOwned;
