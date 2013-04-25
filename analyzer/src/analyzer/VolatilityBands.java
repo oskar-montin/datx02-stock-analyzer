@@ -17,7 +17,7 @@ public class VolatilityBands implements AnalysisMethod{
 	private PriorityQueue<SimpleData> closePriceRef;
 	private int offset;
 	private ArrayList<SimpleData> upper, middle, lower;
-	int value;
+	private double value;
 	
 	public VolatilityBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
@@ -47,10 +47,11 @@ public class VolatilityBands implements AnalysisMethod{
 		if(ema==null) {
 			value = 50;
 		} else {
-			double spann = 4*standardDeviation;
-			double lastValue = data[data.length-1].getValue()-ema.getValue()+deviationMultiplier*standardDeviation;
-			value = (int) (lastValue*100/spann);
-			
+			//double spann = 4*standardDeviation;
+			//double lastValue = data[data.length-1].getValue()-ema.getValue()+deviationMultiplier*standardDeviation;
+			//value = (int) (lastValue*100/spann);
+			value = (data[data.length-1].getClosePrice()-this.lower.get(this.lower.size()-1).getValue())/
+					(this.upper.get(this.upper.size()-1).getValue()-this.lower.get(this.lower.size()-1).getValue());
 		}
 	}
 	
@@ -116,11 +117,11 @@ public class VolatilityBands implements AnalysisMethod{
 	}
 	
 	public Signal getSignal() {
-		Double value = this.value();
 		Signal signal;
-		if(value>=100) {
+		
+		if(this.value<0.05) {
 			signal = Signal.BUY;
-		} else if(value<=0) {
+		} else if(this.value>0.95) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;

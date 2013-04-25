@@ -1,5 +1,6 @@
 package analyzer;
 
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 
@@ -12,17 +13,17 @@ public class BollingerBands implements AnalysisMethod{
 	private SimpleData[] data;
 	private PriorityQueue<SimpleData> closePriceRef;
 	private int offset;
-	private PriorityQueue<SimpleData> upper, middle, lower;
-	int value;
+	private ArrayList<SimpleData> upper, middle, lower;
+	private double value;
 	
 	public BollingerBands(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
 		this.closePriceRef = (PriorityQueue<SimpleData>) data;
 		this.data = new SimpleData[data.size()];
 		this.data = data.toArray(this.data);
-		this.upper = new PriorityQueue<SimpleData>();
-		this.middle = new PriorityQueue<SimpleData>();
-		this.lower = new PriorityQueue<SimpleData>();
+		this.upper = new ArrayList<SimpleData>();
+		this.middle = new ArrayList<SimpleData>();
+		this.lower = new ArrayList<SimpleData>();
 		createBounds();
 	}
 	
@@ -43,9 +44,11 @@ public class BollingerBands implements AnalysisMethod{
 		if(sma==null) {
 			value = 50;
 		} else {
-			double spann = 4*standardDeviation;
-			double lastValue = data[data.length-1].getValue()-sma.getValue()+deviationMultiplier*standardDeviation;
-			value = (int) (lastValue*100/spann);
+			//double spann = 4*standardDeviation;
+			//double lastValue = data[data.length-1].getValue()-sma.getValue()+deviationMultiplier*standardDeviation;
+			//value = (int) (lastValue*100/spann);
+			value = (data[data.length-1].getValue()-this.lower.get(this.lower.size()-1).getValue())/
+					(this.upper.get(this.upper.size()-1).getValue()-this.lower.get(this.lower.size()-1).getValue());
 		}
 	}
 	
@@ -84,7 +87,7 @@ public class BollingerBands implements AnalysisMethod{
 		return curves;
 	}
 	
-	private PriorityQueue<SimpleData> getLaggAdjusted(PriorityQueue<SimpleData> queue, PriorityQueue<SimpleData> goalPattern) {
+	private PriorityQueue<SimpleData> getLaggAdjusted(ArrayList<SimpleData> queue, PriorityQueue<SimpleData> goalPattern) {
 		PriorityQueue<SimpleData> temp = new PriorityQueue<SimpleData>(goalPattern);
 		PriorityQueue<SimpleData> returnQueue = new PriorityQueue<SimpleData>();
 		while(queue.size()<temp.size()) {
@@ -110,11 +113,11 @@ public class BollingerBands implements AnalysisMethod{
 
 	@Override
 	public Signal getSignal() {
-		Double value = this.value();
 		Signal signal;
-		if(value>=100) {
+		
+		if(this.value<0.05) {
 			signal = Signal.BUY;
-		} else if(value<=0) {
+		} else if(this.value>0.95) {
 			signal = Signal.SELL;
 		} else {
 			signal = Signal.NONE;
