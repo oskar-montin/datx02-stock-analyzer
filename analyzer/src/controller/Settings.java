@@ -32,6 +32,7 @@ public class Settings implements Serializable {
 	private int SOLongOffset = 14;
 	private int SOSpeedOffset = 3;
 	private int FibOffset = 5;
+	private int TrendOffset = 5;
 	/* Correct values
 	private int MACDShortOffset = 12;
 	private int MACDLongOffset = 26;
@@ -52,6 +53,7 @@ public class Settings implements Serializable {
 			RSIOffset = s.getRSIOffset();
 			ROCOffset = s.getROCOffset();
 			FibOffset = s.getFibOffset();
+			TrendOffset = s.getTrendOffset();
 			SOShortOffset = s.getSOShortOffset();
 			SOMidOffset = s.getSOMidOffset();
 			SOLongOffset = s.getSOLongOffset();
@@ -227,9 +229,15 @@ public class Settings implements Serializable {
 	public void setFibOffset(int FibOffset) {
 		this.FibOffset = FibOffset;
 	}
-
+	
 	public int getFibOffset(){
-		return FibOffset;
-		
+		return FibOffset;	
+	}
+	
+	public void setTrendOffset(int TrendOffset){
+		this.TrendOffset = TrendOffset;
+	}
+	public int getTrendOffset(){
+		return TrendOffset;
 	}
 }
