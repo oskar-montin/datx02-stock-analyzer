@@ -70,13 +70,38 @@ public class Evaluater {
 		return data;
 	}
 	
-	public static void main(String[] args) {
-		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-11), dates.get(dates.size()-1));
-		AnalyticsData[][] ad = evaluater.getAnalyticsData();
-		
-		for(Calendar c:dates) {
-			System.out.println("Day: "+c.get(Calendar.DATE)+" Month: "+c.get(Calendar.MONTH));
+	public void printMethodStat() {
+		for(int i = 0; i<data.length;i++) {
+			double successRate = 0;
+			double stillOwned = 0;
+			double timesSucceeded = 0;
+			double timesFailed = 0;
+			double profit = 0;
+			int totalBuySell = 0;
+			for(int j = 0; j< data[0].length; j++) {
+				stillOwned += data[i][j].getAmountStillOwned();
+				timesFailed += data[i][j].getTimesFailed();
+				timesSucceeded += data[i][j].getTimesSucceeded();
+				profit += data[i][j].getTotalProfit();
+				totalBuySell += data[i][j].amountOfPairs();
+			}
+			successRate = timesSucceeded/(timesSucceeded+timesFailed);
+			System.out.println(data[i][0].getAnalysisMethod()+":");
+			System.out.println("Success rate: " + successRate + "\n" +
+							   "Profit: " + profit + " - Stock avarage: "+profit/data[0].length+"\n" +
+							   "Still owned: " + stillOwned + " - Avarage: "+stillOwned/data[0].length +"\n" +
+							   "Times Succeeded: " + timesSucceeded + " - Avarage: "+timesSucceeded/data[0].length + "\n" +
+							   "Times failed: " + timesFailed + " - Avarage: "+timesFailed/data[0].length + "\n" +
+							   "Total buy/sell pairs: " + totalBuySell + " of " + data[0].length + " stocks. - Avg: " + ((double)totalBuySell/data[0].length));
 		}
+	}
+	
+	public static void main(String[] args) {
+		
+		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
+		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-40), dates.get(dates.size()-1));
+		AnalyticsData[][] ad = evaluater.getAnalyticsData();
+		evaluater.printMethodStat();
+		
 	}
 }

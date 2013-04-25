@@ -87,6 +87,7 @@ public class AnalyticsBot {
 					}
 				}
 			}
+			System.out.println("Stock "+stocks[i].getSymbol()+" feeded");
 		}
 	}
 	
@@ -115,7 +116,6 @@ public class AnalyticsBot {
 		analysisMethods.add(new MACDRSI3(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI4(data, 4, 5, 3, 10));
 		analysisMethods.add(new VBROC(data, 10));
-		System.out.println("Analysis methods loaded");
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
