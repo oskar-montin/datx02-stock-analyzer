@@ -7,7 +7,7 @@ public class AnalyticsData {
 	private final Stock stock;
 	private final String analysisMethod;
 	private ArrayList<BuySellPair> pairs;
-	private final double successRate;
+	private double successRate;
 	private int timesSucceeded = 0;
 	private int timesFailed = 0;
 	private double totalProfit = 0;
@@ -30,10 +30,10 @@ public class AnalyticsData {
 			totalProfit+=pair.profit();
 		}
 		this.amountStillOwned = buyQueue.size();
-		if(sold.size()!=0) {
-			this.successRate = this.timesSucceeded/sold.size();
+		if((this.timesFailed+this.timesSucceeded)!=0) {
+			this.successRate = (double)this.timesSucceeded/(this.timesFailed+this.timesSucceeded);
 		} else {
-			this.successRate = 1;
+			this.successRate = 1.0;
 		}
 		
 	}

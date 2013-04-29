@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +45,9 @@ public class Controller {
 
 	public void setStock(String symbol) {
 		this.stock = DatabaseHandler.getStock(symbol);
-		dailyData = DatabaseHandler.getDailyData(stock);
+		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
+		//TODO: Om någon vill se alla aktier, "byt ut dates.get(dates.size()-31)" till "dates.get(0)"
+		dailyData = DatabaseHandler.getDailyData(stock,dates.get(dates.size()-31),dates.get(dates.size()-1));
 		quarterlyData = DatabaseHandler.getQuarterlyData(stock);
 	}
 	

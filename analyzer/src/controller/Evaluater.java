@@ -58,15 +58,17 @@ public class Evaluater {
 			QuarterlyData[] quarterlyData = new QuarterlyData[stocks.size()];
 			int i = 0;
 			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH));
+			System.out.println("Input Date: "+ dates.get(0).get(Calendar.DATE)+"/"+dates.get(0).get(Calendar.MONTH));
 			for(Stock stock : stocks) {
+				/*
 				if(inputData[i] == null) {
 					inputData[i] = DatabaseHandler.getDailyData(stock);
-				}
+				}*/
 				if(quarterlyData[i] == null) {
 					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
 				}
-				dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
-				
+				//dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
+				dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(0), dates.get(currentDateIndex)));
 				i++;
 			}
 			bot.feed(dailyData, quarterlyData);
@@ -93,6 +95,7 @@ public class Evaluater {
 		//For each analysismethod:
 		for(int i = 0; i<data.length;i++) {
 			double successRate = 0;
+			double worstSuccessRate = 1.0;
 			double stillOwned = 0;
 			double timesSucceeded = 0;
 			double timesFailed = 0;
@@ -100,12 +103,13 @@ public class Evaluater {
 			int totalBuySell = 0;
 			String outputString = "";
 			for(int j = 0; j< data[0].length; j++) {
+				worstSuccessRate = Math.min(worstSuccessRate, data[i][j].getSuccessRate());
 				stillOwned += data[i][j].getAmountStillOwned();
 				timesFailed += data[i][j].getTimesFailed();
 				timesSucceeded += data[i][j].getTimesSucceeded();
 				profit += data[i][j].getTotalProfit();
 				totalBuySell += data[i][j].amountOfPairs();
-				perStockStrings[j] += data[i][j].getAnalysisMethod()+":\n"+"Success rate: " + data[i][j].getSuccessRate() + "\n" +
+				perStockStrings[j] += data[i][j].getAnalysisMethod()+":\n"+"Success rate: " + data[i][j].getSuccessRate()   + "\n" +
 						   "Profit: " + data[i][j].getTotalProfit() + " - Stock avarage: "+data[i][j].getTotalProfit()/data[i].length+"\n" +
 						   "Still owned: " + data[i][j].getAmountStillOwned() + " - Avarage: "+data[i][j].getAmountStillOwned()/data[0].length +"\n" +
 						   "Times Succeeded: " + data[i][j].getTimesSucceeded() + " - Avarage: "+data[i][j].getTimesSucceeded()/data[0].length + "\n" +
@@ -114,7 +118,7 @@ public class Evaluater {
 
 			}
 			successRate = timesSucceeded/(timesSucceeded+timesFailed);
-			outputString = data[i][0].getAnalysisMethod()+":"+"Success rate: " + successRate + "\n" +
+			outputString = data[i][0].getAnalysisMethod()+":"+"\n"+"Success rate: " + successRate +  " Worst:"+ worstSuccessRate+"\n" +
 					   "Profit: " + profit + " - Stock avarage: "+profit/data[0].length+"\n" +
 					   "Still owned: " + stillOwned + " - Avarage: "+stillOwned/data[0].length +"\n" +
 					   "Times Succeeded: " + timesSucceeded + " - Avarage: "+timesSucceeded/data[0].length + "\n" +

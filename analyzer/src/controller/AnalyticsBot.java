@@ -38,7 +38,6 @@ import data.SimpleData;
 import data.Stock;
 
 public class AnalyticsBot {
-	private static int numberOfMethods = 22; //Change to actual amount of analysis methods
 	private int numberOfStocks;
 	private PriorityQueue<SimpleData>[][] boughtStocks;
 	private PriorityQueue<SimpleData>[][] soldStocks;
@@ -55,17 +54,20 @@ public class AnalyticsBot {
 			stocks[i] = s;
 			i++;
 		}
-		boughtStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
-		soldStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
-		ownedStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[numberOfMethods][numberOfStocks]);
-		for(int n = 0; n<numberOfMethods;n++) {
+	}
+	
+	private void initArrays(int nrOfMethods) {
+		boughtStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[nrOfMethods][numberOfStocks]);
+		soldStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[nrOfMethods][numberOfStocks]);
+		ownedStocks = ((PriorityQueue<SimpleData>[][])new PriorityQueue[nrOfMethods][numberOfStocks]);
+		for(int n = 0; n<nrOfMethods;n++) {
 			for(int m = 0; m<numberOfStocks;m++) {
 				boughtStocks[n][m] = new PriorityQueue<SimpleData>();
 				soldStocks[n][m] = new PriorityQueue<SimpleData>();
 				ownedStocks[n][m] = new PriorityQueue<SimpleData>();
 			}
 		}
-		result = new AnalyticsData[numberOfMethods][numberOfStocks];
+		result = new AnalyticsData[nrOfMethods][numberOfStocks];
 		System.out.println("AnalyticsBot initiated");
 	}
 	
@@ -73,6 +75,9 @@ public class AnalyticsBot {
 		
 		for(int i = 0; i< data.length; i++) {
 			this.analysisMethods = getMethods(data[i], quarterlyData[i]);
+			if(boughtStocks == null) {
+				initArrays(analysisMethods.size());
+			}
 			for(int j = 0; j<analysisMethods.size();j++) {
 				if(analysisMethods.get(j).getSignal() == Signal.BUY) {
 					boughtStocks[j][i].add(data[i].getLast());
@@ -101,6 +106,9 @@ public class AnalyticsBot {
 		analysisMethods.add(new FundamentalAnalysis(quarterlyData, data));
 		analysisMethods.add(new MACD(data, 4, 5, 3));
 		analysisMethods.add(new RateOfChange(data, 5));
+		analysisMethods.add(new RateOfChange(data, 10));
+		//analysisMethods.add(new RateOfChange(data, 20));
+		analysisMethods.add(new RelativeStrengthIndex(data, 7));
 		analysisMethods.add(new RelativeStrengthIndex(data, 14));
 		analysisMethods.add(new SimpleMovingAverage(data, 5));
 		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 1));
@@ -119,7 +127,7 @@ public class AnalyticsBot {
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
-		for(int methodNr = 0; methodNr<numberOfMethods;methodNr++) {
+		for(int methodNr = 0; methodNr<result.length;methodNr++) {
 			
 			for(int stockNr = 0; stockNr<numberOfStocks; stockNr++) {
 				result[methodNr][stockNr] = new AnalyticsData(boughtStocks[methodNr][stockNr], 

@@ -35,6 +35,14 @@ public class DatabaseHandler {
 	private static DatabaseHandler dataBase;
 
 
+	public static void main(String[] args) {
+		Stock stock = getStock("AAPL");
+		ArrayList<Calendar> dates = new ArrayList<Calendar>(getDates());
+		PriorityQueue<DailyData> dd = getDailyData(stock, dates.get(dates.size()-11), dates.get(dates.size()-1));
+		for(DailyData d:dd) {
+			System.out.println(d.getDate().get(Calendar.DATE)+"/"+d.getDate().get(Calendar.MONTH));
+		}
+	}
 	/**
 	 * Method generates a value-string for a date
 	 * helpmethod for inserting a date database
@@ -201,12 +209,14 @@ public class DatabaseHandler {
 	 * Method collects all DalyData connected with a stock from the database.
 	 * 
 	 * @param Stock 
+	 * @param start - start date
+	 * @param end - end date
 	 * @return All DailyData, connected with the given Stock, stored in a PriorityQueue prioritized after date.
 	 * 						
 	 * 
 	 * @author Runa Gulliksson
 	 */
-	public static PriorityQueue<DailyData> getDailyData(Stock stock){
+	public static PriorityQueue<DailyData> getDailyData(Stock stock, Calendar start, Calendar end){
 
 		String marketCap = ""; //----
 		double dividentYield=0;
@@ -225,10 +235,24 @@ public class DatabaseHandler {
 		ResultSet rs = null;
 
 		try {
-
+			//String startString = start.get(Calendar.YEAR)+"-"+(start.get(Calendar.MONTH)+1)+"-"+start.get(Calendar.DATE);
+			String startString = " AND (" +
+					"YEAR(date)>"+start.get(Calendar.YEAR)+
+					" OR (YEAR(date)="+start.get(Calendar.YEAR)+" AND MONTH(date)>"+ start.get(Calendar.MONTH) +")"+
+					" OR (YEAR(date)="+start.get(Calendar.YEAR)+" AND MONTH(date)="+ start.get(Calendar.MONTH) +
+					" AND DAY(date)>="+start.get(Calendar.DATE)+"))";
+			//String endString = end.get(Calendar.YEAR)+"-"+(end.get(Calendar.MONTH)+1)+"-"+end.get(Calendar.DATE);
+			String endString = " AND (" +
+					"YEAR(date)<"+end.get(Calendar.YEAR)+
+					" OR (YEAR(date)="+end.get(Calendar.YEAR)+" AND MONTH(date)<"+ end.get(Calendar.MONTH) +")"+
+					" OR (YEAR(date)="+end.get(Calendar.YEAR)+" AND MONTH(date)="+ end.get(Calendar.MONTH) +
+					" AND DAY(date)<="+end.get(Calendar.DATE)+"))";
 			con = DriverManager.getConnection(url + userpass);
 			st = con.createStatement();
-			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+stock.getSymbol()+"'");
+			//rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+
+			//				stock.getSymbol()+"' AND DATEDIFF(date,'"+startString+"')>=0 AND DATEDIFF(date,'"+endString+"')<=0");
+			rs = st.executeQuery("SELECT openPrice, closePrice, high, low, date, volume, marketcap, dividentYield, PE, PS, PEG FROM Daily_data  WHERE stock='"+
+			stock.getSymbol()+"' "+startString+endString);
 			Calendar date = null;
 			if(rs.next()) {
 				marketCap=rs.getString("marketCap");
