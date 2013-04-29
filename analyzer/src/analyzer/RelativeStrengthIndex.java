@@ -38,7 +38,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 		this.stock = dailyDataQueue.peek().getStock();
 		RSI = new LinkedList<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
-		
+	
 	}
 
 
