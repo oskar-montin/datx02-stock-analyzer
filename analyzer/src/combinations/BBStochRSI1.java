@@ -29,16 +29,8 @@ public class BBStochRSI1 extends BBRSI {
 		if(vb.getSignal() == Signal.BUY && stochRSI.getSignal() == Signal.BUY) {
 			entry(bands[0]);
 		} else if(vb.getSignal() == Signal.SELL && stochRSI.getSignal() == Signal.SELL) {
-			exit(bands[2]);
+			signal = Signal.SELL;
 		}
-	}
-	
-	private void exit(ArrayList<SimpleData> upperBand) {
-		if(dailyData[dailyData.length-2].getValue()>upperBand.get(upperBand.size()-2).getValue()) {
-			signal = Signal.BUY;
-			
-		}
-		
 	}
 	
 	public Signal getSignal() {
