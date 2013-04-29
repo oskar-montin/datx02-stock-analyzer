@@ -1,5 +1,8 @@
 package controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -48,16 +51,22 @@ public class Evaluater {
 	}
 	
 	private void start() {
-		
+		PriorityQueue<DailyData>[] inputData = new PriorityQueue[stocks.size()];
 		currentDateIndex = Collections.binarySearch(dates, startDate);
 		while(dates.get(currentDateIndex).compareTo(endDate)<0) {
 			LinkedList<DailyData>[] dailyData = ((LinkedList<DailyData>[])new LinkedList[stocks.size()]);
 			QuarterlyData[] quarterlyData = new QuarterlyData[stocks.size()];
 			int i = 0;
+			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH));
 			for(Stock stock : stocks) {
-				System.out.println("Get data for stock: "+stock.getSymbol()+" Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH));
-				dailyData[i] = this.trimmedData(DatabaseHandler.getDailyData(stock), dates.get(currentDateIndex));
-				quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
+				if(inputData[i] == null) {
+					inputData[i] = DatabaseHandler.getDailyData(stock);
+				}
+				if(quarterlyData[i] == null) {
+					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
+				}
+				dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
+				
 				i++;
 			}
 			bot.feed(dailyData, quarterlyData);
@@ -70,7 +79,18 @@ public class Evaluater {
 		return data;
 	}
 	
+	
 	public void printMethodStat() {
+		
+		String totalString = new String();
+		String[] perStockStrings = new String[data[0].length];
+		Stock [] stockArray = new Stock[perStockStrings.length];
+		stockArray = stocks.toArray(stockArray);
+		//Initiate per stock strings
+		for(int n = 0;n<stockArray.length;n++) {
+			perStockStrings[n] = "";
+		}
+		//For each analysismethod:
 		for(int i = 0; i<data.length;i++) {
 			double successRate = 0;
 			double stillOwned = 0;
@@ -78,28 +98,79 @@ public class Evaluater {
 			double timesFailed = 0;
 			double profit = 0;
 			int totalBuySell = 0;
+			String outputString = "";
 			for(int j = 0; j< data[0].length; j++) {
 				stillOwned += data[i][j].getAmountStillOwned();
 				timesFailed += data[i][j].getTimesFailed();
 				timesSucceeded += data[i][j].getTimesSucceeded();
 				profit += data[i][j].getTotalProfit();
 				totalBuySell += data[i][j].amountOfPairs();
+				perStockStrings[j] += data[i][j].getAnalysisMethod()+":\n"+"Success rate: " + data[i][j].getSuccessRate() + "\n" +
+						   "Profit: " + data[i][j].getTotalProfit() + " - Stock avarage: "+data[i][j].getTotalProfit()/data[i].length+"\n" +
+						   "Still owned: " + data[i][j].getAmountStillOwned() + " - Avarage: "+data[i][j].getAmountStillOwned()/data[0].length +"\n" +
+						   "Times Succeeded: " + data[i][j].getTimesSucceeded() + " - Avarage: "+data[i][j].getTimesSucceeded()/data[0].length + "\n" +
+						   "Times failed: " + data[i][j].getTimesFailed() + " - Avarage: "+data[i][j].getTimesFailed()/data[0].length + "\n" +
+						   "Total buy/sell pairs: " + data[i][j].amountOfPairs() + " of " + data[i].length + " stocks. - Avg: " + ((double)data[i][j].amountOfPairs()/data[0].length)+"\n";
+
 			}
 			successRate = timesSucceeded/(timesSucceeded+timesFailed);
-			System.out.println(data[i][0].getAnalysisMethod()+":");
-			System.out.println("Success rate: " + successRate + "\n" +
-							   "Profit: " + profit + " - Stock avarage: "+profit/data[0].length+"\n" +
-							   "Still owned: " + stillOwned + " - Avarage: "+stillOwned/data[0].length +"\n" +
-							   "Times Succeeded: " + timesSucceeded + " - Avarage: "+timesSucceeded/data[0].length + "\n" +
-							   "Times failed: " + timesFailed + " - Avarage: "+timesFailed/data[0].length + "\n" +
-							   "Total buy/sell pairs: " + totalBuySell + " of " + data[0].length + " stocks. - Avg: " + ((double)totalBuySell/data[0].length));
+			outputString = data[i][0].getAnalysisMethod()+":"+"Success rate: " + successRate + "\n" +
+					   "Profit: " + profit + " - Stock avarage: "+profit/data[0].length+"\n" +
+					   "Still owned: " + stillOwned + " - Avarage: "+stillOwned/data[0].length +"\n" +
+					   "Times Succeeded: " + timesSucceeded + " - Avarage: "+timesSucceeded/data[0].length + "\n" +
+					   "Times failed: " + timesFailed + " - Avarage: "+timesFailed/data[0].length + "\n" +
+					   "Total buy/sell pairs: " + totalBuySell + " of " + data[i].length + " stocks. - Avg: " + ((double)totalBuySell/data[0].length)+"\n";
+
+			System.out.println(outputString);
+			totalString +=outputString+"\n";
+		}
+		writeToFile(totalString, "MethodStatistics.txt");
+		
+		for(int n = 0; n<perStockStrings.length;n++) {
+			writeToFile(perStockStrings[n], stockArray[n].getSymbol()+".txt");
+		}
+	}
+	
+	private void writeToFile(String content, String fileName) {
+		FileOutputStream fop = null;
+		File file;
+ 
+		try {
+ 
+			file = new File(fileName);
+			fop = new FileOutputStream(file);
+ 
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			// get the content in bytes
+			byte[] contentInBytes = content.getBytes();
+ 
+			fop.write(contentInBytes);
+			fop.flush();
+			fop.close();
+ 
+			System.out.println("Wrote to file: "+fileName);
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fop != null) {
+					fop.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	public static void main(String[] args) {
 		
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-40), dates.get(dates.size()-1));
+		Evaluater evaluater = new Evaluater(dates,dates.get(20), dates.get(dates.size()-1));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
 		
