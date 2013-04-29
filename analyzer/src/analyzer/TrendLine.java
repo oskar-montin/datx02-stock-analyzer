@@ -49,14 +49,17 @@ public class TrendLine implements AnalysisMethod{
 	//constructor that creates trend lines
 	public TrendLine(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
-		this.data = new SimpleData[data.size()];
-		this.data = data.toArray(this.data);
-		l = new SimpleData[data.size()];
-		lmax = new SimpleData[data.size()];
-		lmin = new SimpleData[data.size()];
-		lines = new Line[data.size()/S+1];
-		upperlines = new Line[data.size()/S+1];
-		lowerlines = new Line[data.size()/S+1];
+		SimpleData temp[] = new SimpleData[data.size()];
+		temp = data.toArray(temp);
+		int size = data.size() - data.size() % S;
+		this.data = new SimpleData[size];
+		System.arraycopy(temp, temp.length % S, this.data, 0, size);
+		l = new SimpleData[size];
+		lmax = new SimpleData[size];
+		lmin = new SimpleData[size];
+		lines = new Line[size/S];
+		upperlines = new Line[size/S];
+		lowerlines = new Line[size/S];
 		createTrendLine();
 		createTrendChannels();
 	}
@@ -84,7 +87,7 @@ public class TrendLine implements AnalysisMethod{
 		double xbar = sumx / n;
 		double ybar = sumy / n;
 		double xxbar = 0, xybar = 0;
-		for(int x = start; x < stop; x++){
+		for(int x = start; x < stop; x++) {
 			y = data[x].getValue();
 			xxbar += (x-xbar)*(x-xbar);
 			xybar += (x-xbar)*(y-ybar);
@@ -98,14 +101,13 @@ public class TrendLine implements AnalysisMethod{
 	 * Create trend line
 	 */
 	private void createTrendLine() {
+		
 		for (int i = 0; i < data.length; i+=S) {
 			int end = i+S-1;
-			if (end >= data.length) 
-				end = data.length-1;
 			lines[i/S] = calcLinearRegression(i, end);
 		}
 		
-		for(int i = 0; i<data.length; i++) {
+		for(int i = 0; i < data.length; i++) {
 			l[i] = new SimpleData(data[i].getStock(), data[i].getDate(), lines[i/S].getY(i));
 		}
 	}
@@ -114,20 +116,19 @@ public class TrendLine implements AnalysisMethod{
 	 * Create upper and lower bounds
 	 */
 	private void createTrendChannels(){
-		//Jag la till +1 så att det inte blir indes out of bounds eller nullpointerexception...
-		// Den verkar dock inte bete sig som väntat på sista värdet så kan du kolla på det johanna?
-		int[] maxpos = new int[data.length / S +1];
-		int[] minpos = new int[data.length / S +1];
-		double[] maxy = new double[data.length / S +1];
-		double[] miny = new double[data.length / S +1];
 		
-		for (int i = 0; i < data.length/S; i++) {
+		int[] maxpos = new int[data.length / S];
+		int[] minpos = new int[data.length / S];
+		double[] maxy = new double[data.length / S];
+		double[] miny = new double[data.length / S];
+		
+		for (int i = 0; i < maxpos.length; i++) {
 			maxy[i] = 0;
 			miny[i] = 100000;
 		}
-		for(int i = 0; i< data.length; i++){
+		for(int i = 0; i < data.length; i++) {
 			int lineNr = i / S;
-
+			
 			if(data[i].getValue() > maxy[lineNr]) {
 				maxpos[lineNr] = i;
 				maxy[lineNr] = data[i].getValue();
@@ -138,17 +139,12 @@ public class TrendLine implements AnalysisMethod{
 			}
 		}
 		
-		for(int i = 0; i< maxpos.length; i++){
-						
+		for(int i = 0; i < maxpos.length; i++) {
 			double ymax = maxy[i];
 			double ymin = miny[i];
 			double b = lines[i].getB();
 			upperlines[i] = new Line(ymax-b*maxpos[i], b);
 			lowerlines[i] = new Line(ymin-b*minpos[i], b);
-			
-			System.out.println("Middle: " + lines[i]);
-			System.out.println("Mmax: " + upperlines[i]);
-			System.out.println("Min: " + lowerlines[i]);
 		}
 		
 		for(int i = 0; i < data.length; i++) {
@@ -168,7 +164,6 @@ public class TrendLine implements AnalysisMethod{
 		return lines[lineNr].getB();
 	}
 	
-
 	@Override
 	public String resultString() {
 		return "Linear regression channels";
@@ -193,14 +188,28 @@ public class TrendLine implements AnalysisMethod{
 	@Override
 	public Result getResult() {
 		
-		Double value = this.value();
-		Signal signal = Signal.NONE;
+		Double value = value();
+		Signal signal = getSignal();
 		return new Result("Trend lines", value, this.resultString(), this.getGraph(), signal);
 	}
 
 	@Override
 	public Signal getSignal() {
-		return Signal.NONE;
+		double LIMIT = 0.01;
+		int x = data.length-1;
+		double lastUpper,  lastLower;
+		double current = data[x].getValue();
+		Line ul = upperlines[upperlines.length-1];
+		Line ll = lowerlines[lowerlines.length-1];
+		lastUpper = ul.getY(x);
+		lastLower = ll.getY(x);
+		if( Math.abs((lastUpper - current)/ lastUpper) < LIMIT){
+				return Signal.SELL;
+		}
+		if( ((current - lastLower)/ lastLower) < LIMIT)
+			return Signal.BUY;
+		else
+			return Signal.NONE;
 	}
 
 }
