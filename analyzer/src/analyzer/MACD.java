@@ -161,10 +161,13 @@ public class MACD implements AnalysisMethod {
 	public double value() {
 		double returnValue = 0;
 		if(filterOn == false && histogramOn == false){
-			PriorityQueue<SimpleData> tempMACD = new PriorityQueue<SimpleData>(MACDQueue);
+		//	PriorityQueue<SimpleData> tempMACD = new PriorityQueue<SimpleData>(MACDQueue);
 
-			double today = tempMACD.poll().getValue();
-			double yesterday = tempMACD.poll().getValue();
+			LinkedList<SimpleData> MACDList = new LinkedList<SimpleData>(MACDQueue);
+			
+			double today = MACDList.getLast().getValue();
+			MACDList.removeLast();
+			double yesterday = MACDList.getLast().getValue();
 
 			if(yesterday < 0 && today > 0){
 				returnValue = 100;
@@ -174,9 +177,14 @@ public class MACD implements AnalysisMethod {
 			}
 
 		} else if(filterOn == true && histogramOn == false){
-			PriorityQueue<SimpleData> tempFilteredMACD = new PriorityQueue<SimpleData>(MACDFilteredQueue);
-			double todayFiltered = tempFilteredMACD.poll().getValue();
-			double yesterdayFiltered = tempFilteredMACD.poll().getValue();
+		//	PriorityQueue<SimpleData> tempFilteredMACD = new PriorityQueue<SimpleData>(MACDFilteredQueue);
+			
+			LinkedList<SimpleData> MACDFilteredList = new LinkedList<SimpleData>(MACDFilteredQueue);
+			
+			double todayFiltered = MACDFilteredList.getLast().getValue();
+			MACDFilteredList.removeLast();
+			double yesterdayFiltered = MACDFilteredList.getLast().getValue();
+			
 
 			if(yesterdayFiltered < 0 && todayFiltered > 0){
 				returnValue = 100;
@@ -186,14 +194,18 @@ public class MACD implements AnalysisMethod {
 			}
 			
 		} else {
-			PriorityQueue<SimpleData> tempHistogram = new PriorityQueue<SimpleData>(histogramQueue);
-			double todayFiltered = tempHistogram.poll().getValue();
-			double yesterdayFiltered = tempHistogram.poll().getValue();
+		//	PriorityQueue<SimpleData> tempHistogram = new PriorityQueue<SimpleData>(histogramQueue);
+			
+			LinkedList<SimpleData> MACDHistogram = new LinkedList<SimpleData>(histogramQueue);
+			
+			double todayHistogram = MACDHistogram.getLast().getValue();
+			MACDHistogram.removeLast();
+			double yesterdayHistogram = MACDHistogram.getLast().getValue();
 
-			if(yesterdayFiltered < 0 && todayFiltered > 0){
+			if(yesterdayHistogram < 0 && todayHistogram > 0){
 				returnValue = 100;
 			}
-			if(yesterdayFiltered > 0 && todayFiltered < 0){
+			if(yesterdayHistogram > 0 && todayHistogram < 0){
 				returnValue = -100;
 			}
 		}
