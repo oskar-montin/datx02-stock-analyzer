@@ -1,6 +1,7 @@
 package analyzer;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import data.Curve;
 import data.DailyData;
@@ -18,7 +19,7 @@ import data.Stock;
 public class RelativeStrengthIndex implements AnalysisMethod {
 
 	protected PriorityQueue<SimpleData> dailyDataQueue;
-	protected PriorityQueue<SimpleData> RSI; // oldest first
+	protected LinkedList<SimpleData> RSI; // oldest first
 	protected double avgGain, avgLoss;
 	protected Stock stock;
 	protected double last=0;
@@ -35,7 +36,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 		
 		dailyDataQueue = new PriorityQueue<SimpleData>(dailyData);
 		this.stock = dailyDataQueue.peek().getStock();
-		RSI = new PriorityQueue<SimpleData>();
+		RSI = new LinkedList<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
 		
 	}
@@ -101,7 +102,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 				
 				RSI.add(new SimpleData(stock, now.getDate(), (100-100/(1+avgGain/avgLoss))));
 				priv=now;
-				last=RSI.peek().getValue();
+				last=RSI.getLast().getValue();
 			}
 
 		}
@@ -130,7 +131,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 		PriorityQueue<SimpleData> bottLine = new PriorityQueue<SimpleData>();
 		Curve [] RSICurve = new Curve[3];
 			
-		RSICurve[0] = new Curve(RSI, "Relative strength index values in percent") ;
+		RSICurve[0] = new Curve(new PriorityQueue<SimpleData>(RSI), "Relative strength index values in percent") ;
 		
 		for(SimpleData d:this.RSI){
 			topLine.add(new SimpleData(d.getStock(), d.getDate(),70));
@@ -165,7 +166,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	@Override
 	public Result getResult() {
 		Double value = this.value();
-		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), getSignal());
+		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), this.getSignal());
 	}
 
 }
