@@ -101,9 +101,9 @@ public class AnalyticsBot {
 		analysisMethods.add(new FundamentalAnalysis(quarterlyData, data));
 		analysisMethods.add(new MACD(data, 4, 5, 3));
 		analysisMethods.add(new RateOfChange(data, 5));
-		analysisMethods.add(new RelativeStrengthIndex(data, 5));
+		analysisMethods.add(new RelativeStrengthIndex(data, 14));
 		analysisMethods.add(new SimpleMovingAverage(data, 5));
-		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 3));
+		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 1));
 		analysisMethods.add(new StochRSI(data, 5));
 		analysisMethods.add(new VolatilityBands(data, 10));
 		analysisMethods.add(new BBRSI(data, 10));
