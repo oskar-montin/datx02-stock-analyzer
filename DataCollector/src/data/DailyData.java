@@ -13,11 +13,11 @@ public class DailyData implements MarketItem, Comparable<DailyData> {
 
 
 	private Stock stock;
-	private Calendar  date;
+	private Calendar date;
 	
 
 	/* KEYS */
-	private LargeDouble marketCap;
+	private LargeDouble marketCap = new LargeDouble("");
 	private double dividentYield;
 	private double PE;
 	private double PS;
