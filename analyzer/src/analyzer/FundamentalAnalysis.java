@@ -1,20 +1,19 @@
 package analyzer;
 
 import java.util.Collection;
-import java.util.PriorityQueue;
-
+import java.util.HashMap;
 import data.Curve;
 import data.DailyData;
 import data.FundamentalData;
 import data.QuarterlyData;
 import data.Result;
 import data.Signal;
-import data.SimpleData;
 import data.Stock;
 
 public class FundamentalAnalysis implements AnalysisMethod {
 
 	private Stock stock;
+	private static HashMap<String,double[]> branschValues = null;
 
 	final private double [] BA= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
 	final private double [] LMT= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
@@ -66,6 +65,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 //	private FundamentalData businessFundamentalData;
 
 	public FundamentalAnalysis(QuarterlyData qd, Collection<DailyData> dd){
+		setValues();
 		stock = qd.getStock();
 
 		//System.out.println("PEQUEUE: " + PEQueue);
@@ -109,5 +109,51 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	public Signal getSignal() {
 		// TODO Auto-generated method stub
 		return Signal.NONE;
+	}
+	private void setValues(){
+		if (branschValues == null) {
+			branschValues = new HashMap<String, double[]>();
+			branschValues.put("BA",BA);
+			branschValues.put("LMT",LMT);
+			branschValues.put("GD",GD);
+			branschValues.put("UTX",UTX);
+			branschValues.put("GM",GM);
+			branschValues.put("F",F);
+			branschValues.put("C",C);
+			branschValues.put("BAC",BAC);
+			branschValues.put("JPM", JPM);
+			branschValues.put("GS",GS);
+			branschValues.put("AAPL",AAPL);
+			branschValues.put("HPQ",HPQ);
+			branschValues.put("IBM",IBM);
+			branschValues.put("CSCO",CSCO);
+			branschValues.put("MCD",MCD);
+			branschValues.put("YUM",YUM);
+			branschValues.put("PEP",PEP);
+			branschValues.put("UNH",UNH);
+			branschValues.put("AET",AET);
+			branschValues.put("HUM",HUM);
+			branschValues.put("WLP",WLP);
+			branschValues.put("GOOG",GOOG);
+			branschValues.put("FB",FB);
+			branschValues.put("MSFT",MSFT);
+			branschValues.put("ORCL",ORCL);
+			branschValues.put("XOM",XOM);
+			branschValues.put("VLO",VLO);
+			branschValues.put("CVX",CVX);
+			branschValues.put("BP",BP);
+			branschValues.put("CAH",CAH);
+			branschValues.put("PFE",PFE);
+			branschValues.put("JNJ",JNJ);
+			branschValues.put("MRK",MRK);
+			branschValues.put("WMT",WMT);
+			branschValues.put("CVS",CVS);
+			branschValues.put("COST",COST);
+			branschValues.put("TGT",TGT);
+			branschValues.put("T",T);
+			branschValues.put("VZ",VZ);
+			branschValues.put("S",S);
+			branschValues.put("TEF",TEF);
+		}
 	}
 }
