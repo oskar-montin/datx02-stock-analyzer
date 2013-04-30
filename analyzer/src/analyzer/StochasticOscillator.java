@@ -100,21 +100,35 @@ public class StochasticOscillator implements AnalysisMethod {
 		int j = 0;
 		double lowestLow = 100000000, highestHigh = 0;
 		DailyData currentDailyData;
+		double tempHigh, tempLow;
 		while (j < (dailyData.size()-longPeriod)){
 			int k = 0;
 			int s = j;
-			currentDailyData = dailyData.get(s);
-			SimpleData sd = new SimpleData(currentDailyData.getStock(), 
-					currentDailyData.getDate(),
-					currentDailyData.getClosePrice());
+			SimpleData sd = new SimpleData(dailyData.get(j).getStock(), 
+					dailyData.get(j).getDate(),
+					dailyData.get(j).getClosePrice());
 			while(k < longPeriod){
-				currentDailyData = dailyData.get(s);
 				
-				if(0 < currentDailyData.getLow() && currentDailyData.getLow() < lowestLow){
-					lowestLow = currentDailyData.getLow();
+				currentDailyData = dailyData.get(s);
+	
+				if(currentDailyData.getClosePrice() > currentDailyData.getHigh()){
+					tempHigh = currentDailyData.getClosePrice();
 				}
-				if(currentDailyData.getHigh() > highestHigh){
-					highestHigh = currentDailyData.getHigh();
+				else{
+					tempHigh = currentDailyData.getHigh();
+				}
+				if(currentDailyData.getClosePrice() < currentDailyData.getLow()){
+					tempLow = currentDailyData.getClosePrice();
+				}
+				else{
+					tempLow = currentDailyData.getLow();
+				}
+				
+				if(0 < tempLow && tempLow < lowestLow){
+					lowestLow = tempLow;
+				}
+				if(tempHigh > highestHigh){
+					highestHigh = tempHigh;
 				}
 				if(k == shortPeriod-1){
 					computeK(lowestLow, highestHigh, sd);
@@ -125,6 +139,8 @@ public class StochasticOscillator implements AnalysisMethod {
 				else if(k == longPeriod-1){
 					computeK(lowestLow, highestHigh, sd);
 				}
+				tempLow = 0;
+				tempHigh = 0;
 				k++;
 				s++;
 			}
