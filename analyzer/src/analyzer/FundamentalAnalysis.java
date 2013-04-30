@@ -65,7 +65,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	
 //	private FundamentalData businessFundamentalData;
 
-	public FundamentalAnalysis(QuarterlyData qd, DailyData dd){
+	public FundamentalAnalysis(QuarterlyData qd, Collection<DailyData> dd){
 		stock = qd.getStock();
 
 		//System.out.println("PEQUEUE: " + PEQueue);
