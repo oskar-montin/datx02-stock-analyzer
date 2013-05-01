@@ -156,4 +156,72 @@ public class FundamentalAnalysis implements AnalysisMethod {
 			branschValues.put("TEF",TEF);
 		}
 	}
+	private int ROE(QuarterlyData qd){
+		//bara testa soliditet åt ena hållet med mycket skulder
+		//
+		double roeValue = qd.getROE()*100;
+		double roeIndValue=branschValues.get(stock.getSymbol())[9];
+		
+		if(roeValue==(-Math.PI)) return 0; // inget ROE värde
+		
+		if(roeValue>(roeIndValue+3)){
+			if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+				return 5; // bra ROE och bra soliditet, dela upp i två både 4 och 5 (gradera Roe el soliditet)
+			}
+			else return 2;//bra ROE och dålig soliditet
+		}
+		
+		else if(roeValue>(roeIndValue-3))
+			if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+				return 3; //OK ROE och bra soliditet, kanske 4
+			}
+			else return 2; //OK ROE och dålig soliditet
+		
+		else if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+			return 2; // dåligt ROE och bra soliditet
+		}
+		else return 1; //dåligt ROE och dålig soliditet
+	}
+	
+	private int ATR(QuarterlyData qd){
+		double atrValue = qd.getAcidTestRatio();
+		double atrIndValue=branschValues.get(stock.getSymbol())[7];
+		
+		if(!(atrValue==-Math.PI)){
+			if(atrValue>(atrIndValue-0.5)){
+				if(atrValue<(atrIndValue+2)&&atrValue>atrIndValue) return 5;// bra intervall och bättre än medel, kanske 4
+				
+				if(atrValue>(atrIndValue+2)) return 2; // för högt värde
+				
+				else return 3; //över undre gräsen men  under medel
+			}
+			else if(qd.getWorkingCapital().toDouble()<1) return 1; //dålig ATR och dåligt WC
+			
+			else return 2; //dåligt ATR men bra WC
+			
+		}
+		else return 0; // inget värde finns
+	}
+	
+	private int EPS(QuarterlyData qd){
+		double epsValue = qd.getAcidTestRatio();
+		double epsIndValue=branschValues.get(stock.getSymbol())[5];
+		
+		if(epsValue==0) return 0; // inget värde för EPS finns
+		
+		else{
+			
+			if(epsValue>(epsIndValue-4))
+				if(epsValue<0) return 2; //bättre än medel men under 0
+				else if (epsValue>epsIndValue+30) return 5; // en bra bit bättre än medel
+				else return 4; // bättre än medel
+			
+			else if (epsValue<0)return 1; // sämre än medel och under 0
+			
+			else return 2; // sämre än medel
+			
+			
+		}
+		
+	}
 }
