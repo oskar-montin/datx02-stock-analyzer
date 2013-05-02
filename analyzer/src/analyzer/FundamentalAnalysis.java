@@ -14,7 +14,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 
 	private Stock stock;
 	private static HashMap<String,double[]> branschValues = null;
-
+	final private int PEind=0, PEsec=1, PSind=2, PSsec=3, EPSind=4, EPSsec=5, CRind=6, CRsec=7, ROEind=8, ROEsec=9;
+	private double roeValue, atrValue, epsValue;
+	
 	final private double [] BA= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
 	final private double [] LMT= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
 	final private double [] GD= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
@@ -67,6 +69,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	public FundamentalAnalysis(QuarterlyData qd, Collection<DailyData> dd){
 		setValues();
 		stock = qd.getStock();
+		roeValue=ROE(qd);
+		atrValue=ATR(qd);
+		epsValue=EPS(qd);
 
 		//System.out.println("PEQUEUE: " + PEQueue);
 
@@ -75,6 +80,24 @@ public class FundamentalAnalysis implements AnalysisMethod {
 
 
 	
+	public double getRoeValue() {
+		return roeValue;
+	}
+
+
+
+	public double getAtrValue() {
+		return atrValue;
+	}
+
+
+
+	public double getEpsValue() {
+		return epsValue;
+	}
+
+
+
 	@Override
 	public String resultString() {
 		// TODO Auto-generated method stub
@@ -160,7 +183,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		//bara testa soliditet åt ena hållet med mycket skulder
 		//
 		double roeValue = qd.getROE()*100;
-		double roeIndValue=branschValues.get(stock.getSymbol())[9];
+		double roeIndValue=branschValues.get(stock.getSymbol())[ROEind];
 		
 		if(roeValue==(-Math.PI)) return 0; // inget ROE värde
 		
@@ -185,7 +208,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	
 	private int ATR(QuarterlyData qd){
 		double atrValue = qd.getAcidTestRatio();
-		double atrIndValue=branschValues.get(stock.getSymbol())[7];
+		double atrIndValue=branschValues.get(stock.getSymbol())[CRind];
 		
 		if(!(atrValue==-Math.PI)){
 			if(atrValue>(atrIndValue-0.5)){
@@ -205,7 +228,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	
 	private int EPS(QuarterlyData qd){
 		double epsValue = qd.getAcidTestRatio();
-		double epsIndValue=branschValues.get(stock.getSymbol())[5];
+		double epsIndValue=branschValues.get(stock.getSymbol())[EPSind];
 		
 		if(epsValue==0) return 0; // inget värde för EPS finns
 		
