@@ -60,10 +60,10 @@ public class CMF implements AnalysisMethod{
 		double multiplier = 0, lowValue = 0, highValue = 0, closeValue = 0, MFV = 0, sumMFV = 0;
 		long volume = 0, sumVol = 0;
 		for (DailyData currentValues:periodSet){
-			
-			lowValue = currentValues.getLow();
-			highValue = currentValues.getHigh();
+
 			closeValue = currentValues.getClosePrice();
+			lowValue = Math.min(currentValues.getLow(), closeValue); 
+			highValue = Math.max(currentValues.getHigh(),closeValue);
 			volume = currentValues.getVolume();
 			
 			multiplier = ((closeValue-lowValue)-(highValue-closeValue))/(highValue-lowValue);
