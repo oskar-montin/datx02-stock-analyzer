@@ -188,19 +188,19 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		if(roeValue==(-Math.PI)) return 0; // inget ROE värde
 		
 		if(roeValue>(roeIndValue+3)){
-			if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+			if(qd.getSolidity()>0.25){
 				return 5; // bra ROE och bra soliditet, dela upp i två både 4 och 5 (gradera Roe el soliditet)
 			}
 			else return 2;//bra ROE och dålig soliditet
 		}
 		
 		else if(roeValue>(roeIndValue-3))
-			if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+			if(qd.getSolidity()>0.25 ){
 				return 3; //OK ROE och bra soliditet, kanske 4
 			}
 			else return 2; //OK ROE och dålig soliditet
 		
-		else if(qd.getSolidity()>0.25 && qd.getSolidity()<0.75){
+		else if(qd.getSolidity()>0.25){
 			return 2; // dåligt ROE och bra soliditet
 		}
 		else return 1; //dåligt ROE och dålig soliditet
