@@ -15,7 +15,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	private Stock stock;
 	private static HashMap<String,double[]> branschValues = null;
 	final private int PEind=0, PEsec=1, PSind=2, PSsec=3, EPSind=4, EPSsec=5, CRind=6, CRsec=7, ROEind=8, ROEsec=9;
-	private double roeValue, atrValue, epsValue;
+	private double roeValue, atrValue, epsValue, PEValue, PEGValue;
 	
 	final private double [] BA= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
 	final private double [] LMT= {17.92,24.78,1.24,2.22,924.94,154.99,1.81,1.69,31.58,10.34};
@@ -59,41 +59,39 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	private final double[] VZ = {15.19,20.21,1.72,4.64,29.32,57.22,0.64,0.92,21.65,19.40};
 	private final double[] S = {24.74,20.21,7.27,4.64,82.38,57.22,1.16,0.92,17.36,19.40};
 	private final double[] TEF = {15.19,20.21,1.72,4.64,29.32,57.22,0.64,0.92,21.65,19.40};
-
-
-
-	private FundamentalData stockFundamentalData;
-	
 //	private FundamentalData businessFundamentalData;
 
-	public FundamentalAnalysis(QuarterlyData qd, Collection<DailyData> dd){
+	public FundamentalAnalysis(QuarterlyData qd, FundamentalData stockFundamentalData){
 		setValues();
 		stock = qd.getStock();
 		roeValue=ROE(qd);
 		atrValue=ATR(qd);
 		epsValue=EPS(qd);
-
-		//System.out.println("PEQUEUE: " + PEQueue);
+		PEGValue = PEG(stockFundamentalData);
+		PEValue = PE(stockFundamentalData);
+			//System.out.println("PEQUEUE: " + PEQueue);
 
 //		businessFundamentalData = new FundamentalData(Util.quarterlyDataMean(stock), Util.dailyDataMean(stock));
 	}
-
-
 	
 	public double getRoeValue() {
 		return roeValue;
 	}
 
-
-
 	public double getAtrValue() {
 		return atrValue;
 	}
 
-
-
 	public double getEpsValue() {
 		return epsValue;
+	}
+	
+	public double getPEValue(){
+		return PEValue;
+	}
+	
+	public double getPEGValue(){
+		return PEGValue;
 	}
 
 
@@ -177,6 +175,52 @@ public class FundamentalAnalysis implements AnalysisMethod {
 			branschValues.put("VZ",VZ);
 			branschValues.put("S",S);
 			branschValues.put("TEF",TEF);
+		}
+	}
+	private int PE(FundamentalData dd){
+		
+		double PEIndValue = branschValues.get(stock.getSymbol())[PEind];
+		double quotientPE = dd.getPE()/PEIndValue;
+		boolean over = quotientPE > 1;
+		boolean positiveKeys = (getRoeValue() + getPEGValue() + getEpsValue() + getAtrValue() / 4) > 3.1;
+		
+		if (quotientPE >= 0.98 || quotientPE <= 1.02) {
+			return (positiveKeys) ? 5 : 3; // PE is within limit, other values result in 5 or 3 return.
+		}
+		else if (quotientPE >= 0.95 || quotientPE <= 1.05){
+			return (positiveKeys) ? 4 : 2; // PE is barely within limit, other values result in....
+		}
+		else if (over){
+			if (quotientPE <= 1.08){
+				return (positiveKeys) ? 3 : 1; // PE is slightly out of limit..
+			}
+			else if (quotientPE <= 1.15){
+				return (positiveKeys) ? 2 : 1; // PE is very out of limit..
+			}
+		}
+		else if (quotientPE >= 0.92){
+			return (positiveKeys) ? 3 : 1; //PE is slightly out of limit(under)
+		}
+		else if (quotientPE >= 0.85){
+			return (positiveKeys) ? 2 : 1; //PE is very out of limit(under)
+		}
+		return 0; // no value
+	}
+	
+	private int PEG(FundamentalData dd){
+		boolean highDivYield = dd.getDividendYield() > 1.05; // divident yield high? -> bad
+		double PEG = dd.getPEG();
+		if(PEG < 0.5){
+			return (highDivYield) ? 3 : 5; // PEG good, but yield decides 3 or 5.
+		}
+		else if (PEG <= 1){
+			return (highDivYield) ? 3 : 4; // PEG mnjaaaa maybe, yield decides...
+		}
+		else if (PEG <= 1.5){
+			return (highDivYield) ? 1 : 2; // PEG Bad ......
+		}
+		else {
+			return 1;                      // PEG stinks
 		}
 	}
 	private int ROE(QuarterlyData qd){
