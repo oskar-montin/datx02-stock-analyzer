@@ -94,28 +94,67 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		return PEGValue;
 	}
 
+	public int getNrValues(){
+		int nrValues=0;
+		
+		if(PEGValue!=0){
+			nrValues=nrValues+1;
+		}
+		if(PEValue!=0){
+			nrValues=nrValues+1;
+		}
+		if(atrValue!=0){
+			nrValues=nrValues+1;
+		}
+		if(roeValue!=0){
+			nrValues=nrValues+1;
+		}
+		if(epsValue!=0){
+			nrValues=nrValues+1;
+		}
+		
+		return nrValues;
+	}
+
 
 
 	@Override
 	public String resultString() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Fundamental analysis, valued on a scale from 1 to 5";
 	}
 
 	@Override
 	public double value() {
-		// TODO Auto-generated method stub
-		return 0;
+		double value=0, nrValues=0;
+		
+		if(PEGValue!=0){
+			value=value+PEGValue;
+			nrValues=nrValues+1;
+		}
+		if(PEValue!=0){
+			value=value+PEValue;
+			nrValues=nrValues+1;
+		}
+		if(atrValue!=0){
+			value=value+atrValue;
+			nrValues=nrValues+1;
+		}
+		if(roeValue!=0){
+			value=value+roeValue;
+			nrValues=nrValues+1;
+		}
+		if(epsValue!=0){
+			value=value+epsValue;
+			nrValues=nrValues+1;
+		}
+		
+		value = value/nrValues;
+		
+		return value;
 	}
 
 	@Override
 	public Curve[] getGraph() {
-	//	Curve[] curves = new Curve[1];
-	//	curves[0] = new Curve(dividentYield, "Dividend Yield");
-	//	curves[0] = new Curve(PSQueue, "PS-value");
-	//	curves[0] = new Curve(marketCap, "Market Cap");
-	//	curves[0] = new Curve(PEGQueue, "PEG-value");
-	//	curves[0] = new Curve(PEQueue, "PE-value");
 		
 		return null;
 	}
@@ -128,7 +167,6 @@ public class FundamentalAnalysis implements AnalysisMethod {
 
 	@Override
 	public Signal getSignal() {
-		// TODO Auto-generated method stub
 		return Signal.NONE;
 	}
 	private void setValues(){
