@@ -81,7 +81,11 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	}
 	
 	public static void main(String[] args) {
-	QuarterlyData qd =DatabaseHandler.getQuarterlyData(DatabaseHandler.getStock("PEP"));
+	String [] symbol={"BA", "LMT", "GD", "UTX", "GM", "F", "C", "BAC", "JPM", "GS", "AAPL","HPQ", "IBM","CSCO","MCD","YUM",
+	"PEP","UNH","AET","HUM","WLP","GOOG","FB","MSFT","ORCL","XOM","VLO","CVX","CAH","PFE","JNJ","MRK","WMT","CVS","COST","TGT","T","VZ","S","TEF"};
+	
+	for(int i=0;i<38;i++){
+	QuarterlyData qd =DatabaseHandler.getQuarterlyData(DatabaseHandler.getStock(symbol[i]));
 
 	Calendar from = Calendar.getInstance();
 	Calendar to = Calendar.getInstance();
@@ -90,7 +94,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	to.set(Calendar.MONTH, 2);
 	to.set(Calendar.DATE, 12);
 	
-	PriorityQueue<DailyData> dd = DatabaseHandler.getDailyData(DatabaseHandler.getStock("PEP"), from, to );
+	PriorityQueue<DailyData> dd = DatabaseHandler.getDailyData(DatabaseHandler.getStock(symbol[i]), from, to );
 	FundamentalAnalysis fa = new FundamentalAnalysis(new FundamentalData(qd, dd.peek()));
 
 	System.out.println("stock: "+fa.stock.getSymbol());
@@ -100,8 +104,8 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	System.out.println("peg: "+fa.getPEGValue());
 	System.out.println("pe: "+fa.getPEValue());
 	System.out.println("nr: "+fa.getNrValues());
-	System.out.println("total: "+fa.value());
-	
+	System.out.println("		total: "+fa.value());
+	}
 	}
 	
 
@@ -252,8 +256,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		double PEIndValue = branschValues.get(stock.getSymbol())[PEind];
 		double quotientPE = dd.getPE()/PEIndValue;
 		boolean over = quotientPE > 1;
-		boolean positiveKeys = (getRoeValue() + getPEGValue() + getEpsValue() + getAtrValue() / 4) > 3.1;
-		
+		boolean positiveKeys = ((getRoeValue() + getPEGValue() + getEpsValue() + getAtrValue()) / 4) > 3.1;
+		//behövs den här jämförelsen här?, känns lite onödigt då vi ändå tar medel senare och beslutar om köp efter det
+		//typ alltid 3 eller 5 i resultat
 		if(dd.getPE()==0) return 0;
 		
 		else if (quotientPE >= 0.98 || quotientPE <= 1.02) {
@@ -282,7 +287,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	private int PEG(FundamentalData dd){
 		boolean highDivYield = dd.getDividendYield() > 1.05; // divident yield high? -> bad
 		double PEG = dd.getPEG();
-		
+		//höja värden?, väldigt få som får bra resultat
 		if(PEG==0) return 0;
 		
 		else if(PEG < 0.5){
@@ -332,7 +337,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		
 		if(!(atrValue==-Math.PI)){
 			if(atrValue>(atrIndValue-0.5)){
-				if(atrValue<(atrIndValue+2)&&atrValue>atrIndValue) return 5;// bra intervall och bättre än medel, kanske 4
+				if(atrValue<(atrIndValue+2)&&atrValue>atrIndValue) 
+					if (qd.getWorkingCapital().toDouble()<0) return 3;
+					else return 5;// bra intervall och bättre än medel, kanske 4
 				
 				if(atrValue>(atrIndValue+2)) return 2; // för högt värde
 				
@@ -347,16 +354,16 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	}
 	
 	private int EPS(FundamentalData qd){
-		double epsValue = qd.getAcidTestRatio();
+		double epsValue = qd.getEPS();
 		double epsIndValue=branschValues.get(stock.getSymbol())[EPSind];
 		
 		if(epsValue==0) return 0; // inget värde för EPS finns
 		
 		else{
 			
-			if(epsValue>(epsIndValue-4))
+			if(epsValue>(epsIndValue-5))
 				if(epsValue<0) return 2; //bättre än medel men under 0
-				else if (epsValue>epsIndValue+30) return 5; // en bra bit bättre än medel
+				else if (epsValue>epsIndValue+15) return 5; // en bra bit bättre än medel
 				else return 4; // bättre än medel
 			
 			else if (epsValue<0)return 1; // sämre än medel och under 0
