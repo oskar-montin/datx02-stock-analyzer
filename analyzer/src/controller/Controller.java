@@ -23,6 +23,7 @@ import analyzer.VolatilityBands;
 
 import data.Curve;
 import data.DailyData;
+import data.FundamentalData;
 import data.QuarterlyData;
 import data.Result;
 import data.Signal;
@@ -35,6 +36,7 @@ public class Controller {
 	private static Controller instance = null;
 	private Stock stock = null;
 	private PriorityQueue<DailyData> dailyData;
+	private FundamentalData fundamentalData;
 	private QuarterlyData quarterlyData;
 	public static Controller getInstance(){
 		if(instance == null){
@@ -102,7 +104,7 @@ public class Controller {
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
 		
-		FundamentalAnalysis fa = new FundamentalAnalysis(quarterlyData, dailyData);
+		FundamentalAnalysis fa = new FundamentalAnalysis(fundamentalData);
 		results.add(fa.getResult());
 		
 		return results;

@@ -1,7 +1,10 @@
 package analyzer;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+
 import data.Curve;
 import data.DailyData;
 import data.FundamentalData;
@@ -9,6 +12,9 @@ import data.QuarterlyData;
 import data.Result;
 import data.Signal;
 import data.Stock;
+import frontend.MainFrame;
+
+import controller.DatabaseHandler;
 
 public class FundamentalAnalysis implements AnalysisMethod {
 
@@ -61,12 +67,12 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	private final double[] TEF = {15.19,20.21,1.72,4.64,29.32,57.22,0.64,0.92,21.65,19.40};
 //	private FundamentalData businessFundamentalData;
 
-	public FundamentalAnalysis(QuarterlyData qd, FundamentalData stockFundamentalData){
+	public FundamentalAnalysis(FundamentalData stockFundamentalData){
 		setValues();
-		stock = qd.getStock();
-		roeValue=ROE(qd);
-		atrValue=ATR(qd);
-		epsValue=EPS(qd);
+		stock = stockFundamentalData.getStock();
+		roeValue=ROE(stockFundamentalData);
+		atrValue=ATR(stockFundamentalData);
+		epsValue=EPS(stockFundamentalData);
 		PEGValue = PEG(stockFundamentalData);
 		PEValue = PE(stockFundamentalData);
 			//System.out.println("PEQUEUE: " + PEQueue);
@@ -74,6 +80,32 @@ public class FundamentalAnalysis implements AnalysisMethod {
 //		businessFundamentalData = new FundamentalData(Util.quarterlyDataMean(stock), Util.dailyDataMean(stock));
 	}
 	
+	public static void main(String[] args) {
+	QuarterlyData qd =DatabaseHandler.getQuarterlyData(DatabaseHandler.getStock("PEP"));
+
+	Calendar from = Calendar.getInstance();
+	Calendar to = Calendar.getInstance();
+	from.set(Calendar.MONTH, 2);
+	from.set(Calendar.DATE, 10);
+	to.set(Calendar.MONTH, 2);
+	to.set(Calendar.DATE, 12);
+	
+	PriorityQueue<DailyData> dd = DatabaseHandler.getDailyData(DatabaseHandler.getStock("PEP"), from, to );
+	FundamentalAnalysis fa = new FundamentalAnalysis(new FundamentalData(qd, dd.peek()));
+
+	System.out.println("stock: "+fa.stock.getSymbol());
+	System.out.println("roe: "+fa.getRoeValue());
+	System.out.println("atr: "+fa.getAtrValue());
+	System.out.println("eps: "+fa.getEpsValue());
+	System.out.println("peg: "+fa.getPEGValue());
+	System.out.println("pe: "+fa.getPEValue());
+	System.out.println("nr: "+fa.getNrValues());
+	System.out.println("total: "+fa.value());
+	
+	}
+	
+
+
 	public double getRoeValue() {
 		return roeValue;
 	}
@@ -222,7 +254,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		boolean over = quotientPE > 1;
 		boolean positiveKeys = (getRoeValue() + getPEGValue() + getEpsValue() + getAtrValue() / 4) > 3.1;
 		
-		if (quotientPE >= 0.98 || quotientPE <= 1.02) {
+		if(dd.getPE()==0) return 0;
+		
+		else if (quotientPE >= 0.98 || quotientPE <= 1.02) {
 			return (positiveKeys) ? 5 : 3; // PE is within limit, other values result in 5 or 3 return.
 		}
 		else if (quotientPE >= 0.95 || quotientPE <= 1.05){
@@ -248,7 +282,10 @@ public class FundamentalAnalysis implements AnalysisMethod {
 	private int PEG(FundamentalData dd){
 		boolean highDivYield = dd.getDividendYield() > 1.05; // divident yield high? -> bad
 		double PEG = dd.getPEG();
-		if(PEG < 0.5){
+		
+		if(PEG==0) return 0;
+		
+		else if(PEG < 0.5){
 			return (highDivYield) ? 3 : 5; // PEG good, but yield decides 3 or 5.
 		}
 		else if (PEG <= 1){
@@ -261,9 +298,10 @@ public class FundamentalAnalysis implements AnalysisMethod {
 			return 1;                      // PEG stinks
 		}
 	}
-	private int ROE(QuarterlyData qd){
-		//bara testa soliditet åt ena hållet med mycket skulder
-		//
+	
+	
+	
+	private int ROE(FundamentalData qd){
 		double roeValue = qd.getROE()*100;
 		double roeIndValue=branschValues.get(stock.getSymbol())[ROEind];
 		
@@ -288,7 +326,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		else return 1; //dåligt ROE och dålig soliditet
 	}
 	
-	private int ATR(QuarterlyData qd){
+	private int ATR(FundamentalData qd){
 		double atrValue = qd.getAcidTestRatio();
 		double atrIndValue=branschValues.get(stock.getSymbol())[CRind];
 		
@@ -308,7 +346,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		else return 0; // inget värde finns
 	}
 	
-	private int EPS(QuarterlyData qd){
+	private int EPS(FundamentalData qd){
 		double epsValue = qd.getAcidTestRatio();
 		double epsIndValue=branschValues.get(stock.getSymbol())[EPSind];
 		

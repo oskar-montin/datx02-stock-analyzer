@@ -32,6 +32,7 @@ import analyzer.VolatilityBands;
 
 import data.AnalyticsData;
 import data.DailyData;
+import data.FundamentalData;
 import data.QuarterlyData;
 import data.Signal;
 import data.SimpleData;
@@ -97,13 +98,16 @@ public class AnalyticsBot {
 	}
 	
 	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList, QuarterlyData quarterlyData) {
+
+		FundamentalData fundamentalData = null;
+		
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dataList);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
 		analysisMethods.add(new BollingerBands(data, 10));
 		analysisMethods.add(new CMF(data, 10));
 		analysisMethods.add(new ExponentialMovingAverage(data, 10));
 		analysisMethods.add(new Fibonacci(data, 5));
-		analysisMethods.add(new FundamentalAnalysis(quarterlyData, data));
+		analysisMethods.add(new FundamentalAnalysis(fundamentalData));
 		analysisMethods.add(new MACD(data, 4, 5, 3));
 		analysisMethods.add(new RateOfChange(data, 5));
 		analysisMethods.add(new RateOfChange(data, 10));
