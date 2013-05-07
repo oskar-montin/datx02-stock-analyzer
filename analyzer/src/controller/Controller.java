@@ -49,7 +49,8 @@ public class Controller {
 		this.stock = DatabaseHandler.getStock(symbol);
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
 		//TODO: Om någon vill se alla aktier, "byt ut dates.get(dates.size()-31)" till "dates.get(0)"
-		dailyData = DatabaseHandler.getDailyData(stock,dates.get(dates.size()-31),dates.get(dates.size()-1));
+		System.out.println(dates.get(dates.size()-81).get(Calendar.MONTH)+" "+dates.get(dates.size()-81).get(Calendar.DATE));
+		dailyData = DatabaseHandler.getDailyData(stock,dates.get(dates.size()-81),dates.get(dates.size()-1));
 		quarterlyData = DatabaseHandler.getQuarterlyData(stock);
 	}
 	
