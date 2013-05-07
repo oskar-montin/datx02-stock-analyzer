@@ -28,21 +28,24 @@ public class Fibonacci implements AnalysisMethod{
 	final double L5 = 0.854;
 	final double MAX = 1.0;
 			
-			
 	private int value;
 	private SimpleData[] data;
 	private int offset;
 	private double max;
 	private double min;
+	private TrendLine tl;
 	
 	//constructor that creates retracement curves
 	public Fibonacci(PriorityQueue<? extends SimpleData> data, int offset) {
 		this.offset = offset;
 		this.data = new SimpleData[data.size()];
 		this.data = data.toArray(this.data);
+		tl = new TrendLine(data, offset);
+		//max = this.data[tl.getLatestMaxPos()].getValue();
+		//min = this.data[tl.getLatestMinPos()].getValue();
 		max = findMax().getValue();
 		min = findMin().getValue();
-		//createRetracements();
+		createRetracements();
 	}
 	
 	//method that returns the maximum stock price for a stock chart
@@ -85,8 +88,8 @@ public class Fibonacci implements AnalysisMethod{
 	
 	// Creates Fibonacci retracements curves
 	private void createRetracements() {
-		System.out.println("Minvärdet ar: " + findMin().getValue());
-		System.out.println("Maxvärdet är: " + findMax().getValue());
+		System.out.println("Minvärdet ar: " + min);
+		System.out.println("Maxvärdet är: " + max);
 		System.out.println("Trending? " + isTrending());
 	}
 
@@ -118,21 +121,18 @@ public class Fibonacci implements AnalysisMethod{
 
 	@Override
 	public Curve[] getGraph() {
-		Curve[] curves = new Curve[8];
+		Curve[] curves = new Curve[6];
 		curves[0] = new Curve(data, "Price");
 		curves[1] = new Curve(createRetracementLine(max),"100");
 		curves[2] = new Curve(createRetracementLine(min),"0");
-		curves[3] = new Curve(createRetracementLine(findLevel(L5, max, min)),"85.4");
-		curves[4] = new Curve(createRetracementLine(findLevel(L4, max, min)),"61.8");
-		curves[5] = new Curve(createRetracementLine(findLevel(L3, max, min)),"50");
-		curves[6] = new Curve(createRetracementLine(findLevel (L2, max, min)),"38.2");
-		curves[7] = new Curve(createRetracementLine(findLevel (L1, max, min)),"23.6");
+		curves[3] = new Curve(createRetracementLine(findLevel(L4, max, min)),"61.8");
+		curves[4] = new Curve(createRetracementLine(findLevel(L3, max, min)),"50");
+		curves[5] = new Curve(createRetracementLine(findLevel (L2, max, min)),"38.2");
 		return curves;
 	}
 
 	@Override
 	public String resultString() {
-		// TODO Auto-generated method stub
 		return "Fibonacci retracements";
 	}
 
@@ -142,10 +142,42 @@ public class Fibonacci implements AnalysisMethod{
 		return new Result("Fibonacci retracements", value, this.resultString(), this.getGraph(), getSignal());
 	}
 
+	/**
+	 * Generate buy/sell/keep signal
+	 * 
+	 * If upwards trending and between 38.2 % and 61.8 % retracement -> sell
+	 * If upwards trending and close 100 %  -> sell
+	 * If downwards trending and between 38.2 % and 61.8 % retracement -> buy
+	 * If downwards trending and close 0 %  -> buy
+	 */
 	@Override
 	public Signal getSignal() {
-		// TODO Auto-generated method stub
-		return Signal.NONE;
+		
+		Signal s = Signal.NONE;
+		double LIMIT = 0.01;
+		
+		double trend = tl.getLatestTrend();
+		/* Current price */
+		double current = data[data.length - 1].getValue();
+		/* Value of 62.1 % retracement */
+		double r62 = findLevel(L4, max, min);
+		/* Value of 38.2 % retracement */
+		double r38 = findLevel(L2, max, min);
+		
+		if (trend > 0) {
+			if (current > r38 && current < r62)
+				s = Signal.SELL;
+			else if ( Math.abs((max - current)/max) < LIMIT )
+				s = Signal.SELL;
+		}
+		else {
+			if (current > r38 && current < r62)
+				s = Signal.BUY;
+			else if ( Math.abs((min - current)/min) < LIMIT )
+				s = Signal.BUY;
+		}
+		
+		return s;
 	}
 }
 	

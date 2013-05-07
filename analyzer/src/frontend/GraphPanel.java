@@ -219,7 +219,7 @@ public class GraphPanel extends JPanel {
 		plot.setBackgroundPaint(new Color(219,225,255));
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setRangeGridlinePaint(Color.white);
-
+	
 		plot.setRangeZeroBaselineVisible(false);
 
 		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();

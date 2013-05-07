@@ -103,7 +103,7 @@ public class Controller {
 														   settings.getSOLongOffset(),
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
-		
+	
 		FundamentalAnalysis fa = new FundamentalAnalysis(fundamentalData);
 		results.add(fa.getResult());
 		

@@ -15,12 +15,12 @@ import data.SimpleData;
  */
 public class TrendLine implements AnalysisMethod{
 
-	int value;
+	private int value;
 	private SimpleData[] data;
-	private int offset;
 	private SimpleData[] l, lmax, lmin;
 	private Line[] lines, upperlines, lowerlines; //array for every trendline created and its upper and lower boundaries
-	final int S = 5; //A trendline every 5th day
+	private final int S = 5; //A trendline every 5th day
+	private int skipped;
 	
 	/**
 	 * Private class Line which represents a linear equation y = a + bx
@@ -48,10 +48,10 @@ public class TrendLine implements AnalysisMethod{
 	
 	//constructor that creates trend lines
 	public TrendLine(PriorityQueue<? extends SimpleData> data, int offset) {
-		this.offset = offset;
 		SimpleData temp[] = new SimpleData[data.size()];
 		temp = data.toArray(temp);
 		int size = data.size() - data.size() % S;
+		skipped = data.size() % S;
 		this.data = new SimpleData[size];
 		System.arraycopy(temp, temp.length % S, this.data, 0, size);
 		l = new SimpleData[size];
@@ -164,6 +164,102 @@ public class TrendLine implements AnalysisMethod{
 		return lines[lineNr].getB();
 	}
 	
+	/**
+	 * Return slope of trend line in latest trend
+	 * @return Slope of trend line
+	 */
+	public double getLatestTrend() {
+		int lineNr = (data.length-1)/S;
+		return lines[lineNr].getB();
+	}
+	
+	/**
+	 * Searches for true local min given approx position.
+	 * @param x Position close to local min
+	 * @return The position of local min
+	 */
+	private int findTrueMinPos(int x) {
+		
+		if (x > 0 && data[x].getValue() > data[x-1].getValue()) {
+			while (data[x].getValue() > data[x-1].getValue()) {
+				x--;
+			}
+		}
+		else if (x < data.length-2 && data[x].getValue() > data[x+1].getValue()) {
+			while (data[x].getValue() > data[x+1].getValue()) {
+				x++;
+			}
+		}
+		x += skipped;
+		System.out.println("True min: " +x);
+		return x;
+	}
+	
+	public int getLatestMinPos() {
+		int x = data.length - 1;
+		// Increasing
+		if (getTrend(x) > 0) {
+			
+			while (getTrend(x) > 0 && x >= 0) {
+				x--;
+			}
+		}
+		// Declining
+		else { 
+			while (getTrend(x) < 0 && x >= 0) {
+				x--;
+			}
+			while (getTrend(x) > 0 && x >= 0) {
+				x--;
+			}
+		}
+		return findTrueMinPos(x+1);
+	}
+	
+
+	/**
+	 * Searches for true local max given approx position.
+	 * @param x Position close to local max
+	 * @return The position of local max
+	 */
+	private int findTrueMaxPos(int x) {
+		
+		if (x > 0 && data[x].getValue() < data[x-1].getValue()) {
+			while (data[x].getValue() < data[x-1].getValue()) {
+				x--;
+			}
+		}
+		else if (x < data.length-2 && data[x].getValue() < data[x+1].getValue()) {
+			while (data[x].getValue() < data[x+1].getValue()) {
+				x++;
+			}
+		}
+		x += skipped;
+		return x;
+	}
+	
+	public int getLatestMaxPos() {
+		int x = data.length - 1;
+		// Decreasing
+		if (getTrend(x) < 0) {
+			
+			while (getTrend(x) < 0 && x >= 0) {
+				x--;
+			}
+		}
+		// Increasing
+		else { 
+			while (getTrend(x) > 0 && x >= 0) {
+				x--;
+			}
+			while (getTrend(x) < 0 && x >= 0) {
+				x--;
+			}
+		}
+		return findTrueMaxPos(x+1);
+	}
+	
+	
 	@Override
 	public String resultString() {
 		return "Linear regression channels";
@@ -187,7 +283,6 @@ public class TrendLine implements AnalysisMethod{
 
 	@Override
 	public Result getResult() {
-		
 		Double value = value();
 		Signal signal = getSignal();
 		return new Result("Trend lines", value, this.resultString(), this.getGraph(), signal);
