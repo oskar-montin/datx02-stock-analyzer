@@ -50,8 +50,18 @@ public class Evaluater {
 		return trimmedData;
 	}
 	
+	private ArrayList<DailyData>[] getAllData() {
+		ArrayList<DailyData>[] allData = new ArrayList[stocks.size()];
+		int i = 0;
+		for(Stock stock : stocks) {
+			allData[i] = new ArrayList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(0), dates.get(dates.size()-1)));
+			i++;
+		}
+		return allData;
+	}
+	
 	private void start() {
-		PriorityQueue<DailyData>[] inputData = new PriorityQueue[stocks.size()];
+		ArrayList<DailyData>[] inputData = getAllData();
 		currentDateIndex = Collections.binarySearch(dates, startDate);
 		while(dates.get(currentDateIndex).compareTo(endDate)<0) {
 			LinkedList<DailyData>[] dailyData = ((LinkedList<DailyData>[])new LinkedList[stocks.size()]);
@@ -67,7 +77,12 @@ public class Evaluater {
 					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
 				}
 				//dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
-				dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(currentDateIndex-50), dates.get(currentDateIndex)));
+				//dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(currentDateIndex-50), dates.get(currentDateIndex)));
+				try {
+				dailyData[i] = new LinkedList<DailyData>(inputData[i].subList(currentDateIndex-50, currentDateIndex));
+				} catch(IndexOutOfBoundsException e) {
+					dailyData[i] = new LinkedList<DailyData>();
+				}
 				i++;
 			}
 			bot.feed(dailyData, quarterlyData);

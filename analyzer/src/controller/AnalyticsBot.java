@@ -98,7 +98,7 @@ public class AnalyticsBot {
 					}
 				}
 			}
-			System.out.println("Stock "+stocks[i].getSymbol()+" feeded");
+			//System.out.println("Stock "+stocks[i].getSymbol()+" feeded");
 		}
 	}
 	
