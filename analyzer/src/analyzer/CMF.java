@@ -1,8 +1,9 @@
 package analyzer;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import data.Curve;
@@ -86,7 +87,7 @@ public class CMF implements AnalysisMethod{
 	
 	private void CMFCalc(PriorityQueue<DailyData> dailyQueue, int offset){
 		dailyData = new PriorityQueue<SimpleData>();
-		LinkedList<DailyData> dataList = new LinkedList<DailyData>(dailyQueue);
+		List<DailyData> dataList = new ArrayList<DailyData>(dailyQueue);
 		double CMF = 0;
 		for(int i = offset; i<dataList.size(); i++){
 			
