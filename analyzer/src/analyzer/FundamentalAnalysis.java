@@ -258,27 +258,27 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		boolean over = quotientPE > 1;
 		if(dd.getPE()==0) return 0;
 		
-		else if (quotientPE >= 0.98 && quotientPE <= 1.02) {
+		else if (quotientPE >= 0.97 && quotientPE <= 1.03) {
 			return 5; // PE is within limit, other values result in 5 or 3 return.
 		}
-		else if (quotientPE >= 0.95 && quotientPE <= 1.05){
+		else if (quotientPE >= 0.94 && quotientPE <= 1.06){
 			return 4; // PE is barely within limit, other values result in....
 		}
 		else if (over){
-			if (quotientPE <= 1.08){
+			if (quotientPE <= 1.09){
 				return 3; // PE is slightly out of limit..
 			}
-			else if (quotientPE <= 1.15){
+			else if (quotientPE <= 1.16){
 				return 2; // PE is very out of limit..
 			}
 			else {
 				return 1;
 			}
 		}
-		else if (quotientPE >= 0.92){
+		else if (quotientPE >= 0.91){
 			return 3; //PE is slightly out of limit(under)
 		}
-		else if (quotientPE >= 0.85){
+		else if (quotientPE >= 0.84){
 			return 2; //PE is very out of limit(under)
 		}
 		else {
