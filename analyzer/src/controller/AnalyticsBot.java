@@ -28,6 +28,7 @@ import analyzer.RelativeStrengthIndex;
 import analyzer.SimpleMovingAverage;
 import analyzer.StochRSI;
 import analyzer.StochasticOscillator;
+import analyzer.TrendLine;
 import analyzer.VolatilityBands;
 
 import data.AnalyticsData;
@@ -75,7 +76,11 @@ public class AnalyticsBot {
 	public void feed(LinkedList<DailyData>[] data, QuarterlyData[] quarterlyData) {
 		
 		for(int i = 0; i< data.length; i++) {
-			this.analysisMethods = getMethods(data[i], quarterlyData[i]);
+			if(data[i] == null || data[i].size()<45) {
+				continue;
+			} else {
+				this.analysisMethods = getMethods(data[i], quarterlyData[i]);
+			}
 			if(boughtStocks == null) {
 				initArrays(analysisMethods.size());
 			}
@@ -98,36 +103,40 @@ public class AnalyticsBot {
 	}
 	
 	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList, QuarterlyData quarterlyData) {
-
-		FundamentalData fundamentalData = null;
-		
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dataList);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
 		analysisMethods.add(new BollingerBands(data, 10));
-		analysisMethods.add(new CMF(data, 10));
+		analysisMethods.add(new CMF(data, 21));
 		analysisMethods.add(new ExponentialMovingAverage(data, 10));
 		analysisMethods.add(new Fibonacci(data, 5));
-		analysisMethods.add(new FundamentalAnalysis(fundamentalData));
+		analysisMethods.add(new Fibonacci(data, 10));
 		analysisMethods.add(new MACD(data, 4, 5, 3));
 		analysisMethods.add(new RateOfChange(data, 5));
 		analysisMethods.add(new RateOfChange(data, 10));
-		//analysisMethods.add(new RateOfChange(data, 20));
+		analysisMethods.add(new RateOfChange(data, 20));
+		analysisMethods.add(new RateOfChange(data, 40));
 		analysisMethods.add(new RelativeStrengthIndex(data, 7));
 		analysisMethods.add(new RelativeStrengthIndex(data, 14));
+		analysisMethods.add(new RelativeStrengthIndex(data, 21));
 		analysisMethods.add(new SimpleMovingAverage(data, 5));
 		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 1));
-		analysisMethods.add(new StochRSI(data, 5));
+		analysisMethods.add(new StochRSI(data, 7));
+		analysisMethods.add(new StochRSI(data, 14));
+		analysisMethods.add(new StochRSI(data, 21));
 		analysisMethods.add(new VolatilityBands(data, 10));
-		analysisMethods.add(new BBRSI(data, 10));
-		analysisMethods.add(new BBStochRSI1(data, 10));
-		analysisMethods.add(new BBStochRSI2(data, 10));
+		analysisMethods.add(new VolatilityBands(data, 20));
+		analysisMethods.add(new BBRSI(data, 20, 7));
+		analysisMethods.add(new BBStochRSI1(data, 20, 7));
+		analysisMethods.add(new BBStochRSI2(data, 20, 7));
 		analysisMethods.add(new MACDHistogramRSI(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDHistogramRSI2(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI2(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI3(data, 4, 5, 3, 10));
 		analysisMethods.add(new MACDRSI4(data, 4, 5, 3, 10));
-		analysisMethods.add(new VBROC(data, 10));
+		analysisMethods.add(new VBROC(data, 20));
+		analysisMethods.add(new TrendLine(data, 5));
+		analysisMethods.add(new TrendLine(data, 10));
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {

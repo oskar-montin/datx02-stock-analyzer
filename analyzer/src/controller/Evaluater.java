@@ -57,8 +57,7 @@ public class Evaluater {
 			LinkedList<DailyData>[] dailyData = ((LinkedList<DailyData>[])new LinkedList[stocks.size()]);
 			QuarterlyData[] quarterlyData = new QuarterlyData[stocks.size()];
 			int i = 0;
-			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH));
-			System.out.println("Input Date: "+ dates.get(0).get(Calendar.DATE)+"/"+dates.get(0).get(Calendar.MONTH));
+			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH)+" - "+dates.get(currentDateIndex).get(Calendar.YEAR));
 			for(Stock stock : stocks) {
 				/*
 				if(inputData[i] == null) {
@@ -68,7 +67,7 @@ public class Evaluater {
 					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
 				}
 				//dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
-				dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(0), dates.get(currentDateIndex)));
+				dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(currentDateIndex-50), dates.get(currentDateIndex)));
 				i++;
 			}
 			bot.feed(dailyData, quarterlyData);
@@ -174,7 +173,7 @@ public class Evaluater {
 	public static void main(String[] args) {
 		
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(20), dates.get(dates.size()-1));
+		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-80), dates.get(dates.size()-1));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
 		
