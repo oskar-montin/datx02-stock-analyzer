@@ -20,20 +20,20 @@ import data.SimpleData;
 public class Fibonacci implements AnalysisMethod{
 	
 	//The different Fibonacci levels.
-	final double MIN = 0.0;
-	final double L1 = 0.236;
-	final double L2 = 0.382;
-	final double L3 = 0.500;
-	final double L4 = 0.618;
-	final double L5 = 0.854;
-	final double MAX = 1.0;
+	protected final double MIN = 0.0;
+	protected final double L1 = 0.236;
+	protected final double L2 = 0.382;
+	protected final double L3 = 0.500;
+	protected final double L4 = 0.618;
+	protected final double L5 = 0.854;
+	protected final double MAX = 1.0;
 			
-	private int value;
-	private SimpleData[] data;
-	private int offset;
-	private double max;
-	private double min;
-	private TrendLine tl;
+	protected int value;
+	protected SimpleData[] data;
+	protected int offset;
+	protected double max;
+	protected double min;
+	protected TrendLine tl;
 	
 	//constructor that creates retracement curves
 	public Fibonacci(PriorityQueue<? extends SimpleData> data, int offset) {
@@ -121,13 +121,14 @@ public class Fibonacci implements AnalysisMethod{
 
 	@Override
 	public Curve[] getGraph() {
-		Curve[] curves = new Curve[6];
+		Curve[] curves = new Curve[7];
 		curves[0] = new Curve(data, "Price");
 		curves[1] = new Curve(createRetracementLine(max),"100");
 		curves[2] = new Curve(createRetracementLine(min),"0");
 		curves[3] = new Curve(createRetracementLine(findLevel(L4, max, min)),"61.8");
 		curves[4] = new Curve(createRetracementLine(findLevel(L3, max, min)),"50");
 		curves[5] = new Curve(createRetracementLine(findLevel (L2, max, min)),"38.2");
+		curves[6] = new Curve(this.tl.getGraph()[1].getQueue(),"38.2");
 		return curves;
 	}
 

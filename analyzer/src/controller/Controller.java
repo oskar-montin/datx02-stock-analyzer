@@ -104,8 +104,8 @@ public class Controller {
 														   settings.getSOSpeedOffset());
 		results.add(so.getResult());
 	
-		FundamentalAnalysis fa = new FundamentalAnalysis(fundamentalData);
-		results.add(fa.getResult());
+		//FundamentalAnalysis fa = new FundamentalAnalysis(fundamentalData);
+		//results.add(fa.getResult());
 		
 		return results;
 	}
