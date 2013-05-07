@@ -256,32 +256,34 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		double PEIndValue = branschValues.get(stock.getSymbol())[PEind];
 		double quotientPE = dd.getPE()/PEIndValue;
 		boolean over = quotientPE > 1;
-		boolean positiveKeys = ((getRoeValue() + getPEGValue() + getEpsValue() + getAtrValue()) / 4) > 3.1;
-		//behövs den här jämförelsen här?, känns lite onödigt då vi ändå tar medel senare och beslutar om köp efter det
-		//typ alltid 3 eller 5 i resultat
 		if(dd.getPE()==0) return 0;
 		
-		else if (quotientPE >= 0.98 || quotientPE <= 1.02) {
-			return (positiveKeys) ? 5 : 3; // PE is within limit, other values result in 5 or 3 return.
+		else if (quotientPE >= 0.97 && quotientPE <= 1.03) {
+			return 5; // PE is within limit, other values result in 5 or 3 return.
 		}
-		else if (quotientPE >= 0.95 || quotientPE <= 1.05){
-			return (positiveKeys) ? 4 : 2; // PE is barely within limit, other values result in....
+		else if (quotientPE >= 0.94 && quotientPE <= 1.06){
+			return 4; // PE is barely within limit, other values result in....
 		}
 		else if (over){
-			if (quotientPE <= 1.08){
-				return (positiveKeys) ? 3 : 1; // PE is slightly out of limit..
+			if (quotientPE <= 1.09){
+				return 3; // PE is slightly out of limit..
 			}
-			else if (quotientPE <= 1.15){
-				return (positiveKeys) ? 2 : 1; // PE is very out of limit..
+			else if (quotientPE <= 1.16){
+				return 2; // PE is very out of limit..
+			}
+			else {
+				return 1;
 			}
 		}
-		else if (quotientPE >= 0.92){
-			return (positiveKeys) ? 3 : 1; //PE is slightly out of limit(under)
+		else if (quotientPE >= 0.91){
+			return 3; //PE is slightly out of limit(under)
 		}
-		else if (quotientPE >= 0.85){
-			return (positiveKeys) ? 2 : 1; //PE is very out of limit(under)
+		else if (quotientPE >= 0.84){
+			return 2; //PE is very out of limit(under)
 		}
-		return 0; // no value
+		else {
+			return 1;
+		}
 	}
 	
 	private int PEG(FundamentalData dd){
