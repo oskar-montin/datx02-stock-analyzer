@@ -35,11 +35,11 @@ public class BBRSI implements AnalysisMethod {
 	protected final StochRSI stochRSI;
 	protected Signal signal = Signal.NONE;
 	
-	public BBRSI(PriorityQueue<? extends SimpleData> data, int offset) {
+	public BBRSI(PriorityQueue<? extends SimpleData> data, int bbOffset, int rocOffset) {
 		dailyData = new DailyData[data.size()];
 		dailyData = data.toArray(dailyData);
-		vb = new VolatilityBands(data, offset);
-		bb = new BollingerBands(data, offset);
+		vb = new VolatilityBands(data, bbOffset);
+		bb = new BollingerBands(data, rocOffset);
 		rsi = new RelativeStrengthIndex(data, 14);
 		stochRSI = new StochRSI(data, 14);
 		

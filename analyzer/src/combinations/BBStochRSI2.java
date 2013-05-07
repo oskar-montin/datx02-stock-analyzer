@@ -14,8 +14,8 @@ import data.SimpleData;
  */
 public class BBStochRSI2 extends BBRSI {
 
-	public BBStochRSI2(PriorityQueue<? extends SimpleData> data, int offset) {
-		super(data, offset);
+	public BBStochRSI2(PriorityQueue<? extends SimpleData> data, int bbOffset, int rocOffset) {
+		super(data, bbOffset, rocOffset);
 	}
 	
 	@Override
