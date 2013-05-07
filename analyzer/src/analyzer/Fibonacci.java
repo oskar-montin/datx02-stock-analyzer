@@ -88,9 +88,9 @@ public class Fibonacci implements AnalysisMethod{
 	
 	// Creates Fibonacci retracements curves
 	private void createRetracements() {
-		System.out.println("Minvärdet ar: " + min);
-		System.out.println("Maxvärdet är: " + max);
-		System.out.println("Trending? " + isTrending());
+		//System.out.println("Minvärdet ar: " + min);
+		//System.out.println("Maxvärdet är: " + max);
+		//System.out.println("Trending? " + isTrending());
 	}
 
 	//check if curve is trending

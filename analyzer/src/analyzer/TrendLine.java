@@ -19,7 +19,7 @@ public class TrendLine implements AnalysisMethod{
 	private SimpleData[] data;
 	private SimpleData[] l, lmax, lmin;
 	private Line[] lines, upperlines, lowerlines; //array for every trendline created and its upper and lower boundaries
-	private final int S = 5; //A trendline every 5th day
+	private int S;
 	private int skipped;
 	
 	/**
@@ -49,6 +49,7 @@ public class TrendLine implements AnalysisMethod{
 	//constructor that creates trend lines
 	public TrendLine(PriorityQueue<? extends SimpleData> data, int offset) {
 		SimpleData temp[] = new SimpleData[data.size()];
+		this.S = offset;
 		temp = data.toArray(temp);
 		int size = data.size() - data.size() % S;
 		skipped = data.size() % S;
@@ -191,7 +192,7 @@ public class TrendLine implements AnalysisMethod{
 			}
 		}
 		x += skipped;
-		System.out.println("True min: " +x);
+		//System.out.println("True min: " +x);
 		return x;
 	}
 	
