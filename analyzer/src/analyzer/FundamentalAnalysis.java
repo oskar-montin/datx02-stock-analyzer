@@ -290,7 +290,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		boolean highDivYield = dd.getDividendYield() > 1.05; // divident yield high? -> bad
 		double PEG = dd.getPEG();
 		//höja värden?, väldigt få som får bra resultat
-		if(PEG==0) return 0;
+		if(PEG==0 || dd.getDividendYield()==0) return 0;
 		
 		else if(PEG < 0.5){
 			return (highDivYield) ? 3 : 5; // PEG good, but yield decides 3 or 5.
