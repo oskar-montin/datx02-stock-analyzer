@@ -156,7 +156,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 
 	@Override
 	public String resultString() {
-		return "Fundamental analysis, valued on a scale from 1 to 5";
+		return "Fundamental analysis, valued on a scale from 0 to 1";
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class FundamentalAnalysis implements AnalysisMethod {
 			branschValues.put("TEF",TEF);
 		}
 	}
-	private int PE(FundamentalData dd){
+	private double PE(FundamentalData dd){
 		
 		double PEIndValue = branschValues.get(stock.getSymbol())[PEind];
 		double quotientPE = dd.getPE()/PEIndValue;
@@ -259,56 +259,56 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		if(dd.getPE()==0) return 0;
 		
 		else if (quotientPE >= 0.97 && quotientPE <= 1.03) {
-			return 5; // PE is within limit, other values result in 5 or 3 return.
+			return 1; // PE is within limit, other values result in 5 or 3 return.
 		}
 		else if (quotientPE >= 0.94 && quotientPE <= 1.06){
-			return 4; // PE is barely within limit, other values result in....
+			return 0.8; // PE is barely within limit, other values result in....
 		}
 		else if (over){
 			if (quotientPE <= 1.09){
-				return 3; // PE is slightly out of limit..
+				return 0.6; // PE is slightly out of limit..
 			}
 			else if (quotientPE <= 1.16){
-				return 2; // PE is very out of limit..
+				return 0.4; // PE is very out of limit..
 			}
 			else {
-				return 1;
+				return 0.2;
 			}
 		}
 		else if (quotientPE >= 0.91){
-			return 3; //PE is slightly out of limit(under)
+			return 0.6; //PE is slightly out of limit(under)
 		}
 		else if (quotientPE >= 0.84){
-			return 2; //PE is very out of limit(under)
+			return 0.4; //PE is very out of limit(under)
 		}
 		else {
-			return 1;
+			return 0.2;
 		}
 	}
 	
-	private int PEG(FundamentalData dd){
+	private double PEG(FundamentalData dd){
 		boolean highDivYield = dd.getDividendYield() > 1.05; // divident yield high? -> bad
 		double PEG = dd.getPEG();
 		//höja värden?, väldigt få som får bra resultat
 		if(PEG==0 || dd.getDividendYield()==0) return 0;
 		
 		else if(PEG < 0.5){
-			return (highDivYield) ? 3 : 5; // PEG good, but yield decides 3 or 5.
+			return (highDivYield) ? 0.6 : 1; // PEG good, but yield decides 3 or 5.
 		}
 		else if (PEG <= 1){
-			return (highDivYield) ? 3 : 4; // PEG mnjaaaa maybe, yield decides...
+			return (highDivYield) ? 0.6 : 0.8; // PEG mnjaaaa maybe, yield decides...
 		}
 		else if (PEG <= 1.5){
-			return (highDivYield) ? 1 : 2; // PEG Bad ......
+			return (highDivYield) ? 0.2 : 0.4; // PEG Bad ......
 		}
 		else {
-			return 1;                      // PEG stinks
+			return 0.2;                      // PEG stinks
 		}
 	}
 	
 	
 	
-	private int ROE(FundamentalData qd){
+	private double ROE(FundamentalData qd){
 		double roeValue = qd.getROE()*100;
 		double roeIndValue=branschValues.get(stock.getSymbol())[ROEind];
 		
@@ -316,46 +316,46 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		
 		if(roeValue>(roeIndValue+3)){
 			if(qd.getSolidity()>0.25){
-				return 5; // bra ROE och bra soliditet, dela upp i två både 4 och 5 (gradera Roe el soliditet)
+				return 1; // bra ROE och bra soliditet, dela upp i två både 4 och 5 (gradera Roe el soliditet)
 			}
-			else return 2;//bra ROE och dålig soliditet
+			else return 0.4;//bra ROE och dålig soliditet
 		}
 		
 		else if(roeValue>(roeIndValue-3))
 			if(qd.getSolidity()>0.25 ){
-				return 3; //OK ROE och bra soliditet, kanske 4
+				return 0.6; //OK ROE och bra soliditet, kanske 4
 			}
-			else return 2; //OK ROE och dålig soliditet
+			else return 0.4; //OK ROE och dålig soliditet
 		
 		else if(qd.getSolidity()>0.25){
-			return 2; // dåligt ROE och bra soliditet
+			return 0.4; // dåligt ROE och bra soliditet
 		}
-		else return 1; //dåligt ROE och dålig soliditet
+		else return 0.2; //dåligt ROE och dålig soliditet
 	}
 	
-	private int ATR(FundamentalData qd){
+	private double ATR(FundamentalData qd){
 		double atrValue = qd.getAcidTestRatio();
 		double atrIndValue=branschValues.get(stock.getSymbol())[CRind];
 		
 		if(!(atrValue==-Math.PI)){
 			if(atrValue>(atrIndValue-0.5)){
 				if(atrValue<(atrIndValue+2)&&atrValue>atrIndValue) 
-					if (qd.getWorkingCapital().toDouble()<0) return 3;
-					else return 5;// bra intervall och bättre än medel, kanske 4
+					if (qd.getWorkingCapital().toDouble()<0) return 0.6;
+					else return 1;// bra intervall och bättre än medel, kanske 4
 				
-				if(atrValue>(atrIndValue+2)) return 2; // för högt värde
+				if(atrValue>(atrIndValue+2)) return 0.4; // för högt värde
 				
-				else return 3; //över undre gräsen men  under medel
+				else return 0.6; //över undre gräsen men  under medel
 			}
-			else if(qd.getWorkingCapital().toDouble()<1) return 1; //dålig ATR och dåligt WC
+			else if(qd.getWorkingCapital().toDouble()<1) return 0.2; //dålig ATR och dåligt WC
 			
-			else return 2; //dåligt ATR men bra WC
+			else return 0.4; //dåligt ATR men bra WC
 			
 		}
 		else return 0; // inget värde finns
 	}
 	
-	private int EPS(FundamentalData qd){
+	private double EPS(FundamentalData qd){
 		double epsValue = qd.getEPS();
 		double epsIndValue=branschValues.get(stock.getSymbol())[EPSind];
 		
@@ -364,13 +364,13 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		else{
 			
 			if(epsValue>(epsIndValue-5))
-				if(epsValue<0) return 2; //bättre än medel men under 0
-				else if (epsValue>epsIndValue+15) return 5; // en bra bit bättre än medel
-				else return 4; // bättre än medel
+				if(epsValue<0) return 0.4; //bättre än medel men under 0
+				else if (epsValue>epsIndValue+15) return 1; // en bra bit bättre än medel
+				else return 0.8; // bättre än medel
 			
-			else if (epsValue<0)return 1; // sämre än medel och under 0
+			else if (epsValue<0)return 0.2; // sämre än medel och under 0
 			
-			else return 2; // sämre än medel
+			else return 0.4; // sämre än medel
 			
 			
 		}
