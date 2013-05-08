@@ -71,8 +71,15 @@ public class MovingAverage {
 		/*
 		 * Make sure that the dailyDataList has the same number of entries (with the same dates) as movingAverageList
 		 */
-		for(int i = offset-1; i > 0; i--){
-			dataList.removeFirst();
+		
+		try {
+			for(int i = offset-1; i > 0; i--){
+				dataList.removeFirst();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.print("Too small collection \n");
 		}
 		
 		/*

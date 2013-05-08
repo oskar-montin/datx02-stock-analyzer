@@ -139,4 +139,8 @@ public class CMF implements AnalysisMethod{
 		}
 		return signal;
 	}
+	
+	public double getValue(){
+		return cmfValue;
+	}
 }

@@ -8,12 +8,19 @@ import java.util.PriorityQueue;
 import combinations.BBRSI;
 import combinations.BBStochRSI1;
 import combinations.BBStochRSI2;
+import combinations.CMFEMA;
+import combinations.MACDCMF1;
+import combinations.MACDCMF3;
+import combinations.MACDFib1;
 import combinations.MACDHistogramRSI;
 import combinations.MACDHistogramRSI2;
+import combinations.MACDHistogramRSI3;
 import combinations.MACDRSI;
 import combinations.MACDRSI2;
 import combinations.MACDRSI3;
 import combinations.MACDRSI4;
+import combinations.MACDRSI5;
+import combinations.MACDValueSO2;
 import combinations.VBROC;
 
 import analyzer.AnalysisMethod;
@@ -128,15 +135,24 @@ public class AnalyticsBot {
 		analysisMethods.add(new BBRSI(data, 20, 7));
 		analysisMethods.add(new BBStochRSI1(data, 20, 7));
 		analysisMethods.add(new BBStochRSI2(data, 20, 7));
-		analysisMethods.add(new MACDHistogramRSI(data, 4, 5, 3, 10));
-		analysisMethods.add(new MACDHistogramRSI2(data, 4, 5, 3, 10));
-		analysisMethods.add(new MACDRSI(data, 4, 5, 3, 10));
-		analysisMethods.add(new MACDRSI2(data, 4, 5, 3, 10));
-		analysisMethods.add(new MACDRSI3(data, 4, 5, 3, 10));
-		analysisMethods.add(new MACDRSI4(data, 4, 5, 3, 10));
+		analysisMethods.add(new MACDHistogramRSI(data, 8, 17, 3, 7));
+		analysisMethods.add(new MACDHistogramRSI2(data, 8, 17, 3, 7));
+		analysisMethods.add(new MACDRSI(data, 8, 17, 3, 7));
+		analysisMethods.add(new MACDRSI2(data, 8, 17, 3, 7));
+		analysisMethods.add(new MACDRSI3(data,8, 17, 3, 7));
+		analysisMethods.add(new MACDRSI4(data, 8, 17, 3, 7));
 		analysisMethods.add(new VBROC(data, 20));
 		analysisMethods.add(new TrendLine(data, 5));
 		analysisMethods.add(new TrendLine(data, 10));
+		analysisMethods.add(new CMFEMA(data, 10, 15));
+		analysisMethods.add(new MACDHistogramRSI3(data, 8, 17, 9, 3));
+		analysisMethods.add(new MACDCMF1(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDCMF3(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDValueSO2(data, 8, 17, 3, 5, 9, 14, 1));
+
+		analysisMethods.add(new MACDRSI5(data, 8, 17, 3, 7));
+		analysisMethods.add(new MACDFib1(data, 8, 17, 3, 10));
+		
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {

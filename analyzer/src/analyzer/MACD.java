@@ -139,6 +139,10 @@ public class MACD implements AnalysisMethod {
 	public PriorityQueue<SimpleData> getMACD(){
 		return MACDQueue;
 	}
+	
+	public PriorityQueue<SimpleData> getMACDFiltered(){
+		return MACDFilteredQueue;
+	}
 
 	public PriorityQueue<SimpleData> getSignals(){
 		return signalQueue;
@@ -212,7 +216,15 @@ public class MACD implements AnalysisMethod {
 		return returnValue;
 	}
 	
-	
+	public double getDerivate(){
+		LinkedList<SimpleData> MACDList = new LinkedList<SimpleData>(MACDQueue);
+		
+		double today = MACDList.getLast().getValue();
+		MACDList.removeLast();
+		double yesterday = MACDList.getLast().getValue();
+		
+		return today-yesterday;
+	}
 
 	/**
 	 * @return Returns all the curves a MACD-object contains. That is a MACD-line, Signal-line, MACD-histogram and a filtered MACD-line.

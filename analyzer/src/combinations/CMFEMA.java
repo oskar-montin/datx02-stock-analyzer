@@ -18,19 +18,13 @@ import analyzer.ExponentialMovingAverage;
  */
 public class CMFEMA implements AnalysisMethod {
 	
-	protected final CMF today;
-	protected final CMF yesterday;
-	protected final ExponentialMovingAverage ema;
-	public CMFEMA(PriorityQueue<DailyData> data, int offset) {
+	private ExponentialMovingAverage ema;
+	private CMF cmf;
+	
+	public CMFEMA(PriorityQueue<DailyData> data, int offsetCMF, int offsetEMA) {
 		
-		PriorityQueue<DailyData> tempQueue = new PriorityQueue<DailyData>(data);
-		PriorityQueue<DailyData> yesterdayQueue = new PriorityQueue<DailyData>();
-		while(tempQueue.size()<data.size()+1){
-			yesterdayQueue.add(tempQueue.poll());
-		}
-		today = new CMF(data, offset);
-		yesterday = new CMF(yesterdayQueue, offset);
-		ema = new ExponentialMovingAverage(data, offset);
+		cmf = new CMF(data, offsetCMF);
+		ema = new ExponentialMovingAverage(data, offsetEMA);
 	}
 
 	@Override
@@ -58,9 +52,9 @@ public class CMFEMA implements AnalysisMethod {
 		Double emaValue = ema.value();
 
 		Signal signal;
-		if(emaValue > 0 && (yesterday.value() > 0 && today.value() < 0)) {
+		if(emaValue < 0 && cmf.getSignal() == Signal.SELL) {
 			signal = Signal.SELL;
-		} else if(emaValue < 0 && (yesterday.value() < 0 && today.value() > 0 )) {
+		} else if(emaValue > 0 && cmf.getSignal() == Signal.BUY) {
 			signal = Signal.BUY;
 		} else {
 			signal = Signal.NONE;
