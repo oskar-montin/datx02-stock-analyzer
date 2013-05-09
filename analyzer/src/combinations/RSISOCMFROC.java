@@ -124,4 +124,9 @@ public class RSISOCMFROC implements AnalysisMethod {
 		}
 		return Signal.NONE;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 }

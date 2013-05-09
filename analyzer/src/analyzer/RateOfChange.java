@@ -192,4 +192,9 @@ public class RateOfChange implements AnalysisMethod {
 		}
 		return signal;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.period;
+	}
 }

@@ -33,11 +33,15 @@ public class BBRSI implements AnalysisMethod {
 	protected final VolatilityBands vb;
 	protected final RelativeStrengthIndex rsi;
 	protected final StochRSI stochRSI;
+	protected int bbOffset;
+	protected int rocOffset;
 	protected Signal signal = Signal.NONE;
 	
 	public BBRSI(PriorityQueue<? extends SimpleData> data, int bbOffset, int rocOffset) {
 		dailyData = new DailyData[data.size()];
 		dailyData = data.toArray(dailyData);
+		this.bbOffset = bbOffset;
+		this.rocOffset = rocOffset;
 		vb = new VolatilityBands(data, bbOffset);
 		bb = new BollingerBands(data, rocOffset);
 		rsi = new RelativeStrengthIndex(data, 14);
@@ -79,6 +83,11 @@ public class BBRSI implements AnalysisMethod {
 	
 	public static void main(String[] args) {
 		
+	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offsets: BB="+this.bbOffset+" ROC="+this.rocOffset;
 	}
 	
 }

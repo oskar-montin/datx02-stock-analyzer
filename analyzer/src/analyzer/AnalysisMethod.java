@@ -33,4 +33,10 @@ public interface AnalysisMethod {
 	 * @return the signal of the analysismethod
 	 */
 	public Signal getSignal();
+	
+	/**
+	 * 
+	 * @return an identification name fo the analysis method
+	 */
+	public String getName();
 }

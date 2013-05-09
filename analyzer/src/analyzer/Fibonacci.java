@@ -180,6 +180,11 @@ public class Fibonacci implements AnalysisMethod{
 		
 		return s;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
+	}
 }
 	
 	

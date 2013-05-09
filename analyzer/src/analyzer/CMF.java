@@ -25,6 +25,7 @@ public class CMF implements AnalysisMethod{
 	private double cmfValue;
 	private double current=0;
 	private Stock stock;
+	private int offset;
 	
 	
 	/**
@@ -34,7 +35,7 @@ public class CMF implements AnalysisMethod{
 	 */
 	
 	public CMF(Collection<DailyData> dailyData, int offset) {
-		
+		this.offset = offset;
 		dailyQueue = new PriorityQueue<DailyData>(dailyData);
 		this.stock = dailyQueue.peek().getStock();
 		this.CMFCalc(dailyQueue, offset);
@@ -142,5 +143,10 @@ public class CMF implements AnalysisMethod{
 	
 	public double getValue(){
 		return cmfValue;
+	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
 	}
 }

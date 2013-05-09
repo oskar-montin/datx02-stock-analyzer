@@ -88,4 +88,9 @@ public class StochRSI extends RelativeStrengthIndex{
 		
 		return new Result("StochRSI", this.todaysValue, this.resultString(), this.getGraph(), getSignal());
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
+	}
 }

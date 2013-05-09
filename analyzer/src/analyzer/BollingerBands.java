@@ -124,4 +124,9 @@ public class BollingerBands implements AnalysisMethod{
 		}
 		return signal;
 	}
+
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
+	}
 }

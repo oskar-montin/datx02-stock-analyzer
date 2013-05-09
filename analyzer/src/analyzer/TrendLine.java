@@ -307,5 +307,10 @@ public class TrendLine implements AnalysisMethod{
 		else
 			return Signal.NONE;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.S;
+	}
 
 }

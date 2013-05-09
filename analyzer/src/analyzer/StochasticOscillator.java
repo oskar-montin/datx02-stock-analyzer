@@ -238,4 +238,9 @@ public class StochasticOscillator implements AnalysisMethod {
 		curves[0] = KCurve;
 		curves[1] = DCurve;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offsets:"+this.shortPeriod+", "+this.midPeriod+", "+this.longPeriod+", "+this.speed;
+	}
 }

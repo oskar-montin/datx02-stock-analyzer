@@ -266,4 +266,9 @@ public class MACD implements AnalysisMethod {
 		}
 		return signal;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-First:"+this.firstOffset+", Second:"+this.secondOffset+", Signal:"+this.signalOffset;
+	}
 }

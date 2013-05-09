@@ -376,4 +376,9 @@ public class FundamentalAnalysis implements AnalysisMethod {
 		}
 		
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 }

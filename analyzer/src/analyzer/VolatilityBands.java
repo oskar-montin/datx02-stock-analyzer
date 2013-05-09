@@ -135,4 +135,9 @@ public class VolatilityBands implements AnalysisMethod{
 		
 		return new Result("Volatility Bands", value, this.resultString(), this.getGraph(), getSignal());
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
+	}
 }

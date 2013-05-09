@@ -23,6 +23,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	protected double avgGain, avgLoss;
 	protected Stock stock;
 	protected double last=0;
+	protected int offset;
 	
 
 	/**
@@ -35,6 +36,7 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	public RelativeStrengthIndex(Collection<? extends SimpleData> dailyData, int offset) {
 		
 		dailyDataQueue = new PriorityQueue<SimpleData>(dailyData);
+		this.offset = offset;
 		this.stock = dailyDataQueue.peek().getStock();
 		RSI = new LinkedList<SimpleData>();
 		this.CalculateRSI(dailyDataQueue, offset);
@@ -167,6 +169,11 @@ public class RelativeStrengthIndex implements AnalysisMethod {
 	public Result getResult() {
 		Double value = this.value();
 		return new Result("Relative Strength Index", value, this.resultString(), this.getGraph(), this.getSignal());
+	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
 	}
 
 }

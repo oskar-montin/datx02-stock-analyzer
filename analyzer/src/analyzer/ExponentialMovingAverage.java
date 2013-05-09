@@ -206,4 +206,9 @@ public class ExponentialMovingAverage implements AnalysisMethod {
 	public Signal getSignal() {
 		return Signal.NONE;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName()+"-Offset:"+this.offset;
+	}
 }

@@ -68,4 +68,9 @@ public class MACDHistogramRSI implements AnalysisMethod {
 	public Result getResult() {
 		return new Result("MACDRSI", value(), resultString(), getGraph(), getSignal());
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 }

@@ -55,5 +55,10 @@ public class VBROC implements AnalysisMethod {
 	public Result getResult() {
 		return new Result("VolatilityROC", value(), resultString(), getGraph(), getSignal());
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 
 }

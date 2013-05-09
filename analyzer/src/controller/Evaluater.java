@@ -188,7 +188,7 @@ public class Evaluater {
 	public static void main(String[] args) {
 		
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-80), dates.get(dates.size()-1));
+		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-50), dates.get(dates.size()-1));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
 		

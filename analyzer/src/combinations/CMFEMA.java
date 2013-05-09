@@ -61,4 +61,9 @@ public class CMFEMA implements AnalysisMethod {
 		}
 		return signal;
 	}
+	
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 }

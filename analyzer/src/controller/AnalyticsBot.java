@@ -164,7 +164,7 @@ public class AnalyticsBot {
 			for(int stockNr = 0; stockNr<numberOfStocks; stockNr++) {
 				result[methodNr][stockNr] = new AnalyticsData(boughtStocks[methodNr][stockNr], 
 															soldStocks[methodNr][stockNr], 
-															this.analysisMethods.get(methodNr).getClass().getName(), 
+															this.analysisMethods.get(methodNr).getName(), 
 															stocks[stockNr]);
 			}
 		}
