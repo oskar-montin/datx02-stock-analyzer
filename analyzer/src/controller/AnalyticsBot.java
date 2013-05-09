@@ -21,6 +21,8 @@ import combinations.MACDRSI3;
 import combinations.MACDRSI4;
 import combinations.MACDRSI5;
 import combinations.MACDValueSO2;
+import combinations.RSISOCMFROC;
+import combinations.SORSIROC;
 import combinations.VBROC;
 
 import analyzer.AnalysisMethod;
@@ -152,7 +154,8 @@ public class AnalyticsBot {
 
 		analysisMethods.add(new MACDRSI5(data, 8, 17, 3, 7));
 		analysisMethods.add(new MACDFib1(data, 8, 17, 3, 10));
-		
+		analysisMethods.add(new RSISOCMFROC(data));
+		analysisMethods.add(new SORSIROC(data));
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
