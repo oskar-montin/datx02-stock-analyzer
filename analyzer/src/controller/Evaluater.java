@@ -7,8 +7,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import util.IO;
 
 import data.AnalyticsData;
 import data.DailyData;
@@ -69,17 +74,12 @@ public class Evaluater {
 			int i = 0;
 			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH)+" - "+dates.get(currentDateIndex).get(Calendar.YEAR));
 			for(Stock stock : stocks) {
-				/*
-				if(inputData[i] == null) {
-					inputData[i] = DatabaseHandler.getDailyData(stock);
-				}*/
 				if(quarterlyData[i] == null) {
 					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
 				}
-				//dailyData[i] = this.trimmedData(inputData[i], dates.get(currentDateIndex));
-				//dailyData[i] = new LinkedList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(currentDateIndex-50), dates.get(currentDateIndex)));
+				
 				try {
-				dailyData[i] = new LinkedList<DailyData>(inputData[i].subList(currentDateIndex-50, currentDateIndex));
+					dailyData[i] = new LinkedList<DailyData>(inputData[i].subList(currentDateIndex-50, currentDateIndex));
 				} catch(IndexOutOfBoundsException e) {
 					dailyData[i] = new LinkedList<DailyData>();
 				}
@@ -107,6 +107,7 @@ public class Evaluater {
 			perStockStrings[n] = "";
 		}
 		//For each analysismethod:
+		TreeMap<Double,String> methodSafeties = new TreeMap<Double,String>();
 		for(int i = 0; i<data.length;i++) {
 			double successRate = 0;
 			double worstSuccessRate = 1.0;
@@ -141,9 +142,12 @@ public class Evaluater {
 
 			System.out.println(outputString);
 			totalString +=outputString+"\n";
+			
+			methodSafeties.put(successRate,data[i][0].getAnalysisMethod());
+			
 		}
 		writeToFile(totalString, "MethodStatistics.txt");
-		
+		IO.save("MethodSafeties.dat", methodSafeties);
 		for(int n = 0; n<perStockStrings.length;n++) {
 			writeToFile(perStockStrings[n], stockArray[n].getSymbol()+".txt");
 		}
@@ -187,9 +191,14 @@ public class Evaluater {
 	
 	public static void main(String[] args) {
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-50), dates.get(dates.size()-1));
+		Evaluater evaluater = new Evaluater(dates,dates.get(45), dates.get(345));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
+		SortedMap<Double,String> hm = (TreeMap<Double,String>) IO.loadFromFile("MethodSafeties.dat");
+		for(Double d:hm.keySet()) {
+			System.out.println(d);
+		}
+		hm.clear();
 		
 	}
 }

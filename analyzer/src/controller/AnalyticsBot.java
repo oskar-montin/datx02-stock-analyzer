@@ -114,26 +114,30 @@ public class AnalyticsBot {
 	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList, QuarterlyData quarterlyData) {
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dataList);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
-		analysisMethods.add(new BollingerBands(data, 10));
-		analysisMethods.add(new CMF(data, 21));
-		analysisMethods.add(new ExponentialMovingAverage(data, 10));
-		analysisMethods.add(new Fibonacci(data, 5));
-		analysisMethods.add(new Fibonacci(data, 10));
-		analysisMethods.add(new MACD(data, 4, 5, 3));
-		analysisMethods.add(new RateOfChange(data, 5));
-		analysisMethods.add(new RateOfChange(data, 10));
-		analysisMethods.add(new RateOfChange(data, 20));
-		analysisMethods.add(new RateOfChange(data, 40));
-		analysisMethods.add(new RelativeStrengthIndex(data, 7));
-		analysisMethods.add(new RelativeStrengthIndex(data, 14));
-		analysisMethods.add(new RelativeStrengthIndex(data, 21));
-		analysisMethods.add(new SimpleMovingAverage(data, 5));
+		for(int i=2;i<=21;i++) {
+			analysisMethods.add(new BollingerBands(data, i));
+			analysisMethods.add(new CMF(data, i));
+			analysisMethods.add(new Fibonacci(data, i));
+			analysisMethods.add(new RateOfChange(data, i));
+			analysisMethods.add(new RelativeStrengthIndex(data, i));
+			analysisMethods.add(new StochRSI(data, i));
+			analysisMethods.add(new VolatilityBands(data, i));
+			analysisMethods.add(new TrendLine(data, i));
+		}
 		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 1));
-		analysisMethods.add(new StochRSI(data, 7));
-		analysisMethods.add(new StochRSI(data, 14));
-		analysisMethods.add(new StochRSI(data, 21));
-		analysisMethods.add(new VolatilityBands(data, 10));
-		analysisMethods.add(new VolatilityBands(data, 20));
+		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 2));
+		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 3));
+		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 4));
+		
+		analysisMethods.add(new MACD(data, 4, 7, 3));
+		analysisMethods.add(new MACD(data, 6, 15, 4));
+		analysisMethods.add(new MACD(data, 8, 18, 6));
+		analysisMethods.add(new MACD(data, 8, 17, 3));
+		analysisMethods.add(new MACD(data, 10, 22, 7));
+		analysisMethods.add(new MACD(data, 12, 26, 9));
+		
+		analysisMethods.add(new RateOfChange(data, 40));
+		/*
 		analysisMethods.add(new BBRSI(data, 20, 7));
 		analysisMethods.add(new BBStochRSI1(data, 20, 7));
 		analysisMethods.add(new BBStochRSI2(data, 20, 7));
@@ -144,8 +148,6 @@ public class AnalyticsBot {
 		analysisMethods.add(new MACDRSI3(data,8, 17, 3, 7));
 		analysisMethods.add(new MACDRSI4(data, 8, 17, 3, 7));
 		analysisMethods.add(new VBROC(data, 20));
-		analysisMethods.add(new TrendLine(data, 5));
-		analysisMethods.add(new TrendLine(data, 10));
 		analysisMethods.add(new CMFEMA(data, 10, 15));
 		analysisMethods.add(new MACDHistogramRSI3(data, 8, 17, 9, 3));
 		analysisMethods.add(new MACDCMF1(data, 8, 17, 3, 10));
@@ -156,6 +158,7 @@ public class AnalyticsBot {
 		analysisMethods.add(new MACDFib1(data, 8, 17, 3, 10));
 		analysisMethods.add(new RSISOCMFROC(data));
 		analysisMethods.add(new SORSIROC(data));
+		*/
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
@@ -167,6 +170,7 @@ public class AnalyticsBot {
 															this.analysisMethods.get(methodNr).getName(), 
 															stocks[stockNr]);
 			}
+			
 		}
 		return result;
 		
