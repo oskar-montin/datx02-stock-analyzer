@@ -124,7 +124,7 @@ public class Evaluater {
 				profit += data[i][j].getTotalProfit();
 				totalBuySell += data[i][j].amountOfPairs();
 				perStockStrings[j] += data[i][j].getAnalysisMethod()+":\n"+"Success rate: " + data[i][j].getSuccessRate()   + "\n" +
-						   "Profit: " + data[i][j].getTotalProfit() + " - Stock avarage: "+data[i][j].getTotalProfit()/data[i].length+"\n" +
+						   "Profit: " + data[i][j].getTotalProfit() + " - Sell avarage: "+data[i][j].getTotalProfit()/data[i][j].getPairs().size()+"\n" +
 						   "Still owned: " + data[i][j].getAmountStillOwned() + " - Avarage: "+data[i][j].getAmountStillOwned()/data[0].length +"\n" +
 						   "Times Succeeded: " + data[i][j].getTimesSucceeded() + " - Avarage: "+data[i][j].getTimesSucceeded()/data[0].length + "\n" +
 						   "Times failed: " + data[i][j].getTimesFailed() + " - Avarage: "+data[i][j].getTimesFailed()/data[0].length + "\n" +
@@ -133,7 +133,7 @@ public class Evaluater {
 			}
 			successRate = timesSucceeded/(timesSucceeded+timesFailed);
 			outputString = data[i][0].getAnalysisMethod()+":"+"\n"+"Success rate: " + successRate +  " Worst:"+ worstSuccessRate+"\n" +
-					   "Profit: " + profit + " - Stock avarage: "+profit/data[0].length+"\n" +
+					   "Profit: " + profit + " - Avarage: "+profit/totalBuySell+"\n" +
 					   "Still owned: " + stillOwned + " - Avarage: "+stillOwned/data[0].length +"\n" +
 					   "Times Succeeded: " + timesSucceeded + " - Avarage: "+timesSucceeded/data[0].length + "\n" +
 					   "Times failed: " + timesFailed + " - Avarage: "+timesFailed/data[0].length + "\n" +
@@ -186,7 +186,6 @@ public class Evaluater {
 	}
 	
 	public static void main(String[] args) {
-		
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
 		Evaluater evaluater = new Evaluater(dates,dates.get(dates.size()-50), dates.get(dates.size()-1));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
