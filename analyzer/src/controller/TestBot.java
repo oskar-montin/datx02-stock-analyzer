@@ -2,15 +2,18 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
 
 import util.IO;
 
 import analyzer.AnalysisMethod;
+import analyzer.RateOfChange;
 import data.AnalyticsData;
 import data.DailyData;
 import data.SimpleData;
@@ -62,11 +65,77 @@ public class TestBot {
 	}
 	
 	public void run() {
-		//for(int i = 0; )
+		double [] stockValues = new double[stocks.length];
+		while(currentDate<data[0].size()) {
+			for(int i = 0; i<data.length;i++) {
+				stockValues[i] = TA((ArrayList<DailyData>) data[i].subList(currentDate-42, currentDate));
+			}
+			ArrayList<Transaction> portfolio = portfolioConstructor(stockValues);
+			for(Transaction t:portfolio) {
+				user.performTransaction(t);
+			}
+			
+			currentDate++;
+		}
 	}
 	
+	private ArrayList<Transaction> portfolioConstructor(double[] stockValues) {
+		TreeMap<Double, SimpleData> buyCandidates = new TreeMap<Double,SimpleData>();
+		TreeMap<Double, SimpleData> sellCandidates = new TreeMap<Double,SimpleData>();
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		double balance = user.getBalance();
+		
+		for(int i = 0;i<stockValues.length;i++) {
+			SimpleData today = data[i].get(data[i].size()-1);
+			if(stockValues[i]>0.5) {
+				buyCandidates.put(stockValues[i],today);
+			} else if(stockValues[i]<0) {
+				sellCandidates.put(stockValues[i],today);
+				if(user.ownStock(today.getStock())) {
+					int amount = user.amountOfStock(today.getStock());
+					transactions.add(new Transaction(today, amount));
+					balance += today.getValue() * amount;
+				}
+			}
+		}
+		
+		for(Entry<SimpleData,Integer> entry : distribute(buyCandidates,balance).entrySet()){
+			transactions.add(new Transaction(entry.getKey(),entry.getValue()));
+		}
+		
+		return transactions;
+	}
+	
+	private TreeMap<SimpleData,Integer> distribute(TreeMap<Double, SimpleData> buyCandidates, double balance) {
+		//För trött nu, gör det imorgon:
+		// köpandel(aktie) = aktie.value/(summan av alla values)
+		return null;
+		
+	}
+
 	private double TA(ArrayList<DailyData> data) {
-		return currentDate;
+		TreeMap<Double, String> tempMap = new TreeMap<Double, String>(safetyMap);
+		if(data != null && data.size()>42) {
+			ArrayList<AnalysisMethod> methods = getMethods(data);
+			for(Entry<Double,String> entry = tempMap.pollLastEntry(); entry != null; entry = tempMap.pollLastEntry()) {
+				for(AnalysisMethod am:methods) {
+					if(am.getName().equals(entry.getValue())) {
+						double res = am.getSignal().getValue()*entry.getKey();
+						if(res!=0) {
+							return res;
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	private ArrayList<AnalysisMethod> getMethods(ArrayList<DailyData> data2) {
+		PriorityQueue<DailyData> dataQueue = new PriorityQueue<DailyData>(data2);
+		ArrayList<AnalysisMethod> methods = new ArrayList<AnalysisMethod>();
+		methods.add(new RateOfChange(dataQueue, 10));
+		return methods;
 	}
 
 	
