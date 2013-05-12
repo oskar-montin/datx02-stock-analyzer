@@ -29,4 +29,8 @@ public class Transaction {
 		
 	}
 	
+	public double getValue() {
+		return stock.getValue()*amount;
+	}
+	
 }
