@@ -82,13 +82,13 @@ public class AnalyticsBot {
 		System.out.println("AnalyticsBot initiated");
 	}
 	
-	public void feed(LinkedList<DailyData>[] data, QuarterlyData[] quarterlyData) {
+	public void feed(LinkedList<DailyData>[] data) {
 		
 		for(int i = 0; i< data.length; i++) {
 			if(data[i] == null || data[i].size()<45) {
 				continue;
 			} else {
-				this.analysisMethods = getMethods(data[i], quarterlyData[i]);
+				this.analysisMethods = getMethods(data[i]);
 			}
 			if(boughtStocks == null) {
 				initArrays(analysisMethods.size());
@@ -111,7 +111,7 @@ public class AnalyticsBot {
 		}
 	}
 	
-	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList, QuarterlyData quarterlyData) {
+	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList) {
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dataList);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
 		for(int i=2;i<=21;i++) {

@@ -70,13 +70,13 @@ public class Evaluater {
 		currentDateIndex = Collections.binarySearch(dates, startDate);
 		while(dates.get(currentDateIndex).compareTo(endDate)<0) {
 			LinkedList<DailyData>[] dailyData = ((LinkedList<DailyData>[])new LinkedList[stocks.size()]);
-			QuarterlyData[] quarterlyData = new QuarterlyData[stocks.size()];
+//			QuarterlyData[] quarterlyData = new QuarterlyData[stocks.size()];
 			int i = 0;
 			System.out.println("Input Date: "+ dates.get(currentDateIndex).get(Calendar.DATE)+"/"+dates.get(currentDateIndex).get(Calendar.MONTH)+" - "+dates.get(currentDateIndex).get(Calendar.YEAR));
 			for(Stock stock : stocks) {
-				if(quarterlyData[i] == null) {
-					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
-				}
+//				if(quarterlyData[i] == null) {
+////					quarterlyData[i] = DatabaseHandler.getQuarterlyData(stock);
+//				}
 				
 				try {
 					dailyData[i] = new LinkedList<DailyData>(inputData[i].subList(currentDateIndex-50, currentDateIndex));
@@ -85,7 +85,7 @@ public class Evaluater {
 				}
 				i++;
 			}
-			bot.feed(dailyData, quarterlyData);
+			bot.feed(dailyData);
 			currentDateIndex++;
 		}
 		data = bot.evaluate();
