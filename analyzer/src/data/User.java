@@ -1,6 +1,7 @@
 package data;
 
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
@@ -92,8 +93,9 @@ public class User {
 	
 	public double getTotalAssets(){
 		double assets = balance;
-		for (Integer value: ownedStocks.values())
-				assets += value;
+		for(Entry<SimpleData,Integer> entry:ownedStocks.entrySet()) {
+			assets += entry.getValue()*entry.getKey().getValue();
+		}
 		return assets;
 	}
 	
@@ -117,7 +119,7 @@ public class User {
 	
 	public boolean performTransaction(Transaction transaction){
 		int currentNrOfStocks = ownedStocks.get(transaction.getData());
-		double price = transaction.getData().getValue()*transaction.getAmount();
+		double price = transaction.getValue();
 		
 		if(transaction.getAmount() > 0){ //if purchase
 			if(balance < price) 
@@ -144,5 +146,10 @@ public class User {
 			return true;
 		}
 		else return false;		
+	}
+
+	public int amountOfStock(Stock stock) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
