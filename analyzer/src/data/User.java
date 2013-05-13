@@ -2,6 +2,7 @@ package data;
 
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -118,38 +119,70 @@ public class User {
 	 */
 	
 	public boolean performTransaction(Transaction transaction){
-		int currentNrOfStocks = ownedStocks.get(transaction.getData());
-		double price = transaction.getValue();
+		Stock stock = transaction.getData().getStock();
+		int currentNrOfStocks = amountOfStocks(stock);
+		double totalPrice = transaction.getValue();
 		
 		if(transaction.getAmount() > 0){ //if purchase
-			if(balance < price) 
+			if(balance < totalPrice)  {
 				return false;
-			
+			}
 			else {
 				currentNrOfStocks += transaction.getAmount();
-				ownedStocks.put(transaction.getData(), new Integer(currentNrOfStocks));
+				ownedStocks.put(transaction.getData(), transaction.getAmount());
 				historicalTransactions.add(transaction);
+				balance -= Math.abs(totalPrice);
 				return true;
 			}	
 		}
+		
 		else if(transaction.getAmount() < 0){
-			currentNrOfStocks -= transaction.getAmount();
-			if(currentNrOfStocks == 0){
-				ownedStocks.remove(transaction.getData().getStock());
+			if(removeStocks(stock, Math.abs(transaction.getAmount()))) {
+				balance += Math.abs(totalPrice);
+			} else {
+				return false;
 			}
-			else if(currentNrOfStocks > 0){
-				ownedStocks.put(transaction.getData(), new Integer(currentNrOfStocks));
-				balance += Math.abs(price);
-			}
-			else return false;
 			historicalTransactions.add(transaction);	
 			return true;
 		}
-		else return false;		
+		else {
+			return false;		
+		}
 	}
 
-	public int amountOfStock(Stock stock) {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean removeStocks(Stock stock, int amount) {
+		if(amountOfStocks(stock)<amount) {
+			return false;
+		}
+		for(Entry<SimpleData,Integer> entry: ownedStocks.entrySet()) {
+			if(entry.getKey().getStock().compareTo(stock)==0) {
+				if(entry.getValue()<=amount) {
+					amount-=entry.getValue();
+				} else {
+					Integer newAmount = new Integer(entry.getValue()-amount);
+					ownedStocks.put(entry.getKey(), newAmount);
+					amount = 0;
+				}
+				ownedStocks.remove(entry.getKey());
+				if(amount <= 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public int amountOfStocks(Stock stock) {
+		int amount = 0;
+		for(Entry<SimpleData,Integer> entry: ownedStocks.entrySet()) {
+			if(entry.getKey().getStock().compareTo(stock)==0) {
+				amount+=entry.getValue();
+			}
+		}
+		return amount;
+	}
+	
+	public double getProfit() {
+		return this.balance-this.depositedAmount;
 	}
 }
