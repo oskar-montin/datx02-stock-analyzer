@@ -191,7 +191,7 @@ public class Evaluater {
 	
 	public static void main(String[] args) {
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		Evaluater evaluater = new Evaluater(dates,dates.get(45), dates.get(345));
+		Evaluater evaluater = new Evaluater(dates,dates.get(45), dates.get(383));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
 		SortedMap<Double,String> hm = (TreeMap<Double,String>) IO.loadFromFile("MethodSafeties.dat");
