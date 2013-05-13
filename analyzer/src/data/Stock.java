@@ -65,7 +65,7 @@ public class Stock implements MarketItem, Comparable<Stock> {
 	@Override
 	public int compareTo(Stock o) {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.symbol.compareTo(o.getSymbol());
 	}
 
 }
