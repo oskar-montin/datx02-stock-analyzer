@@ -81,7 +81,6 @@ public class TestBot {
 	
 	private ArrayList<Transaction> portfolioConstructor(double[] stockValues) {
 		TreeMap<Double, SimpleData> buyCandidates = new TreeMap<Double,SimpleData>();
-		TreeMap<Double, SimpleData> sellCandidates = new TreeMap<Double,SimpleData>();
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 		double balance = user.getBalance();
 		
@@ -90,26 +89,51 @@ public class TestBot {
 			if(stockValues[i]>0.5) {
 				buyCandidates.put(stockValues[i],today);
 			} else if(stockValues[i]<0) {
-				sellCandidates.put(stockValues[i],today);
 				if(user.ownStock(today.getStock())) {
-					int amount = user.amountOfStock(today.getStock());
-					transactions.add(new Transaction(today, amount));
-					balance += today.getValue() * amount;
+					int amount = user.amountOfStocks(today.getStock());
+					user.performTransaction(new Transaction(today,-amount));
 				}
 			}
 		}
+		int maxCount = 15;
+		//Bestäm balance och maxCount:
+		//TODO
+		balance = balance*0.75;
+		TreeMap<SimpleData,Integer> distribution = distribute(buyCandidates,balance,maxCount);
 		
-		for(Entry<SimpleData,Integer> entry : distribute(buyCandidates,balance).entrySet()){
+		for(Entry<SimpleData,Integer> entry : distribution.entrySet()){
 			transactions.add(new Transaction(entry.getKey(),entry.getValue()));
 		}
 		
 		return transactions;
 	}
 	
-	private TreeMap<SimpleData,Integer> distribute(TreeMap<Double, SimpleData> buyCandidates, double balance) {
-		//För trött nu, gör det imorgon:
-		// köpandel(aktie) = aktie.value/(summan av alla values)
-		return null;
+	private TreeMap<SimpleData,Integer> distribute(TreeMap<Double, SimpleData> buyCandidates, double balance, int maxCount) {
+		Entry<Double,SimpleData> entry;
+		TreeMap<Double, SimpleData> choosenEntries = new TreeMap<Double, SimpleData>();
+		TreeMap<SimpleData,Integer> distribution = new TreeMap<SimpleData,Integer>();
+		int i = 0;
+		double sum = 0;
+		double usedBalance = 0;
+		entry = buyCandidates.pollLastEntry();
+		maxCount = Math.min(buyCandidates.size(), maxCount);
+		//Choose entries:
+		while(entry !=null && i<maxCount) {
+			choosenEntries.put(entry.getKey(), entry.getValue());
+			sum+=entry.getKey();
+			i++;
+			entry = buyCandidates.pollLastEntry();
+		}
+		
+		//Calculate shares and add transactions
+		for(Entry<Double, SimpleData> e: choosenEntries.entrySet()) {
+			double share = balance*e.getKey()/sum;
+			int amount = (int) (share/e.getValue().getValue());
+			distribution.put(e.getValue(), amount);
+			usedBalance += amount*e.getValue().getValue();
+		}
+		
+		return distribution;
 		
 	}
 
