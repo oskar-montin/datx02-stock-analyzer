@@ -28,10 +28,10 @@ public class RSISOCMFROC implements AnalysisMethod {
 	public RSISOCMFROC (Collection<DailyData> dailyData) {
 		
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dailyData); 
-		rsi = new RelativeStrengthIndex(data, 21);
-		cmf = new CMF(data, 21);
+		rsi = new RelativeStrengthIndex(data, 10);
+		cmf = new CMF(data, 5);
 		so = new StochasticOscillator(data, 5, 9, 14, 1);
-		roc = new RateOfChange(data, 20);
+		roc = new RateOfChange(data, 7);
 	}
 	
 	

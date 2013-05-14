@@ -18,12 +18,14 @@ public class VBROC implements AnalysisMethod {
 	protected final VolatilityBands vb;
 	protected final RateOfChange roc;
 	protected Signal signal = Signal.NONE;
+	private int vbOffset; 
+	private int rocOffset;
 	
-	public VBROC(PriorityQueue<? extends SimpleData> data, int offset) {
+	public VBROC(PriorityQueue<? extends SimpleData> data, int vbOffset, int rocOffset) {
 		dailyData = new DailyData[data.size()];
 		dailyData = data.toArray(dailyData);
-		vb = new VolatilityBands(data, offset);
-		roc = new RateOfChange(data, offset);
+		vb = new VolatilityBands(data, vbOffset);
+		roc = new RateOfChange(data, rocOffset);
 	}
 	
 	@Override
@@ -58,7 +60,7 @@ public class VBROC implements AnalysisMethod {
 	
 	@Override
 	public String getName() {
-		return this.getClass().getName();
+		return this.getClass().getName()+" VBOffset: "+this.vbOffset+" ROCOffset: "+this.rocOffset;
 	}
 
 }

@@ -26,9 +26,9 @@ public class SORSIROC implements AnalysisMethod {
 	public SORSIROC (Collection<DailyData> dailyData) {
 		
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dailyData); 
-		rsi = new RelativeStrengthIndex(data, 21);
-		so = new StochasticOscillator(data, 5, 9, 14, 1);
-		roc = new RateOfChange(data, 20);
+		rsi = new RelativeStrengthIndex(data, 10);
+		so = new StochasticOscillator(data, 5, 9, 14, 3);
+		roc = new RateOfChange(data, 7);
 	}
 	
 	

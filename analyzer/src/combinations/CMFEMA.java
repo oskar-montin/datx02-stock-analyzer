@@ -20,9 +20,12 @@ public class CMFEMA implements AnalysisMethod {
 	
 	private ExponentialMovingAverage ema;
 	private CMF cmf;
+	private int offsetCMF;
+	private int offsetEMA;
 	
 	public CMFEMA(PriorityQueue<DailyData> data, int offsetCMF, int offsetEMA) {
-		
+		this.offsetCMF = offsetCMF;
+		this.offsetEMA = offsetEMA;
 		cmf = new CMF(data, offsetCMF);
 		ema = new ExponentialMovingAverage(data, offsetEMA);
 	}
@@ -64,6 +67,6 @@ public class CMFEMA implements AnalysisMethod {
 	
 	@Override
 	public String getName() {
-		return this.getClass().getName();
+		return this.getClass().getName()+"Ema offset: "+this.offsetEMA+" CMF offset: "+this.offsetCMF;
 	}
 }

@@ -37,14 +37,14 @@ public class BBRSI implements AnalysisMethod {
 	protected int rocOffset;
 	protected Signal signal = Signal.NONE;
 	
-	public BBRSI(PriorityQueue<? extends SimpleData> data, int bbOffset, int rocOffset) {
+	public BBRSI(PriorityQueue<? extends SimpleData> data, int bbOffset, int rsiOffset) {
 		dailyData = new DailyData[data.size()];
 		dailyData = data.toArray(dailyData);
 		this.bbOffset = bbOffset;
-		this.rocOffset = rocOffset;
+		this.rocOffset = rsiOffset;
 		vb = new VolatilityBands(data, bbOffset);
-		bb = new BollingerBands(data, rocOffset);
-		rsi = new RelativeStrengthIndex(data, 14);
+		bb = new BollingerBands(data, bbOffset);
+		rsi = new RelativeStrengthIndex(data, rsiOffset);
 		stochRSI = new StochRSI(data, 14);
 		
 	}
@@ -87,7 +87,7 @@ public class BBRSI implements AnalysisMethod {
 	
 	@Override
 	public String getName() {
-		return this.getClass().getName()+"-Offsets: BB="+this.bbOffset+" ROC="+this.rocOffset;
+		return this.getClass().getName()+"-Offsets: BB="+this.bbOffset+" RSI="+this.rocOffset;
 	}
 	
 }
