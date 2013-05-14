@@ -4,7 +4,7 @@
 
 package data;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
 
 	SimpleData stock;
 	int amount;
@@ -31,6 +31,12 @@ public class Transaction {
 	
 	public double getValue() {
 		return stock.getValue()*amount;
+	}
+
+	@Override
+	public int compareTo(Transaction o) {
+		
+		return this.stock.compareTo(o.getData());
 	}
 	
 }
