@@ -66,6 +66,8 @@ public class TestBot {
 	
 	public void run() {
 		double [] stockValues = new double[stocks.length];
+		String userCsv = ""+user.getTotalAssets();
+		String indexCsv = ""+index.getTotalAssets();
 		while(currentDate<data[0].size()) {
 			for(int i = 0; i<data.length;i++) {
 				stockValues[i] = TA((ArrayList<DailyData>) data[i].subList(currentDate-42, currentDate));
@@ -74,9 +76,12 @@ public class TestBot {
 			for(Transaction t:portfolio) {
 				user.performTransaction(t);
 			}
-			
+			userCsv+=","+user.getTotalAssets();
+			indexCsv+=","+index.getTotalAssets();
 			currentDate++;
 		}
+		IO.writeToFile(userCsv, "user.csv");
+		IO.writeToFile(indexCsv, "index.csv");
 	}
 	
 	private ArrayList<Transaction> portfolioConstructor(double[] stockValues) {
@@ -158,7 +163,7 @@ public class TestBot {
 	private ArrayList<AnalysisMethod> getMethods(ArrayList<DailyData> data2) {
 		PriorityQueue<DailyData> dataQueue = new PriorityQueue<DailyData>(data2);
 		ArrayList<AnalysisMethod> methods = new ArrayList<AnalysisMethod>();
-		methods.add(new RateOfChange(dataQueue, 10));
+		methods.add(new RateOfChange(dataQueue, 7));
 		return methods;
 	}
 
