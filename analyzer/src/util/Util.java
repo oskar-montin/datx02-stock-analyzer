@@ -2,8 +2,14 @@ package util;
 
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import controller.DatabaseHandler;
 
@@ -17,6 +23,36 @@ import data.SimpleData;
 import data.Stock;
 
 public class Util {
+	
+	public static <K,V extends Comparable<? super V>> Comparator<Entry<K,V>> entryValueComparator() {
+		Comparator<Entry<K,V>> comp = new Comparator<Entry<K,V>>() {
+
+			@Override
+			public int compare(Entry<K,V> o1, Entry<K,V> o2) {
+				if(o1.getValue().compareTo(o2.getValue())==0) {
+					return 1;
+				} else {
+					return -o1.getValue().compareTo(o2.getValue());
+				}
+			}
+			
+		};
+		return comp;
+		
+	}
+	
+	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+	    SortedSet<Map.Entry<K,V>> sortedEntries;
+	    Comparator<Map.Entry<K,V>> c= new Comparator<Map.Entry<K,V>>() {
+	            @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+	                return e1.getValue().compareTo(e2.getValue());
+	            }
+	        };
+	    sortedEntries = new TreeSet<Map.Entry<K,V>>(c);
+	    sortedEntries.addAll(map.entrySet());
+	    return sortedEntries;
+	}
+	
 
 	public static boolean isUpDay(DailyData data) {
 		return data.getOpenPrice()<data.getClosePrice();
