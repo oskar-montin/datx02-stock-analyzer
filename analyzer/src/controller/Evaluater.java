@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -62,6 +63,7 @@ public class Evaluater {
 			allData[i] = new ArrayList<DailyData>(DatabaseHandler.getDailyData(stock, dates.get(0), dates.get(dates.size()-1)));
 			i++;
 		}
+		System.out.println(allData[0].get(0).getSymbol());
 		return allData;
 	}
 	
@@ -107,7 +109,7 @@ public class Evaluater {
 			perStockStrings[n] = "";
 		}
 		//For each analysismethod:
-		TreeMap<Double,String> methodSafeties = new TreeMap<Double,String>();
+		TreeMap<String,Double> methodSafeties = new TreeMap<String,Double>();
 		for(int i = 0; i<data.length;i++) {
 			double successRate = 0;
 			double worstSuccessRate = 1.0;
@@ -143,7 +145,7 @@ public class Evaluater {
 			System.out.println(outputString);
 			totalString +=outputString+"\n";
 			
-			methodSafeties.put(successRate,data[i][0].getAnalysisMethod());
+			methodSafeties.put(data[i][0].getAnalysisMethod(),successRate);
 			
 		}
 		writeToFile(totalString, "MethodStatistics.txt");
@@ -194,8 +196,8 @@ public class Evaluater {
 		Evaluater evaluater = new Evaluater(dates,dates.get(45), dates.get(383));
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
-		SortedMap<Double,String> hm = (TreeMap<Double,String>) IO.loadFromFile("MethodSafeties.dat");
-		for(Double d:hm.keySet()) {
+		SortedMap<String,Double> hm = (TreeMap<String,Double>) IO.loadFromFile("MethodSafeties.dat");
+		for(Entry<String,Double> d:hm.entrySet()) {
 			System.out.println(d);
 		}
 		hm.clear();
