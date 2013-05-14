@@ -58,6 +58,21 @@ public class DailyData extends SimpleData implements MarketItem{
 		this.PEG = PEG;
 	}
 	
+	public DailyData(DailyData dd) {
+		super(dd.getStock(),dd.getDate(),dd.getClosePrice());
+
+		this.openPrice = dd.openPrice;
+		this.closePrice = dd.closePrice;
+		this.high = dd.high;
+		this.low = dd.low;
+		this.volume = dd.volume;
+		this.marketCap = dd.marketCap;
+		this.dividentYield = dd.dividentYield;
+		this.PE = dd.PE;
+		this.PS = dd.PS;
+		this.PEG = dd.PEG;
+	}
+	
 	/**
 	 * 
 	 * @param stock
@@ -148,5 +163,18 @@ public class DailyData extends SimpleData implements MarketItem{
 				+ ", PS=" + PS + ", PEG=" + PEG + ", openPrice=" + openPrice
 				+ ", closePrice=" + closePrice + ", high=" + high + ", low="
 				+ low + ", volume=" + volume + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        DailyData temp = (DailyData) obj;
+		return this.compareTo(temp)==0;
 	}
 }

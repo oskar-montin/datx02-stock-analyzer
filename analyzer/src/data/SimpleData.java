@@ -79,7 +79,28 @@ public class SimpleData implements MarketItem, Comparable<SimpleData> {
 
 	@Override
 	public int compareTo(SimpleData o) {
-		return this.getDate().compareTo(o.getDate());
+		if(this.date.compareTo(o.getDate())!=0) {
+			return this.getDate().compareTo(o.getDate());
+		} else {
+			if(this.stock.compareTo(o.getStock())!=0) {
+				return this.getStock().compareTo(o.getStock());
+			} else {
+				return new Double(this.value).compareTo(o.getValue());
+			}
+		}		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        SimpleData temp = (SimpleData) obj;
+		return this.compareTo(temp)==0;
 	}
 	
 	public static Comparator<SimpleData> getValueComparator(final boolean abs) {
