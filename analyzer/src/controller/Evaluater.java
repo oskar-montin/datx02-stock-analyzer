@@ -17,7 +17,9 @@ import java.util.TreeMap;
 import util.IO;
 
 import data.AnalyticsData;
+import data.BuySellPair;
 import data.DailyData;
+import data.ProfitRatio;
 import data.QuarterlyData;
 import data.Stock;
 
@@ -109,6 +111,7 @@ public class Evaluater {
 			perStockStrings[n] = "";
 		}
 		//For each analysismethod:
+		ArrayList<ProfitRatio> profitRatios = new ArrayList<ProfitRatio>();
 		TreeMap<String,Double> methodSafeties = new TreeMap<String,Double>();
 		for(int i = 0; i<data.length;i++) {
 			double successRate = 0;
@@ -119,7 +122,9 @@ public class Evaluater {
 			double profit = 0;
 			int totalBuySell = 0;
 			String outputString = "";
+			ArrayList<BuySellPair> pairs = new ArrayList<BuySellPair>();
 			for(int j = 0; j< data[0].length; j++) {
+				pairs.addAll(data[i][j].getPairs());
 				worstSuccessRate = Math.min(worstSuccessRate, data[i][j].getSuccessRate());
 				stillOwned += data[i][j].getAmountStillOwned();
 				timesFailed += data[i][j].getTimesFailed();
@@ -145,11 +150,13 @@ public class Evaluater {
 			System.out.println(outputString);
 			totalString +=outputString+"\n";
 			
+			profitRatios.add(new ProfitRatio(data[i][0].getAnalysisMethod(), pairs));
 			methodSafeties.put(data[i][0].getAnalysisMethod(),successRate);
 			
 		}
 		writeToFile(totalString, "MethodStatistics.txt");
 		IO.save("MethodSafeties.dat", methodSafeties);
+		IO.save("ProfitRatios.dat", profitRatios);
 		for(int n = 0; n<perStockStrings.length;n++) {
 			writeToFile(perStockStrings[n], stockArray[n].getSymbol()+".txt");
 		}
@@ -197,8 +204,12 @@ public class Evaluater {
 		AnalyticsData[][] ad = evaluater.getAnalyticsData();
 		evaluater.printMethodStat();
 		SortedMap<String,Double> hm = (TreeMap<String,Double>) IO.loadFromFile("MethodSafeties.dat");
+		ArrayList<ProfitRatio> ratios = (ArrayList<ProfitRatio>) IO.loadFromFile("ProfitRatios.dat");
 		for(Entry<String,Double> d:hm.entrySet()) {
 			System.out.println(d);
+		}
+		for(ProfitRatio pr:ratios) {
+			System.out.println("Succ: "+pr.getSuccessProfit()+" Fail: "+pr.getFailLoss());
 		}
 		hm.clear();
 		

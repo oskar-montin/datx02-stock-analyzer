@@ -11,10 +11,15 @@ import combinations.BBStochRSI2;
 import combinations.CMFEMA;
 import combinations.MACDCMF1;
 import combinations.MACDCMF3;
+import combinations.MACDCMF4;
+import combinations.MACDDerivativeSO;
 import combinations.MACDFib1;
 import combinations.MACDHistogramRSI;
 import combinations.MACDHistogramRSI2;
 import combinations.MACDHistogramRSI3;
+import combinations.MACDROC;
+import combinations.MACDROC2;
+import combinations.MACDROC3;
 import combinations.MACDRSI;
 import combinations.MACDRSI2;
 import combinations.MACDRSI3;
@@ -114,51 +119,39 @@ public class AnalyticsBot {
 	private ArrayList<AnalysisMethod> getMethods(LinkedList<DailyData> dataList) {
 		PriorityQueue<DailyData> data = new PriorityQueue<DailyData>(dataList);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
-		for(int i=2;i<=21;i++) {
-			analysisMethods.add(new BollingerBands(data, i));
-			analysisMethods.add(new CMF(data, i));
-			analysisMethods.add(new Fibonacci(data, i));
-			analysisMethods.add(new RateOfChange(data, i));
-			analysisMethods.add(new RelativeStrengthIndex(data, i));
-			analysisMethods.add(new StochRSI(data, i));
-			analysisMethods.add(new VolatilityBands(data, i));
-			analysisMethods.add(new TrendLine(data, i));
-		}
-		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 1));
-		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 2));
-		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 3));
-		analysisMethods.add(new StochasticOscillator(data, 5, 9, 14, 4));
 		
-		analysisMethods.add(new MACD(data, 4, 7, 3));
-		analysisMethods.add(new MACD(data, 6, 15, 4));
-		analysisMethods.add(new MACD(data, 8, 18, 6));
-		analysisMethods.add(new MACD(data, 8, 17, 3));
-		analysisMethods.add(new MACD(data, 10, 22, 7));
+		analysisMethods.add(new BollingerBands(data, 18));
+		analysisMethods.add(new Fibonacci(data, 23));
 		analysisMethods.add(new MACD(data, 12, 26, 9));
 		
-		analysisMethods.add(new RateOfChange(data, 40));
-		/*
-		analysisMethods.add(new BBRSI(data, 20, 7));
-		analysisMethods.add(new BBStochRSI1(data, 20, 7));
-		analysisMethods.add(new BBStochRSI2(data, 20, 7));
+		analysisMethods.add(new RateOfChange(data, 7));
+		
+		analysisMethods.add(new RelativeStrengthIndex(data, 10));
+		analysisMethods.add(new VBROC(data, 18,6));
+		analysisMethods.add(new VolatilityBands(data, 18));
+		analysisMethods.add(new StochRSI(data, 6));
+		analysisMethods.add(new CMFEMA(data, 1,28));
+		analysisMethods.add(new BBRSI(data, 19,10));
+		analysisMethods.add(new BBStochRSI1(data, 18,8));
+		analysisMethods.add(new BBStochRSI2(data, 18,10));
+		analysisMethods.add(new MACDCMF1(data, 12, 26, 9,10));
+		analysisMethods.add(new MACDCMF3(data, 12, 26, 9,10));
+		analysisMethods.add(new MACDCMF4(data, 12, 26, 9,10));
+		analysisMethods.add(new MACDDerivativeSO(data, 12, 26, 9,5,9,14,3));
+		analysisMethods.add(new MACDROC(data, 12, 26, 9,7));
+		analysisMethods.add(new MACDROC2(data, 12, 26, 9,7));
+		analysisMethods.add(new MACDROC3(data, 12, 26, 9,7));
 		analysisMethods.add(new MACDHistogramRSI(data, 8, 17, 3, 7));
 		analysisMethods.add(new MACDHistogramRSI2(data, 8, 17, 3, 7));
-		analysisMethods.add(new MACDRSI(data, 8, 17, 3, 7));
-		analysisMethods.add(new MACDRSI2(data, 8, 17, 3, 7));
-		analysisMethods.add(new MACDRSI3(data,8, 17, 3, 7));
-		analysisMethods.add(new MACDRSI4(data, 8, 17, 3, 7));
-		analysisMethods.add(new VBROC(data, 20));
-		analysisMethods.add(new CMFEMA(data, 10, 15));
-		analysisMethods.add(new MACDHistogramRSI3(data, 8, 17, 9, 3));
-		analysisMethods.add(new MACDCMF1(data, 8, 17, 3, 10));
-		analysisMethods.add(new MACDCMF3(data, 8, 17, 3, 10));
-		analysisMethods.add(new MACDValueSO2(data, 8, 17, 3, 5, 9, 14, 1));
-
-		analysisMethods.add(new MACDRSI5(data, 8, 17, 3, 7));
-		analysisMethods.add(new MACDFib1(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDHistogramRSI3(data, 12, 26, 9,7));
+		analysisMethods.add(new MACDRSI(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDRSI2(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDRSI3(data,8, 17, 3, 10));
+		analysisMethods.add(new MACDRSI4(data, 8, 17, 3, 10));
+		analysisMethods.add(new MACDValueSO2(data, 12, 26, 9,5,9,14,3));
 		analysisMethods.add(new RSISOCMFROC(data));
 		analysisMethods.add(new SORSIROC(data));
-		*/
+		
 		return analysisMethods;
 	}
 	public AnalyticsData[][] evaluate() {
