@@ -34,9 +34,23 @@ public class ProfitRatio implements Serializable{
 			}
 			this.profit+=p;
 		}
-		this.profitPerTransaction = this.profit/(successAmount-failAmount);
-		this.successProfit = successSum/successAmount;
-		this.failLoss = failSum/failAmount;
+		if(successAmount==0) {
+			this.successProfit = 0;
+		} else {
+			this.successProfit = successSum/successAmount;
+		}
+		if(failAmount==0) {
+			this.failLoss = 0;
+		} else {
+			this.failLoss = failSum/failAmount;
+		}
+		if(successAmount!=0 || failAmount!=0){
+			this.profitPerTransaction = this.profit/(successAmount+failAmount);
+		} else {
+			this.profitPerTransaction = 0;
+		}
+		
+		
 		
 	}
 
