@@ -127,6 +127,7 @@ public class AnalyticsBot {
 		analysisMethods.add(new RateOfChange(data, 7));
 		
 		analysisMethods.add(new RelativeStrengthIndex(data, 10));
+		
 		analysisMethods.add(new VBROC(data, 18,6));
 		analysisMethods.add(new VolatilityBands(data, 18));
 		analysisMethods.add(new StochRSI(data, 6));

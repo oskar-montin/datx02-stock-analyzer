@@ -29,11 +29,9 @@ public class Util {
 
 			@Override
 			public int compare(Entry<K,V> o1, Entry<K,V> o2) {
-				if(o1.getValue().compareTo(o2.getValue())==0) {
-					return 1;
-				} else {
-					return -o1.getValue().compareTo(o2.getValue());
-				}
+				
+				return -o1.getValue().compareTo(o2.getValue());
+				
 			}
 			
 		};

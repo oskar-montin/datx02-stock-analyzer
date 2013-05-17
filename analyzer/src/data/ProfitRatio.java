@@ -3,7 +3,7 @@ package data;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProfitRatio implements Serializable{
+public class ProfitRatio  implements Comparable<ProfitRatio>,Serializable{
 
 	/**
 	 * 
@@ -68,5 +68,10 @@ public class ProfitRatio implements Serializable{
 
 	public double getFailLoss() {
 		return failLoss;
+	}
+
+	@Override
+	public int compareTo(ProfitRatio o) {
+		return 0;
 	}
 }

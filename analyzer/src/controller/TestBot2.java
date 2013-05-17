@@ -51,13 +51,12 @@ import analyzer.VolatilityBands;
 import data.AnalyticsData;
 import data.DailyData;
 import data.ProfitRatio;
-import data.Signal;
 import data.SimpleData;
 import data.Stock;
 import data.Transaction;
 import data.User;
 
-public class TestBot {
+public class TestBot2 {
 
 	private User index;
 	private User user;
@@ -73,13 +72,9 @@ public class TestBot {
 	private ArrayList<Entry<String,Double>> safetyQueue;
 	private ArrayList<ProfitRatio> profitRatios;
 	private ArrayList<Entry<String,Double>> expectedList;
-	private double[] worstBuyValues;
-	private int[] buyDate;
-	private double[] highestPrice;
-	private boolean[] yesterdayWasBuy;
 	private double expectedSum;
 	
-	public TestBot(int startDate, int testLength) {
+	public TestBot2(int startDate, int testLength) {
 		index = new User("Index");
 		user = new User("Model");
 		currentDate = 50;
@@ -143,10 +138,6 @@ public class TestBot {
 		data = new ArrayList[stocks.length];
 		dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
 		i=0;
-		worstBuyValues = new double[stocks.length];
-		buyDate = new int[stocks.length];
-		highestPrice = new double[stocks.length];
-		yesterdayWasBuy = new boolean[stocks.length];
 		for(Stock s:stocks) {
 			ArrayList<DailyData> a = new ArrayList<DailyData>(DatabaseHandler.getDailyData(s, dates.get(0), dates.get(dates.size()-1)));
 			PriorityQueue<DailyData> dd = DatabaseHandler.getDailyData(s, dates.get(startDate), dates.get(endDate));
@@ -160,10 +151,6 @@ public class TestBot {
 			} else {
 				data[i] = new ArrayList<DailyData>();
 			}
-			worstBuyValues[i] = 1;
-			buyDate[i] = -1;
-			highestPrice[i] = 0.0;
-			yesterdayWasBuy[i] = false;
 			i++;
 		}
 		
@@ -205,7 +192,6 @@ public class TestBot {
 			excelWriter.addRow(assets, rn);
 			rn++;
 			currentDate++;
-			System.out.println(user.getBalance());
 		}
 		excelWriter.save("BotIndexFile.xls");
 		IO.writeToFile(userCsv, "user.csv");
@@ -224,90 +210,49 @@ public class TestBot {
 		return totalAssets;
 	}
 	
+	private boolean stop(SimpleData todayStock) {
+		for(Entry<SimpleData,Integer> owned:user.getOwnedStocks().entrySet()) {
+			if(owned.getKey().getStock().compareTo(todayStock.getStock())==0) {
+				double border = owned.getKey().getValue()*0.95;
+				if(todayStock.getValue()<border) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private ArrayList<Transaction> portfolioConstructor(double[] stockValues) {
 		TreeMap<SimpleData,Double> buyCandidates = new TreeMap<SimpleData,Double>();
 		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-		
+		double balance = user.getBalance();
 		SimpleData today = null;
 		for(int i = 0;i<stockValues.length;i++) {
 			DailyData[] dailyData = new DailyData[data[i].size()];
 			dailyData = data[i].toArray(dailyData);
-			if(worstBuyValues[i]!=1) {
-				if(data[i].size()>0) {
-					highestPrice[i] = Math.max(highestPrice[i], data[i].get(currentDate).getClosePrice());
-				}
-			}
-
-			if(stockValues[i]>0) {//buy
+			
+			if(stockValues[i]>0) {
 				System.out.println(dailyData[currentDate].equals(today));
 				System.out.println(data[i].get(currentDate).getStock().getSymbol());
 				//today = new DailyData(dailyData[currentDate]);
 				//today = data[i].get(currentDate);
 				//buyCandidates.put(today,stockValues[i]);
-				/*int worstStock = i;
-				//int bestStock = 0;
-				
-				for(int n = 0; n<bestBuyValues.length;n++) {
-					if(bestBuyValues[worstStock]>=bestBuyValues[n]&&bestBuyValues[n]>0){
-						worstStock = n;
-					}
-					//if(bestBuyValues[bestStock]<=bestBuyValues[n]){
-						//bestStock = n;
-				//	}
-				}
-				if(worstStock!=i){
-					today = data[worstStock].get(currentDate);
-					int amount = user.amountOfStocks(today.getStock());
-					if(amount!=0) {
-						user.performTransaction(new Transaction(today,-amount));
-						bestBuyValues[worstStock] = 0.0;
-						highestBuyPrice[worstStock] = 0.0;
-						highestStopPrice[worstStock] = 0.0;
-					}
-				}*/
-				worstBuyValues[i] = Math.min(worstBuyValues[i], stockValues[i]);
-				yesterdayWasBuy[i] = true;
-				//highestPrice[i]=Math.max(data[i].get(currentDate).getClosePrice(), highestPrice[i]);
-				buyDate[i] = currentDate;
 				buyCandidates.put(new SimpleData(data[i].get(currentDate)),stockValues[i]);
-			} else if(stockValues[i]<0 ) { //Sell
-				yesterdayWasBuy[i] = false;
-				System.out.println("Stockamount: "+user.amountOfStocks(data[i].get(currentDate).getStock())+data[i].get(currentDate).getStock().getSymbol());
-				System.out.println("Worst: "+worstBuyValues[i] +" - Now: "+ Math.abs(stockValues[i]));
-				if(worstBuyValues[i] <= Math.abs(stockValues[i])) {
-					today = data[i].get(currentDate);
-					int amount = user.amountOfStocks(today.getStock());
-					if(amount!=0) {
-						user.performTransaction(new Transaction(today,-amount));
-						worstBuyValues[i] = 1.0;
-						highestPrice[i] = 0.0;
-						buyDate[i] = -1;
-					}
-					
+			} else if(stockValues[i]<0 ) {
+				today = data[i].get(currentDate);
+				//today = data[i].get(currentDate);
+				int amount = user.amountOfStocks(today.getStock());
+				if(amount!=0) {
+					user.performTransaction(new Transaction(today,-amount));
 				}
-			}/*
-			else if(stockValues[i] == 0) { //none
-				if(buyDate[i]!=-1 && currentDate-buyDate[i]>5) {
-					double stop = highestPrice[i]*0.90;
-					if(stop!=0) {
-						today = data[i].get(currentDate);
-						double buyprice = data[i].get(buyDate[i]).getClosePrice();
-						if(stop>data[i].get(currentDate).getClosePrice()) {
-							int amount = user.amountOfStocks(today.getStock());
-							if(amount!=0) {
-								user.performTransaction(new Transaction(today,-amount));
-								highestPrice[i] = 0.0;
-							}
-						}
-					}
-				}
-				yesterdayWasBuy[i] = false;
-			}*/
+			}
 		}
 		int maxCount = 15;
 		//Bestäm balance och maxCount:
 		//TODO
-		double balance = user.getBalance();
+		
 		//balance = balance*0.80;
 		TreeMap<SimpleData,Integer> distribution = distribute(buyCandidates,balance,maxCount);
 		
@@ -338,34 +283,16 @@ public class TestBot {
 			choosenQueue.add(e);
 		}
 		Collections.sort(choosenQueue,comp);
-		int stocksOwned = user.getOwnedStocks().size();
 		//Choose entries:entry = buyCandidates.pollLastEntry();
 		for(Entry<SimpleData,Double> entry:choosenQueue) {
-			//if(i>=maxCount) {
-			//	break;
-			//}
-			double currentStockTotalPrice = 0;
-			double assets = 0;
-			for(Entry<SimpleData,Integer> e:user.getOwnedStocks().entrySet()){
-				if(e.getKey().getStock().compareTo(entry.getKey().getStock())==0) {
-					currentStockTotalPrice+=e.getValue()*e.getKey().getValue();
-				}
-				assets+=e.getValue()*e.getKey().getValue();
+			if(i>=maxCount) {
+				break;
 			}
-			double currentShare = currentStockTotalPrice/getTotalAssets(user);
-			if(currentShare<0.10) {
-				choosenEntries.put(entry.getKey(), entry.getValue());
-			}
-			if(user.amountOfStocks(entry.getKey().getStock())==0) {
-				stocksOwned++;
-			}
+			choosenEntries.put(entry.getKey(), entry.getValue());
 			sum+=entry.getValue();
 			i++;
 		}
 		
-		if(stocksOwned<10) {
-			balance = Math.min(balance*stocksOwned/10,balance);
-		}
 		//Calculate shares and add transactions
 		for(Entry<SimpleData,Double> e: choosenEntries.entrySet()) {
 			double share = balance*e.getValue()/sum;
@@ -393,7 +320,7 @@ public class TestBot {
 						}
 						double res = am.getSignal().getValue()*e.getValue();
 						if(res!=0) {
-							System.out.println(e.getKey()+" "+am.getSignal());
+							System.out.println(data.get(0).getStock().getName()+" "+e.getKey()+" "+am.getSignal());
 							return res;
 						}
 					}
@@ -434,23 +361,6 @@ public class TestBot {
 		}
 		return 0;
 	}
-	
-	private boolean stop(SimpleData todayStock) {
-		if(todayStock == null) {
-			return false;
-		}
-		for(Entry<SimpleData,Integer> owned:user.getOwnedStocks().entrySet()) {
-			if(owned.getKey().getStock().compareTo(todayStock.getStock())==0) {
-				double border = owned.getKey().getValue()*0.95;
-				if(todayStock.getValue()<border) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		}
-		return false;
-	}
 
 	private double getProfitPerSuccess(String name) {
 		// TODO Auto-generated method stub
@@ -474,7 +384,7 @@ public class TestBot {
 		PriorityQueue<DailyData> dataQueue = new PriorityQueue<DailyData>(data2);
 		ArrayList<AnalysisMethod> analysisMethods = new ArrayList<AnalysisMethod>();
 		analysisMethods.add(new BollingerBands(dataQueue, 18));
-		analysisMethods.add(new Fibonacci(dataQueue, 23));
+		//analysisMethods.add(new Fibonacci(dataQueue, 23));
 		//analysisMethods.add(new MACD(dataQueue, 12, 26, 9));
 		
 		//analysisMethods.add(new RateOfChange(dataQueue, 7));
@@ -488,7 +398,7 @@ public class TestBot {
 		analysisMethods.add(new BBRSI(dataQueue, 19,10));
 		//analysisMethods.add(new BBStochRSI1(dataQueue, 18,8));
 		analysisMethods.add(new BBStochRSI2(dataQueue, 18,10));
-		//analysisMethods.add(new RSISOCMFROC(dataQueue));
+		analysisMethods.add(new RSISOCMFROC(dataQueue));
 		analysisMethods.add(new MACDHistogramRSI2(dataQueue, 8, 17, 3, 7));
 		
 		//analysisMethods.add(new MACDCMF1(dataQueue, 12, 26, 9,10));
@@ -513,8 +423,8 @@ public class TestBot {
 
 	public static void main(String[] args) {
 		ArrayList<Calendar> dates = new ArrayList<Calendar>(DatabaseHandler.getDates());
-		//TestBot bot = new TestBot(45, 338);
-		TestBot bot = new TestBot(383, 200);
+		//TestBot2 bot = new TestBot2(45, 338);
+		TestBot2 bot = new TestBot2(383, 200);
 		bot.run();
 		bot.printEValues();
 		//System.out.println(bot.user.getTotalAssets());

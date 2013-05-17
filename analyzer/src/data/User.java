@@ -1,9 +1,11 @@
 package data;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Class that implements a user and its account.
@@ -111,6 +113,10 @@ public class User {
 			depositedAmount += amount;
 	}
 	
+	public double getDepositedAmount() {
+		return depositedAmount;
+	}
+	
 	
 	/**
 	 * Performs transaction, by updating balance, current portfolio and history
@@ -154,7 +160,8 @@ public class User {
 		if(amountOfStocks(stock)<amount) {
 			return false;
 		}
-		for(Entry<SimpleData,Integer> entry: ownedStocks.entrySet()) {
+		List<Entry<SimpleData,Integer>> entrySet = new LinkedList<Entry<SimpleData,Integer>>(ownedStocks.entrySet());
+		for(Entry<SimpleData,Integer> entry: entrySet) {
 			if(entry.getKey().getStock().compareTo(stock)==0) {
 				if(entry.getValue()<=amount) {
 					amount-=entry.getValue();
@@ -175,6 +182,7 @@ public class User {
 	public int amountOfStocks(Stock stock) {
 		int amount = 0;
 		for(Entry<SimpleData,Integer> entry: ownedStocks.entrySet()) {
+			//System.out.println(entry.getKey().getStock().getSymbol());
 			if(entry.getKey().getStock().compareTo(stock)==0) {
 				amount+=entry.getValue();
 			}

@@ -1,0 +1,232 @@
+analyzer.BollingerBands-Offset:18:
+Success rate: 0.8170212765957446 Worst:0.1875
+Profit: 2374.429999999999 - Avarage: 5.051978723404253
+Still owned: 98.0 - Avarage: 2.45
+Times Succeeded: 384.0 - Avarage: 9.6
+Times failed: 86.0 - Avarage: 2.15
+Total buy/sell pairs: 470 of 40 stocks. - Avg: 11.75
+
+analyzer.Fibonacci-Offset:23:
+Success rate: 0.743801652892562 Worst:0.27380952380952384
+Profit: 6034.0599999999995 - Avarage: 3.1167665289256195
+Still owned: 205.0 - Avarage: 5.125
+Times Succeeded: 1440.0 - Avarage: 36.0
+Times failed: 496.0 - Avarage: 12.4
+Total buy/sell pairs: 1936 of 40 stocks. - Avg: 48.4
+
+analyzer.MACD-First:12, Second:26, Signal:9:
+Success rate: 0.3175355450236967 Worst:0.1
+Profit: 86.10000000000016 - Avarage: 0.40805687203791546
+Still owned: 23.0 - Avarage: 0.575
+Times Succeeded: 67.0 - Avarage: 1.675
+Times failed: 144.0 - Avarage: 3.6
+Total buy/sell pairs: 211 of 40 stocks. - Avg: 5.275
+
+analyzer.RateOfChange-Offset:7:
+Success rate: 0.6908490465537446 Worst:0.4944237918215613
+Profit: 8874.600000000002 - Avarage: 0.9454138702460853
+Still owned: 452.0 - Avarage: 11.3
+Times Succeeded: 6485.0 - Avarage: 162.125
+Times failed: 2902.0 - Avarage: 72.55
+Total buy/sell pairs: 9387 of 40 stocks. - Avg: 234.675
+
+analyzer.RelativeStrengthIndex-Offset:10:
+Success rate: 0.8438030560271647 Worst:0.17073170731707318
+Profit: 3098.8400000000006 - Avarage: 5.26118845500849
+Still owned: 253.0 - Avarage: 6.325
+Times Succeeded: 497.0 - Avarage: 12.425
+Times failed: 92.0 - Avarage: 2.3
+Total buy/sell pairs: 589 of 40 stocks. - Avg: 14.725
+
+combinations.VBROC VBOffset: 0 ROCOffset: 0:
+Success rate: 0.8264840182648402 Worst:0.2777777777777778
+Profit: 2818.7500000000005 - Avarage: 6.4355022831050235
+Still owned: 113.0 - Avarage: 2.825
+Times Succeeded: 362.0 - Avarage: 9.05
+Times failed: 76.0 - Avarage: 1.9
+Total buy/sell pairs: 438 of 40 stocks. - Avg: 10.95
+
+analyzer.VolatilityBands-Offset:18:
+Success rate: 0.8127853881278538 Worst:0.2777777777777778
+Profit: 2721.3699999999994 - Avarage: 6.213173515981734
+Still owned: 113.0 - Avarage: 2.825
+Times Succeeded: 356.0 - Avarage: 8.9
+Times failed: 82.0 - Avarage: 2.05
+Total buy/sell pairs: 438 of 40 stocks. - Avg: 10.95
+
+analyzer.StochRSI-Offset:6:
+Success rate: 0.6385097749907783 Worst:0.4939759036144578
+Profit: 1237.89 - Avarage: 0.45661748432312804
+Still owned: 15.0 - Avarage: 0.375
+Times Succeeded: 1731.0 - Avarage: 43.275
+Times failed: 980.0 - Avarage: 24.5
+Total buy/sell pairs: 2711 of 40 stocks. - Avg: 67.775
+
+combinations.CMFEMAEma offset: 28 CMF offset: 1:
+Success rate: 0.814792543595911 Worst:0.589041095890411
+Profit: 3111.499999999999 - Avarage: 1.8710162357185802
+Still owned: 195.0 - Avarage: 4.875
+Times Succeeded: 1355.0 - Avarage: 33.875
+Times failed: 308.0 - Avarage: 7.7
+Total buy/sell pairs: 1663 of 40 stocks. - Avg: 41.575
+
+combinations.BBRSI-Offsets: BB=19 RSI=10:
+Success rate: 0.8581818181818182 Worst:0.2
+Profit: 2310.6400000000003 - Avarage: 8.402327272727273
+Still owned: 99.0 - Avarage: 2.475
+Times Succeeded: 236.0 - Avarage: 5.9
+Times failed: 39.0 - Avarage: 0.975
+Total buy/sell pairs: 275 of 40 stocks. - Avg: 6.875
+
+combinations.BBStochRSI1-Offsets: BB=18 RSI=8:
+Success rate: 1.0 Worst:1.0
+Profit: 11.75000000000001 - Avarage: 2.9375000000000027
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 4.0 - Avarage: 0.1
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 4 of 40 stocks. - Avg: 0.1
+
+combinations.BBStochRSI2-Offsets: BB=18 RSI=10:
+Success rate: 0.8 Worst:0.2777777777777778
+Profit: 2237.0699999999997 - Avarage: 5.965519999999999
+Still owned: 98.0 - Avarage: 2.45
+Times Succeeded: 300.0 - Avarage: 7.5
+Times failed: 75.0 - Avarage: 1.875
+Total buy/sell pairs: 375 of 40 stocks. - Avg: 9.375
+
+combinations.MACDCMF1:
+Success rate: 0.37060595915634414 Worst:0.102803738317757
+Profit: 640.759000000003 - Avarage: 0.21451590224305422
+Still owned: 320.0 - Avarage: 8.0
+Times Succeeded: 1107.0 - Avarage: 27.675
+Times failed: 1880.0 - Avarage: 47.0
+Total buy/sell pairs: 2987 of 40 stocks. - Avg: 74.675
+
+combinations.MACDCMF3:
+Success rate: 0.37774140752864155 Worst:0.0
+Profit: -224.9009999999988 - Avarage: -0.07361734860883758
+Still owned: 327.0 - Avarage: 8.175
+Times Succeeded: 1154.0 - Avarage: 28.85
+Times failed: 1901.0 - Avarage: 47.525
+Total buy/sell pairs: 3055 of 40 stocks. - Avg: 76.375
+
+combinations.MACDCMF4:
+Success rate: 0.37060595915634414 Worst:0.102803738317757
+Profit: 640.759000000003 - Avarage: 0.21451590224305422
+Still owned: 320.0 - Avarage: 8.0
+Times Succeeded: 1107.0 - Avarage: 27.675
+Times failed: 1880.0 - Avarage: 47.0
+Total buy/sell pairs: 2987 of 40 stocks. - Avg: 74.675
+
+combinations.MACDDerivativeSO:
+Success rate: 0.3884093711467324 Worst:0.0
+Profit: 59.97000000000035 - Avarage: 0.07394574599260216
+Still owned: 55.0 - Avarage: 1.375
+Times Succeeded: 315.0 - Avarage: 7.875
+Times failed: 496.0 - Avarage: 12.4
+Total buy/sell pairs: 811 of 40 stocks. - Avg: 20.275
+
+combinations.MACDROC:
+Success rate: 0.5480215136381099 Worst:0.16911764705882354
+Profit: 3519.16 - Avarage: 0.675981559738763
+Still owned: 361.0 - Avarage: 9.025
+Times Succeeded: 2853.0 - Avarage: 71.325
+Times failed: 2353.0 - Avarage: 58.825
+Total buy/sell pairs: 5206 of 40 stocks. - Avg: 130.15
+
+combinations.MACDROC2:
+Success rate: 0.6191001323334804 Worst:0.4485294117647059
+Profit: 5663.07 - Avarage: 1.2490229378032642
+Still owned: 467.0 - Avarage: 11.675
+Times Succeeded: 2807.0 - Avarage: 70.175
+Times failed: 1727.0 - Avarage: 43.175
+Total buy/sell pairs: 4534 of 40 stocks. - Avg: 113.35
+
+combinations.MACDROC3:
+Success rate: 0.5611483253588517 Worst:0.14285714285714285
+Profit: 4847.079999999997 - Avarage: 0.9276708133971286
+Still owned: 247.0 - Avarage: 6.175
+Times Succeeded: 2932.0 - Avarage: 73.3
+Times failed: 2293.0 - Avarage: 57.325
+Total buy/sell pairs: 5225 of 40 stocks. - Avg: 130.625
+
+combinations.MACDHistogramRSI:
+Success rate: 0.6 Worst:0.0
+Profit: 5.82 - Avarage: 1.1640000000000001
+Still owned: 10.0 - Avarage: 0.25
+Times Succeeded: 3.0 - Avarage: 0.075
+Times failed: 2.0 - Avarage: 0.05
+Total buy/sell pairs: 5 of 40 stocks. - Avg: 0.125
+
+combinations.MACDHistogramRSI2:
+Success rate: 0.7638888888888888 Worst:0.0
+Profit: 218.14000000000004 - Avarage: 3.029722222222223
+Still owned: 51.0 - Avarage: 1.275
+Times Succeeded: 55.0 - Avarage: 1.375
+Times failed: 17.0 - Avarage: 0.425
+Total buy/sell pairs: 72 of 40 stocks. - Avg: 1.8
+
+combinations.MACDHistogramRSI3:
+Success rate: NaN Worst:1.0
+Profit: 0.0 - Avarage: NaN
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 0.0 - Avarage: 0.0
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 0 of 40 stocks. - Avg: 0.0
+
+combinations.MACDRSI:
+Success rate: NaN Worst:1.0
+Profit: 0.0 - Avarage: NaN
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 0.0 - Avarage: 0.0
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 0 of 40 stocks. - Avg: 0.0
+
+combinations.MACDRSI2:
+Success rate: NaN Worst:1.0
+Profit: 0.0 - Avarage: NaN
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 0.0 - Avarage: 0.0
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 0 of 40 stocks. - Avg: 0.0
+
+combinations.MACDRSI3:
+Success rate: NaN Worst:1.0
+Profit: 0.0 - Avarage: NaN
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 0.0 - Avarage: 0.0
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 0 of 40 stocks. - Avg: 0.0
+
+combinations.MACDRSI4:
+Success rate: NaN Worst:1.0
+Profit: 0.0 - Avarage: NaN
+Still owned: 0.0 - Avarage: 0.0
+Times Succeeded: 0.0 - Avarage: 0.0
+Times failed: 0.0 - Avarage: 0.0
+Total buy/sell pairs: 0 of 40 stocks. - Avg: 0.0
+
+combinations.MACDValueSO2:
+Success rate: 0.44718792866941015 Worst:0.09090909090909091
+Profit: -313.99999999999966 - Avarage: -0.43072702331961543
+Still owned: 58.0 - Avarage: 1.45
+Times Succeeded: 326.0 - Avarage: 8.15
+Times failed: 403.0 - Avarage: 10.075
+Total buy/sell pairs: 729 of 40 stocks. - Avg: 18.225
+
+combinations.RSISOCMFROC:
+Success rate: 0.7377974989915288 Worst:0.39361702127659576
+Profit: 7980.24 - Avarage: 3.2191367486889875
+Still owned: 443.0 - Avarage: 11.075
+Times Succeeded: 1829.0 - Avarage: 45.725
+Times failed: 650.0 - Avarage: 16.25
+Total buy/sell pairs: 2479 of 40 stocks. - Avg: 61.975
+
+combinations.SORSIROC:
+Success rate: 0.7068025598483053 Worst:0.3701657458563536
+Profit: 5256.969999999999 - Avarage: 1.246022754207158
+Still owned: 222.0 - Avarage: 5.55
+Times Succeeded: 2982.0 - Avarage: 74.55
+Times failed: 1237.0 - Avarage: 30.925
+Total buy/sell pairs: 4219 of 40 stocks. - Avg: 105.475
+
